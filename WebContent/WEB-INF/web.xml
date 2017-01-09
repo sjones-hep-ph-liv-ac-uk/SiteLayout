@@ -1,12 +1,125 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+
+<web-app 
+  xmlns="http://java.sun.com/xml/ns/javaee" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+  http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0"> 
+
+<!-- <web-app 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xmlns="http://java.sun.com/xml/ns/javaee" 
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+http://java.sun.com/xml/ns/javaee/web-app_2_3.xsd" 
+version="2.3"> -->
+
+<!-- <web-app 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xmlns="http://java.sun.com/xml/ns/j2ee"
+xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
+http://java.sun.com/xml/ns/j2ee/web-app_2_3.xsd"
+version="2.3"> -->
+
+
   <display-name>SiteLayout</display-name>
+
+  <servlet>
+    <servlet-name>NodeSetController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.NodeSetController </servlet-class> </servlet>
+  <servlet-mapping>
+    <servlet-name>NodeSetController</servlet-name>
+    <url-pattern>/NodeSetController</url-pattern> 
+  </servlet-mapping>
+ 
+  <servlet>
+    <servlet-name>EditNodeTypeController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.EditNodeTypeController </servlet-class> </servlet>
+  <servlet-mapping>
+    <servlet-name>EditNodeTypeController</servlet-name>
+    <url-pattern>/EditNodeTypeController</url-pattern>
+  </servlet-mapping>
+ 
+  <servlet>
+    <servlet-name>NewClusterController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.NewClusterController </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>NewClusterController</servlet-name>
+    <url-pattern>/NewClusterController</url-pattern>
+  </servlet-mapping>
+ 
+  <servlet>
+    <servlet-name>EditNodeSetController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.EditNodeSetController </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>EditNodeSetController</servlet-name>
+    <url-pattern>/EditNodeSetController</url-pattern>
+  </servlet-mapping>
+ 
+  <servlet>
+    <servlet-name>LoginController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.LoginController </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>LoginController</servlet-name>
+    <url-pattern>/LoginController</url-pattern>
+  </servlet-mapping>
+ 
+  <servlet>
+    <servlet-name>ClusterController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.ClusterController </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ClusterController</servlet-name>
+    <url-pattern>/ClusterController</url-pattern>
+  </servlet-mapping>
+ 
+  <servlet>
+    <servlet-name>NewNodeTypeController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.NewNodeTypeController </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>NewNodeTypeController</servlet-name>
+    <url-pattern>/NewNodeTypeController</url-pattern>
+  </servlet-mapping>
+ 
+  <servlet>
+    <servlet-name>NewNodeSetController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.NewNodeSetController </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>NewNodeSetController</servlet-name>
+    <url-pattern>/NewNodeSetController</url-pattern>
+  </servlet-mapping>
+ 
+  <servlet>
+    <servlet-name>MainScreenController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.MainScreenController </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>MainScreenController</servlet-name>
+    <url-pattern>/MainScreenController</url-pattern>
+  </servlet-mapping>
+ 
+  <servlet>
+    <servlet-name>EditClusterController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.EditClusterController </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>EditClusterController</servlet-name>
+    <url-pattern>/EditClusterController</url-pattern>
+  </servlet-mapping>
+ 
+  <servlet>
+    <servlet-name>NodeTypeController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.NodeTypeController </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>NodeTypeController</servlet-name>
+    <url-pattern>/NodeTypeController</url-pattern>
+  </servlet-mapping>
   <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
-    <welcome-file>index.htm</welcome-file>
-    <welcome-file>index.jsp</welcome-file>
-    <welcome-file>default.html</welcome-file>
-    <welcome-file>default.htm</welcome-file>
-    <welcome-file>default.jsp</welcome-file>
+    <welcome-file>login.jsp</welcome-file>
   </welcome-file-list>
 </web-app>

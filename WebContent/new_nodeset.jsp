@@ -25,13 +25,16 @@
 	New Node Set
 
 	<form action="NewNodeSetController" method="post">
-		Node set name : <input type="text" name="nodeSetName"> <BR>
-		Node count : <input type="text" name="nodeCount"> <BR>
+	
+		Node set name : <input type="text" name="nodeSetName"> <BR>	
+		Node count : <input type="text" name="nodeCount"> <BR>		
 		Node type : <select name='nodeTypeList'>
 			<c:forEach items="${nodeTypeList}" var="nt">
-				<!-- <option  value="${nt}">${nt}</option> -->
-				<option value="${nt}"
-					${nt != pageContext.getAttribute("baseline") ? 'selected="selected"' : ''}>${nt}</option>
+				<option  value="${nt}">${nt}</option>
+                <option value="${nt}"
+				  ${nt != {$baseline} ? 'selected="selected"' : ''}>${nt}
+  			    </option>
+				
 			</c:forEach>
 		</select><BR> Cluster : <select name='clusterList'>
 			<c:forEach items="${clusterList}" var="cn">
