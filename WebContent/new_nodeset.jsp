@@ -12,7 +12,7 @@
 <%
 	List clusterList = (List) request.getAttribute("clusterList");
 %>
-<c:set var="baseline" value="BASELINE" />
+<!-- <c:set var="baseline" value="BASELINE" /> -->
 
 <html>
 <link rel="stylesheet"
@@ -25,18 +25,16 @@
 	New Node Set
 
 	<form action="NewNodeSetController" method="post">
-	
-		Node set name : <input type="text" name="nodeSetName"> <BR>	
-		Node count : <input type="text" name="nodeCount"> <BR>		
+
+		Node set name : <input type="text" name="nodeSetName"> <BR>
+		Node count : <input type="text" name="nodeCount"> <BR>
 		Node type : <select name='nodeTypeList'>
 			<c:forEach items="${nodeTypeList}" var="nt">
-				<option  value="${nt}">${nt}</option>
-                <option value="${nt}"
-				  ${nt != {$baseline} ? 'selected="selected"' : ''}>${nt}
-  			    </option>
-				
+				<c:if test="${nt != 'BASELINE'}">
+					<option value="${nt}">${nt}</option>
+				</c:if>
 			</c:forEach>
-		</select><BR> Cluster : <select name='clusterList'>
+		</select> </select><BR> Cluster : <select name='clusterList'>
 			<c:forEach items="${clusterList}" var="cn">
 				<option value="${cn}">${cn}</option>
 			</c:forEach>
