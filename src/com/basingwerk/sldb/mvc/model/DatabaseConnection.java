@@ -1,6 +1,7 @@
 package com.basingwerk.sldb.mvc.model;
 
 import com.mysql.jdbc.Connection;
+import org.apache.log4j.Logger;
 import java.sql.*;
 
 /**
@@ -9,14 +10,15 @@ import java.sql.*;
  */
 public final class DatabaseConnection {
 
+	final static Logger logger = Logger.getLogger(DatabaseConnection.class);
+
 	private static String database;
 	private static String username;
 	private static String password;
-	
+
 	public Connection conn;
 	private Statement statement;
 	public static DatabaseConnection db;
-	
 
 	public static void setDatabase(String db) {
 		database = db;
@@ -29,7 +31,6 @@ public final class DatabaseConnection {
 	public static void setPassword(String pw) {
 		password = pw;
 	}
-
 
 	private DatabaseConnection()
 			throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
@@ -60,8 +61,10 @@ public final class DatabaseConnection {
 			while (resultset.next()) {
 			}
 		} catch (SQLException e) {
+			logger.error("Failed when connecting to DB");
 			return null;
 		}
+		logger.info("Connected to DB");
 
 		return db;
 	}
@@ -75,6 +78,7 @@ public final class DatabaseConnection {
 			try {
 				db = new DatabaseConnection();
 			} catch (Exception e) {
+				logger.error("Failed when connecting to DB");
 				return null;
 			}
 		}
@@ -85,9 +89,10 @@ public final class DatabaseConnection {
 			while (resultset.next()) {
 			}
 		} catch (SQLException e) {
+			logger.error("Failed when connecting to DB");
 			return null;
 		}
-
+		logger.info("Connected to DB");
 		return db;
 	}
 
@@ -116,7 +121,5 @@ public final class DatabaseConnection {
 		statement = db.conn.createStatement();
 		int result = statement.executeUpdate(insertQuery);
 		return result;
-
 	}
-
 }

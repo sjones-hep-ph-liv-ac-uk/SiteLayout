@@ -1,5 +1,6 @@
 package com.basingwerk.sldb.mvc.controllers;
 
+import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,6 +29,7 @@ import com.basingwerk.sldb.mvc.model.DatabaseConnection;
 
 public class NodeSetController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	final static Logger logger = Logger.getLogger(NodeSetController.class);
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -95,6 +97,7 @@ public class NodeSetController extends HttpServlet {
 				try {
 					NodeSet.refreshListOfNodeSets(request);
 				} catch (ModelException e) {
+					logger.error("Model error when trying refreshListOfNodeSets, " + e.getStackTrace());
 					rd = request.getRequestDispatcher("/error.jsp");
 					rd.forward(request, response);
 					return;
@@ -142,6 +145,7 @@ public class NodeSetController extends HttpServlet {
 
 					}
 				} catch (SQLException e) {
+					logger.error("Error with this node set, " + e.getStackTrace());
 					rd = request.getRequestDispatcher("/error.jsp");
 					rd.forward(request, response);
 					return;

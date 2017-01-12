@@ -1,5 +1,6 @@
 package com.basingwerk.sldb.mvc.controllers;
 
+import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -20,6 +21,7 @@ import com.basingwerk.sldb.mvc.model.NodeSet;
 @WebServlet("/EditNodeSetController")
 public class EditNodeSetController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	final static Logger logger = Logger.getLogger(EditNodeSetController.class);
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -40,6 +42,7 @@ public class EditNodeSetController extends HttpServlet {
 		HttpSession session = request.getSession();
 		dbConn = (DatabaseConnection) session.getAttribute("TheDatabaseConnection");
 		if (dbConn == null) {
+			logger.error("Could not connect to database.");
 			rd = request.getRequestDispatcher("/error.jsp");
 			rd.forward(request, response);
 			return;
@@ -74,6 +77,7 @@ public class EditNodeSetController extends HttpServlet {
 			rd.forward(request, response);
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error("Had an Exception when trying to refreshListOfNodeSets, " + e.getStackTrace());
 			rd = request.getRequestDispatcher("/error.jsp");
 			rd.forward(request, response);
 			return;

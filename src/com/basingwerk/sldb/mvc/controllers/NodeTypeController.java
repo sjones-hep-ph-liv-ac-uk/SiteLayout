@@ -1,5 +1,6 @@
 package com.basingwerk.sldb.mvc.controllers;
 
+import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,6 +28,7 @@ import com.basingwerk.sldb.mvc.model.DatabaseConnection;
 
 public class NodeTypeController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	final static Logger logger = Logger.getLogger(NodeTypeController.class);
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -78,6 +80,8 @@ public class NodeTypeController extends HttpServlet {
 				try {
 					NodeType.refreshListOfNodeTypes(request);
 				} catch (ModelException e) {
+					logger.error("ModelException when trying refreshListOfNodeTypes, " + e.getStackTrace());
+
 					rd = request.getRequestDispatcher("/error.jsp");
 					rd.forward(request, response);
 					return;
@@ -108,6 +112,7 @@ public class NodeTypeController extends HttpServlet {
 						request.setAttribute("nodeType", n);
 					}
 				} catch (SQLException e) {
+					logger.error("A database error occurred, " + e.getStackTrace());
 					rd = request.getRequestDispatcher("/error.jsp");
 					rd.forward(request, response);
 					return;

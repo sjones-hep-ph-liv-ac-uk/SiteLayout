@@ -1,5 +1,6 @@
 package com.basingwerk.sldb.mvc.controllers;
 
+import org.apache.log4j.Logger;
 import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
@@ -20,6 +21,7 @@ import com.basingwerk.sldb.mvc.model.ModelException;
 @WebServlet("/EditClusterController")
 public class EditClusterController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	final static Logger logger = Logger.getLogger(EditClusterController.class);
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -40,6 +42,7 @@ public class EditClusterController extends HttpServlet {
 		HttpSession session = request.getSession();
 		dbConn = (DatabaseConnection) session.getAttribute("TheDatabaseConnection");
 		if (dbConn == null) {
+			logger.error("Error connecting to the database.");
 			rd = request.getRequestDispatcher("/error.jsp");
 			rd.forward(request, response);
 			return;

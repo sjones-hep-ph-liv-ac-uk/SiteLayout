@@ -1,5 +1,6 @@
 package com.basingwerk.sldb.mvc.model;
 
+import org.apache.log4j.Logger;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
@@ -7,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 public class NodeSetNodeTypeJoin {
+	final static Logger logger = Logger.getLogger(NodeSetNodeTypeJoin.class);
 
 	private String nodeSetName;
 	private String nodeTypeName;

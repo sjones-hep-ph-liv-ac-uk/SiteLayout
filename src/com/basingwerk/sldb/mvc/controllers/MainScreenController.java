@@ -1,5 +1,6 @@
 package com.basingwerk.sldb.mvc.controllers;
 
+import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,6 +26,7 @@ import com.basingwerk.sldb.mvc.model.NodeType;
 
 public class MainScreenController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	final static Logger logger = Logger.getLogger(MainScreenController.class);
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -44,6 +46,7 @@ public class MainScreenController extends HttpServlet {
 
 			String act = request.getParameter("SomeButton");
 			if (act == null) {
+				logger.error("Error when looking at SomeButton.");
 				rd = request.getRequestDispatcher("/error.jsp");
 				rd.forward(request, response);
 				return;
@@ -96,12 +99,13 @@ public class MainScreenController extends HttpServlet {
 				rd.forward(request, response);
 				return;
 			}
+			logger.error("Error due to strange input.");
 			rd = request.getRequestDispatcher("/error.jsp");
 			rd.forward(request, response);
 			return;
 
 		} catch (ModelException e) {
-			e.printStackTrace(System.out);
+			logger.error("Had a ModelExcpetion in the MainScreen, " + e.getStackTrace());
 			rd = request.getRequestDispatcher("/error.jsp");
 			rd.forward(request, response);
 			return;

@@ -1,5 +1,6 @@
 package com.basingwerk.sldb.mvc.model;
 
+import org.apache.log4j.Logger;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -10,6 +11,8 @@ import javax.servlet.http.HttpSession;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 public class NodeType {
+	final static Logger logger = Logger.getLogger(NodeType.class);
+
 	public String toString() {
 		String result;
 		result = nodeTypeName + Integer.toString(cpu) + Integer.toString(slot) + Float.toString(hs06PerSlot)

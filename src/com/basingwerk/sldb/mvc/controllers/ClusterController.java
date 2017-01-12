@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+
 import com.basingwerk.sldb.mvc.model.Cluster;
 import com.basingwerk.sldb.mvc.model.ModelException;
 import com.basingwerk.sldb.mvc.model.DatabaseConnection;
@@ -25,6 +27,7 @@ import com.basingwerk.sldb.mvc.model.DatabaseConnection;
 
 public class ClusterController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	final static Logger logger = Logger.getLogger(ClusterController.class);
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -74,6 +77,7 @@ public class ClusterController extends HttpServlet {
 				try {
 					Cluster.setListOfClusters(request);
 				} catch (ModelException e) {
+					logger.error("Had a ModelException when trying to setListOfClusters, " + e.getStackTrace());
 					rd = request.getRequestDispatcher("/error.jsp");
 					rd.forward(request, response);
 					return;

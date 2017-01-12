@@ -1,5 +1,6 @@
 package com.basingwerk.sldb.mvc.model;
 
+import org.apache.log4j.Logger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -9,9 +10,11 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.basingwerk.sldb.mvc.controllers.NodeTypeController;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 public class Cluster {
+	final static Logger logger = Logger.getLogger(NodeTypeController.class);
 
 	private String clusterName;
 	private String descr;

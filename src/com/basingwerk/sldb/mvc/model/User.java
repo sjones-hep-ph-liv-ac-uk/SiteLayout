@@ -1,6 +1,9 @@
 package com.basingwerk.sldb.mvc.model;
 
+import org.apache.log4j.Logger;
+
 public class User {
+	final static Logger logger = Logger.getLogger(User.class);
 
 	private String username;
 	private String password;
