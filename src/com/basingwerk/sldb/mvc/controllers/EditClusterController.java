@@ -47,15 +47,15 @@ public class EditClusterController extends HttpServlet {
 
 		String clusterName = request.getParameter("clusterName");
 		String descr = request.getParameter("descr");
-		
+
 		try {
-			Cluster.updateSingleCluster(request, new Cluster (clusterName, descr));
+			Cluster.updateSingleCluster(request, new Cluster(clusterName, descr));
 		} catch (ModelException e) {
 			request.setAttribute("TheMessage", e.getMessage());
 			rd = request.getRequestDispatcher("/recoverable_message.jsp");
 			rd.forward(request, response);
 			return;
-		}		
+		}
 		return;
 	}
 

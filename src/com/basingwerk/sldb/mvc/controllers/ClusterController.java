@@ -18,7 +18,6 @@ import com.basingwerk.sldb.mvc.model.Cluster;
 import com.basingwerk.sldb.mvc.model.ModelException;
 import com.basingwerk.sldb.mvc.model.DatabaseConnection;
 
-
 /**
  * Servlet implementation class ClusterController
  */
@@ -85,7 +84,7 @@ public class ClusterController extends HttpServlet {
 				return;
 			}
 			if (key.startsWith("ED.")) {
-				String cluster = key.substring(3,key.length() -1);
+				String cluster = key.substring(3, key.length() - 1);
 				try {
 					Cluster.setSingleCluster(request, cluster);
 				} catch (ModelException e) {

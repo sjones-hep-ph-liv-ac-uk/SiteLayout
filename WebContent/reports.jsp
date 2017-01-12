@@ -44,6 +44,7 @@
 				<td>Slots per node</td>
 				<td>HS06 per slot</td>
 				<td>GB per node</td>
+				<td>GB per slot</td>
 				<td>Scale factor</td>
 			</tr>
 			<tr>
@@ -52,6 +53,7 @@
 				<td><c:out value="${baseline.slot}" /></td>
 				<td><c:out value="${baseline.hs06PerSlot}" /></td>
 				<td><c:out value="${baseline.memPerNode}" /></td>
+				<td><c:out value="undefined" /></td>
 				<td>0.0</td>
 			</tr>
 
@@ -63,9 +65,8 @@
 						<td><c:out value="${nodeType.slot}" /></td>
 						<td><c:out value="${nodeType.hs06PerSlot}" /></td>
 						<td><c:out value="${nodeType.memPerNode}" /></td>
-						<td><fmt:formatNumber type="number" groupingUsed="0"
-								maxFractionDigits="4"
-								value="${nodeType.hs06PerSlot / baseline.hs06PerSlot}" /></td>
+						<td><fmt:formatNumber type="number" groupingUsed="0" maxFractionDigits="4" value="${nodeType.memPerNode / nodeType.slot}" /></td>
+						<td><fmt:formatNumber type="number" groupingUsed="0" maxFractionDigits="4" value="${nodeType.hs06PerSlot / baseline.hs06PerSlot}" /></td>
 					</tr>
 				</c:if>
 			</c:forEach>

@@ -21,7 +21,7 @@ public class Cluster {
 		this.clusterName = clusterName;
 		this.descr = descr;
 	}
-	
+
 	public String toString() {
 		return clusterName + " " + descr;
 	}
@@ -59,7 +59,7 @@ public class Cluster {
 			throw new ModelException("Cannot refresh cluster page.");
 		}
 	}
-	
+
 	public static void updateSingleCluster(HttpServletRequest request, Cluster cluster) throws ModelException {
 		try {
 
@@ -83,7 +83,6 @@ public class Cluster {
 		}
 
 	}
-	
 
 	public static void setSingleCluster(HttpServletRequest request, String cluster) throws ModelException {
 		try {
@@ -102,7 +101,7 @@ public class Cluster {
 			throw new ModelException("Cannot refresh single cluster page.");
 		}
 		return;
-	}	
+	}
 
 	public static void deleteCluster(HttpServletRequest request, String cluster) throws ModelException {
 		try {

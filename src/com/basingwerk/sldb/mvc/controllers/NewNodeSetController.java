@@ -41,7 +41,7 @@ public class NewNodeSetController extends HttpServlet {
 
 		DatabaseConnection dbConn = null;
 		RequestDispatcher rd = null;
-		
+
 		HttpSession session = request.getSession();
 		dbConn = (DatabaseConnection) session.getAttribute("TheDatabaseConnection");
 		if (dbConn == null) {
@@ -78,7 +78,7 @@ public class NewNodeSetController extends HttpServlet {
 				NodeSet n = new NodeSet(r.getString("nodeSetName"), r.getString("nodeTypeName"), r.getInt("nodeCount"),
 						r.getString("cluster"));
 				nodeSetList.add(n);
-				
+
 			}
 			request.setAttribute("nodeSetList", nodeSetList);
 			String next = "/nodeset.jsp";

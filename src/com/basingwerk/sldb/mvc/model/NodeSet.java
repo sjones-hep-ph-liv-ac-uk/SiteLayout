@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 public class NodeSet {
-	
+
 	private String nodeSetName;
 	private String nodeTypeName;
 	private Integer nodeCount;
@@ -56,7 +56,6 @@ public class NodeSet {
 		this.cluster = cluster;
 	}
 
-
 	public static void deleteNodeSet(HttpServletRequest request, String nodeSet) throws ModelException {
 		try {
 			HttpSession session = request.getSession();
@@ -88,7 +87,7 @@ public class NodeSet {
 				NodeSet n = new NodeSet(r.getString("nodeSetName"), r.getString("nodeTypeName"), r.getInt("nodeCount"),
 						r.getString("cluster"));
 				nodeSetList.add(n);
-				
+
 			}
 			request.setAttribute("nodeSetList", nodeSetList);
 		} catch (Exception e) {

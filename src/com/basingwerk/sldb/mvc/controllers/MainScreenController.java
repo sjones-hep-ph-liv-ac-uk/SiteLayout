@@ -69,7 +69,7 @@ public class MainScreenController extends HttpServlet {
 			}
 			if (act.equals("Edit node sets")) {
 
-                                NodeSet.refreshListOfNodeSets(request);
+				NodeSet.refreshListOfNodeSets(request);
 
 				next = "/nodeset.jsp";
 				rd = request.getRequestDispatcher(next);
@@ -82,15 +82,15 @@ public class MainScreenController extends HttpServlet {
 				Cluster.setListOfClusters(request);
 				NodeType.setBaselineNodeType(request);
 				ArrayList<String> clusters = Cluster.listClusters(request);
-				java.util.HashMap<String,ArrayList> joinMap = new java.util.HashMap<String,ArrayList>() ; 
+				java.util.HashMap<String, ArrayList> joinMap = new java.util.HashMap<String, ArrayList>();
 				Iterator<String> c = clusters.iterator();
 				while (c.hasNext()) {
-                                        String cluster = c.next();					
+					String cluster = c.next();
 					ArrayList<NodeSetNodeTypeJoin> nsntj = NodeSetNodeTypeJoin.getJoinForCluster(request, cluster);
-					joinMap.put(cluster, nsntj );
+					joinMap.put(cluster, nsntj);
 				}
 				request.setAttribute("joinMap", joinMap);
-		 
+
 				next = "/reports.jsp";
 				rd = request.getRequestDispatcher(next);
 				rd.forward(request, response);
@@ -101,7 +101,7 @@ public class MainScreenController extends HttpServlet {
 			return;
 
 		} catch (ModelException e) {
-                        e.printStackTrace(System.out);
+			e.printStackTrace(System.out);
 			rd = request.getRequestDispatcher("/error.jsp");
 			rd.forward(request, response);
 			return;

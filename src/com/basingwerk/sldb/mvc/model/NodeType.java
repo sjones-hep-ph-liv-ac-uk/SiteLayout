@@ -144,7 +144,7 @@ public class NodeType {
 				NodeType n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
 						r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
 				request.setAttribute("baseline", n);
-				
+
 			}
 		} catch (Exception e) {
 			throw new ModelException("Cannot set baseline node type.");
@@ -164,7 +164,7 @@ public class NodeType {
 				NodeType n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
 						r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
 				nodeTypeList.add(n);
-				
+
 			}
 			request.setAttribute("nodeTypeList", nodeTypeList);
 		} catch (Exception e) {

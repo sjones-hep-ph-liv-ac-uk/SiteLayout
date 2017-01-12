@@ -14,7 +14,6 @@ public class NodeSetNodeTypeJoin {
 	private Integer cpu;
 	private Integer slot;
 	private Float hs06PerSlot;
-	
 
 	public NodeSetNodeTypeJoin(String nodeSetName, String nodeTypeName, Integer nodeCount, Integer cpu, Integer slot,
 			Float hs06PerSlot, Float nodeSetHs06) {
@@ -101,7 +100,7 @@ public class NodeSetNodeTypeJoin {
 			DatabaseConnection dbConn = (DatabaseConnection) session.getAttribute("TheDatabaseConnection");
 			String theSql = "select nodeSetName,nodeSet.nodeTypeName,nodeType.cpu,nodeCount,slot,hs06PerSlot  from nodeSet,nodeType "
 					+ "where nodeSet.cluster='" + cluster + "' and nodeSet.nodeTypeName = nodeType.nodeTypeName;";
-			
+
 			ResultSet r = dbConn.query(theSql);
 			while (r.next()) {
 				String nodeSetName = r.getString("nodeSetName");
@@ -115,13 +114,12 @@ public class NodeSetNodeTypeJoin {
 				NodeSetNodeTypeJoin j = new NodeSetNodeTypeJoin(nodeSetName, nodeTypeName, nodeCount, nodeCpus,
 						nodeSlots, hs06PerSlot, nodeSetHs06);
 				nsntj.add(j);
-				
+
 			}
 		} catch (Exception e) {
 			throw new ModelException("Cannot join.");
 		}
 		return nsntj;
 	}
-
 
 }

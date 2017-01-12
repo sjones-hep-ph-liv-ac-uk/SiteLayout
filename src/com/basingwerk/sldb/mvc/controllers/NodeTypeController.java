@@ -88,7 +88,7 @@ public class NodeTypeController extends HttpServlet {
 				return;
 			}
 			if (key.startsWith("ED.")) {
-				String nodeType = key.substring(3,key.length() -1);
+				String nodeType = key.substring(3, key.length() - 1);
 
 				try {
 					HttpSession session = request.getSession();
