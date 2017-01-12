@@ -20,15 +20,12 @@
 <body>
 	Edit Nodetype
 	<form action="EditNodeTypeController" method="post">
-		Nodetype name : <input type="text" name="nodeTypeName" readonly
-			value="${nodeType.nodeTypeName}"> <BR> CPU per node : <input
-			type="text" name="cpu" value="${nodeType.cpu}"> <BR>
-		Slots per node : <input type="text" name="slot"
-			value="${nodeType.slot}"> <BR> HS06 per slot : <input
-			type="text" name="hs06PerSlot" value="${nodeType.hs06PerSlot}">
-		<BR> GBs per slot : <input type="text" name="memPerSlot"
-			value="${nodeType.memPerSlot}"> <BR> <input
-			type="submit" />
+		Nodetype name : <input type="text" name="nodeTypeName" readonly value="${nodeType.nodeTypeName}"> <BR> 
+                CPU per node : <input type="text" name="cpu" value="${nodeType.cpu}"> <BR>
+		Slots per node : <input type="text" name="slot" value="${nodeType.slot}"> <BR> 
+                HS06 per slot : <input type="text" name="hs06PerSlot" value="${nodeType.hs06PerSlot}"> <BR> 
+                GBs per node : <input type="text" name="memPerNode" value="${nodeType.memPerNode}"> <BR> 
+                               <input type="submit" />
 	</form>
 </body>
 </html>

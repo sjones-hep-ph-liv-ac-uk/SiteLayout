@@ -95,14 +95,14 @@ public class NodeTypeController extends HttpServlet {
 					DatabaseConnection dbConn = (DatabaseConnection) session.getAttribute("TheDatabaseConnection");
 					if (dbConn != null) {
 						ResultSet r;
-						String sql = "select nodeTypeName,cpu,slot,hs06PerSlot,memPerSlot from nodeType where"
+						String sql = "select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType where"
 								+ " nodeTypeName = '" + nodeType + "'";
 						System.out.println("SQL:" + sql);
 						r = dbConn.query(sql);
 						NodeType n = null;
 						while (r.next()) {
 							n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
-									r.getFloat("hs06PerSlot"), r.getFloat("memPerSlot"));
+									r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
 						}
 						System.out.println("Node type: " + n);
 						request.setAttribute("nodeType", n);

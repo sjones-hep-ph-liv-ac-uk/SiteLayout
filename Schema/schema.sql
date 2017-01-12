@@ -16,7 +16,7 @@ CREATE TABLE nodeType(
   cpu integer,
   slot integer,
   hs06PerSlot float,
-  memPerSlot float,
+  memPerNode float,
   PRIMARY KEY( nodeTypeName)
 );
 

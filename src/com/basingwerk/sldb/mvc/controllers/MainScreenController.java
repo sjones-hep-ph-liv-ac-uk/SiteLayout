@@ -68,7 +68,8 @@ public class MainScreenController extends HttpServlet {
 				return;
 			}
 			if (act.equals("Edit node sets")) {
-                NodeSet.refreshListOfNodeSets(request);
+
+                                NodeSet.refreshListOfNodeSets(request);
 
 				next = "/nodeset.jsp";
 				rd = request.getRequestDispatcher(next);
@@ -84,7 +85,7 @@ public class MainScreenController extends HttpServlet {
 				java.util.HashMap<String,ArrayList> joinMap = new java.util.HashMap<String,ArrayList>() ; 
 				Iterator<String> c = clusters.iterator();
 				while (c.hasNext()) {
-                    String cluster = c.next();					
+                                        String cluster = c.next();					
 					ArrayList<NodeSetNodeTypeJoin> nsntj = NodeSetNodeTypeJoin.getJoinForCluster(request, cluster);
 					joinMap.put(cluster, nsntj );
 				}
@@ -100,6 +101,7 @@ public class MainScreenController extends HttpServlet {
 			return;
 
 		} catch (ModelException e) {
+                        e.printStackTrace(System.out);
 			rd = request.getRequestDispatcher("/error.jsp");
 			rd.forward(request, response);
 			return;

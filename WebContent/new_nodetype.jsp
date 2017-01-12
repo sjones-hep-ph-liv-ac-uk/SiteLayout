@@ -14,11 +14,11 @@
 	New Nodetype
 	<form action="NewNodeTypeController" method="post">
 		Nodetype name : <input type="text" name="nodeTypeName"> <BR>
-		CPUs per node : <input type="text" name="cpu"> <BR> Slots
-		per node : <input type="text" name="slot"> <BR> HS06 per
-		slot : <input type="text" name="hs06PerSlot"> <BR> GBs
-		per slot : <input type="text" name="memPerSlot"> <BR> <input
-			type="submit" />
+		CPUs per node : <input type="text" name="cpu"> <BR> 
+                Slots per node : <input type="text" name="slot"> <BR> 
+                HS06 per slot : <input type="text" name="hs06PerSlot"> <BR> 
+                GBs per node : <input type="text" name="memPerNode"> <BR> 
+                               <input type="submit" />
 	</form>
 </body>
 </html>

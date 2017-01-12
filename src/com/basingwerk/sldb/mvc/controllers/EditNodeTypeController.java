@@ -52,10 +52,10 @@ public class EditNodeTypeController extends HttpServlet {
 		String cpu = request.getParameter("cpu");
 		String slot = request.getParameter("slot");
 		String hs06PerSlot = request.getParameter("hs06PerSlot");
-		String memPerSlot = request.getParameter("memPerSlot");
+		String memPerNode = request.getParameter("memPerNode");
 
 		String sqlCommand = "UPDATE nodeType set cpu='" + cpu + "', slot='" + slot + "', hs06PerSlot='" + hs06PerSlot
-				+ "', memPerSlot='" + memPerSlot + "' where nodeTypeName='" + nodeTypeName + "'";
+				+ "', memPerNode='" + memPerNode + "' where nodeTypeName='" + nodeTypeName + "'";
 
 		java.sql.Statement statement;
 		int result = -1;

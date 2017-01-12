@@ -13,7 +13,7 @@ public class NodeType {
 	public String toString() {
 		String result;
 		result = nodeTypeName + Integer.toString(cpu) + Integer.toString(slot) + Float.toString(hs06PerSlot)
-				+ Float.toString(memPerSlot);
+				+ Float.toString(memPerNode);
 		return result;
 	}
 
@@ -49,28 +49,28 @@ public class NodeType {
 		this.hs06PerSlot = hs06PerSlot;
 	}
 
-	public float getMemPerSlot() {
-		return memPerSlot;
+	public float getMemPerNode() {
+		return memPerNode;
 	}
 
-	public void setMemPerSlot(float memPerSlot) {
-		this.memPerSlot = memPerSlot;
+	public void setMemPerNode(float memPerNode) {
+		this.memPerNode = memPerNode;
 	}
 
-	public NodeType(String nodeTypeName, int cpu, int slot, float hs06PerSlot, float memPerSlot) {
+	public NodeType(String nodeTypeName, int cpu, int slot, float hs06PerSlot, float memPerNode) {
 		super();
 		this.nodeTypeName = nodeTypeName;
 		this.cpu = cpu;
 		this.slot = slot;
 		this.hs06PerSlot = hs06PerSlot;
-		this.memPerSlot = memPerSlot;
+		this.memPerNode = memPerNode;
 	}
 
 	private String nodeTypeName;
 	private int cpu;
 	private int slot;
 	private float hs06PerSlot;
-	private float memPerSlot;
+	private float memPerNode;
 
 	public static ArrayList<String> listNodeTypes(HttpServletRequest request) throws ModelException {
 		ArrayList<String> nt = new ArrayList<String>();
@@ -98,10 +98,10 @@ public class NodeType {
 			NodeType c = null;
 
 			ResultSet r;
-			r = dbConn.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerSlot from nodeType");
+			r = dbConn.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType");
 			while (r.next()) {
 				NodeType n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
-						r.getFloat("hs06PerSlot"), r.getFloat("memPerSlot"));
+						r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
 				nt.add(n);
 			}
 
@@ -139,10 +139,10 @@ public class NodeType {
 
 			ResultSet r;
 			r = dbConn.query(
-					"select nodeTypeName,cpu,slot,hs06PerSlot,memPerSlot from nodeType where nodeTypeName='BASELINE'");
+					"select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType where nodeTypeName='BASELINE'");
 			while (r.next()) {
 				NodeType n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
-						r.getFloat("hs06PerSlot"), r.getFloat("memPerSlot"));
+						r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
 				request.setAttribute("baseline", n);
 				
 			}
@@ -159,10 +159,10 @@ public class NodeType {
 			ArrayList<NodeType> nodeTypeList = new ArrayList<NodeType>();
 
 			ResultSet r;
-			r = dbConn.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerSlot from nodeType");
+			r = dbConn.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType");
 			while (r.next()) {
 				NodeType n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
-						r.getFloat("hs06PerSlot"), r.getFloat("memPerSlot"));
+						r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
 				nodeTypeList.add(n);
 				
 			}
@@ -178,11 +178,11 @@ public class NodeType {
 			HttpSession session = request.getSession();
 			DatabaseConnection dbConn = (DatabaseConnection) session.getAttribute("TheDatabaseConnection");
 			NodeType n = null;
-			ResultSet r = dbConn.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerSlot from nodeType where"
+			ResultSet r = dbConn.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType where"
 					+ "nodeTypeName = '" + nodeTypeName + "'");
 			while (r.next()) {
 				n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
-						r.getFloat("hs06PerSlot"), r.getFloat("memPerSlot"));
+						r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
 			}
 			request.setAttribute("Nodetype", n);
 		} catch (Exception e) {

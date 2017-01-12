@@ -28,7 +28,7 @@
 				<td>CPUs per node</td>
 				<td>Slots per node</td>
 				<td>HS06 per slot</td>
-				<td>GB per slot</td>
+				<td>GB per node</td>
 				<td></td>
 				<td></td>
 			</tr>
@@ -38,7 +38,7 @@
 					<td><c:out value="${nodeType.cpu}" /></td>
 					<td><c:out value="${nodeType.slot}" /></td>
 					<td><c:out value="${nodeType.hs06PerSlot}" /></td>
-					<td><c:out value="${nodeType.memPerSlot}" /></td>
+					<td><c:out value="${nodeType.memPerNode}" /></td>
 					<td class="tg-yw4l"><input type="submit" value="Del"
 						name=DEL.${nodeType.nodeTypeName}/></td>
 					<td class="tg-yw4l"><input type="submit" value="Edit"
