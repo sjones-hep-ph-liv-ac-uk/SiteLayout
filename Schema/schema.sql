@@ -10,6 +10,11 @@ grant ALL PRIVILEGES ON resources.* TO 'resources'@'127.0.0.1';
 #/usr/bin/mysql -u resources -p
 #use resources
 
+
+
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE; 
+SET autocommit = 0;
+
 DROP TABLE nodeType;
 CREATE TABLE nodeType(
   nodeTypeName varchar(10),
@@ -37,3 +42,7 @@ CREATE TABLE nodeSet (
   FOREIGN KEY (cluster) REFERENCES cluster(clusterName) ,
   FOREIGN KEY (nodeTypeName) REFERENCES nodeType(nodeTypeName)
 );
+
+#ALTER TABLE resources.cluster engine=InnoDB;                             |
+#ALTER TABLE resources.nodeSet engine=InnoDB;                             |
+#ALTER TABLE resources.nodeType engine=InnoDB;                

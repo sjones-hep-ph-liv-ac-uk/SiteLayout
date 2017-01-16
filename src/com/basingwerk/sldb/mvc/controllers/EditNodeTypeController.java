@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.basingwerk.sldb.mvc.model.NodeType;
-import com.basingwerk.sldb.mvc.model.DatabaseConnection;
+import com.basingwerk.sldb.mvc.model.DBConnectionHolder;
 
 /**
  * Servlet implementation class EditNodeTypeController
@@ -21,80 +21,87 @@ import com.basingwerk.sldb.mvc.model.DatabaseConnection;
 
 @WebServlet("/EditNodeTypeController")
 public class EditNodeTypeController extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	final static Logger logger = Logger.getLogger(EditNodeTypeController.class);
+    private static final long serialVersionUID = 1L;
+    final static Logger logger = Logger.getLogger(EditNodeTypeController.class);
 
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public EditNodeTypeController() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public EditNodeTypeController() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
+    /**
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+     *      response)
+     */
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // TODO Auto-generated method stub
 
-		DatabaseConnection dbConn = null;
-		RequestDispatcher rd = null;
-		HttpSession session = request.getSession();
-		dbConn = (DatabaseConnection) session.getAttribute("TheDatabaseConnection");
-		if (dbConn == null) {
-			logger.error("Could not connect to database.");
-			rd = request.getRequestDispatcher("/error.jsp");
-			rd.forward(request, response);
-			return;
-		}
+        DBConnectionHolder dbHolder = null;
+        RequestDispatcher rd = null;
+        HttpSession session = request.getSession();
+        dbHolder = (DBConnectionHolder) session.getAttribute("DBConnHolder");
+        if (dbHolder == null) {
+            logger.error("Could not connect to database.");
+            rd = request.getRequestDispatcher("/error.jsp");
+            rd.forward(request, response);
+            return;
+        }
 
-		String nodeTypeName = request.getParameter("nodeTypeName");
-		String cpu = request.getParameter("cpu");
-		String slot = request.getParameter("slot");
-		String hs06PerSlot = request.getParameter("hs06PerSlot");
-		String memPerNode = request.getParameter("memPerNode");
+        String nodeTypeName = request.getParameter("nodeTypeName");
+        String cpu = request.getParameter("cpu");
+        String slot = request.getParameter("slot");
+        String hs06PerSlot = request.getParameter("hs06PerSlot");
+        String memPerNode = request.getParameter("memPerNode");
 
-		String sqlCommand = "UPDATE nodeType set cpu='" + cpu + "', slot='" + slot + "', hs06PerSlot='" + hs06PerSlot
-				+ "', memPerNode='" + memPerNode + "' where nodeTypeName='" + nodeTypeName + "'";
+        String sqlCommand = "UPDATE nodeType set cpu='" + cpu + "', slot='" + slot + "', hs06PerSlot='" + hs06PerSlot
+                + "', memPerNode='" + memPerNode + "' where nodeTypeName='" + nodeTypeName + "'";
 
-		java.sql.Statement statement;
-		int result = -1;
+        java.sql.Statement statement;
+        int result = -1;
 
-		try {
-			statement = dbConn.conn.createStatement();
-			result = statement.executeUpdate(sqlCommand);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			request.setAttribute("TheMessage", "It did not work. ");
-			rd = request.getRequestDispatcher("/recoverable_message.jsp");
-			rd.forward(request, response);
-			return;
-		}
-		try {
-			NodeType.refreshListOfNodeTypes(request);
-			String next = "/nodetype.jsp";
-			rd = request.getRequestDispatcher(next);
-			rd.forward(request, response);
-		} catch (Exception e) {
-			logger.error("Error when trying to refreshListOfNodeTypes, " + e.getStackTrace());
-			rd = request.getRequestDispatcher("/error.jsp");
-			rd.forward(request, response);
-			return;
-		}
-		return;
-	}
+        try {
+            statement = dbHolder.theConnection.createStatement();
+            result = statement.executeUpdate(sqlCommand);
+            dbHolder.theConnection.commit();
+        } catch (SQLException e) {
+            try {
+                logger.info ("Could not update node type, rolling back.");
+                dbHolder.theConnection.rollback();
+            } catch (SQLException e1) {
+                logger.error ("Rollback failed, ",e1);
+            }
+            logger.error("Error while editing a node type. " , e);
+            request.setAttribute("TheMessage", "Did not save changes. Please try again.");
+            rd = request.getRequestDispatcher("/recoverable_message.jsp");
+            rd.forward(request, response);
+            return;
+        }
+        try {
+            NodeType.refreshListOfNodeTypes(request);
+            String next = "/nodetype.jsp";
+            rd = request.getRequestDispatcher(next);
+            rd.forward(request, response);
+        } catch (Exception e) {
+            logger.error("Error when trying to refreshListOfNodeTypes, " , e );
+            rd = request.getRequestDispatcher("/error.jsp");
+            rd.forward(request, response);
+            return;
+        }
+        return;
+    }
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
+    /**
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+     *      response)
+     */
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // TODO Auto-generated method stub
+        doGet(request, response);
+    }
 
 }

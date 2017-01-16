@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.basingwerk.sldb.mvc.model.Cluster;
-import com.basingwerk.sldb.mvc.model.DatabaseConnection;
+import com.basingwerk.sldb.mvc.model.DBConnectionHolder;
 import com.basingwerk.sldb.mvc.model.ModelException;
 
 /**
@@ -20,56 +20,56 @@ import com.basingwerk.sldb.mvc.model.ModelException;
  */
 @WebServlet("/EditClusterController")
 public class EditClusterController extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	final static Logger logger = Logger.getLogger(EditClusterController.class);
+    private static final long serialVersionUID = 1L;
+    final static Logger logger = Logger.getLogger(EditClusterController.class);
 
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public EditClusterController() {
-		super();
-	}
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public EditClusterController() {
+        super();
+    }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+    /**
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+     *      response)
+     */
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-		DatabaseConnection dbConn = null;
-		RequestDispatcher rd = null;
-		HttpSession session = request.getSession();
-		dbConn = (DatabaseConnection) session.getAttribute("TheDatabaseConnection");
-		if (dbConn == null) {
-			logger.error("Error connecting to the database.");
-			rd = request.getRequestDispatcher("/error.jsp");
-			rd.forward(request, response);
-			return;
-		}
+        DBConnectionHolder dbHolder = null;
+        RequestDispatcher rd = null;
+        HttpSession session = request.getSession();
+        dbHolder = (DBConnectionHolder) session.getAttribute("DBConnHolder");
+        if (dbHolder == null) {
+            logger.error("Error connecting to the database.");
+            rd = request.getRequestDispatcher("/error.jsp");
+            rd.forward(request, response);
+            return;
+        }
 
-		String clusterName = request.getParameter("clusterName");
-		String descr = request.getParameter("descr");
+        String clusterName = request.getParameter("clusterName");
+        String descr = request.getParameter("descr");
 
-		try {
-			Cluster.updateSingleCluster(request, new Cluster(clusterName, descr));
-		} catch (ModelException e) {
-			request.setAttribute("TheMessage", e.getMessage());
-			rd = request.getRequestDispatcher("/recoverable_message.jsp");
-			rd.forward(request, response);
-			return;
-		}
-		return;
-	}
+        try {
+            Cluster.updateSingleCluster(request, new Cluster(clusterName, descr));
+        } catch (ModelException e) {
+            request.setAttribute("TheMessage", e.getMessage());
+            rd = request.getRequestDispatcher("/recoverable_message.jsp");
+            rd.forward(request, response);
+            return;
+        }
+        return;
+    }
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
+    /**
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+     *      response)
+     */
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // TODO Auto-generated method stub
+        doGet(request, response);
+    }
 
 }

@@ -25,100 +25,100 @@ import com.basingwerk.sldb.mvc.model.NodeType;
 @WebServlet("/MainScreenController")
 
 public class MainScreenController extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	final static Logger logger = Logger.getLogger(MainScreenController.class);
+    private static final long serialVersionUID = 1L;
+    final static Logger logger = Logger.getLogger(MainScreenController.class);
 
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public MainScreenController() {
-		super();
-	}
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public MainScreenController() {
+        super();
+    }
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		RequestDispatcher rd = null;
-		try {
+    /**
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+     *      response)
+     */
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        RequestDispatcher rd = null;
+        try {
 
-			String act = request.getParameter("SomeButton");
-			if (act == null) {
-				logger.error("Error when looking at SomeButton.");
-				rd = request.getRequestDispatcher("/error.jsp");
-				rd.forward(request, response);
-				return;
-			}
-			String next = "";
-			if (act.equals("Edit node types")) {
+            String act = request.getParameter("SomeButton");
+            if (act == null) {
+                logger.error("Error when looking at SomeButton.");
+                rd = request.getRequestDispatcher("/error.jsp");
+                rd.forward(request, response);
+                return;
+            }
+            String next = "";
+            if (act.equals("Edit node types")) {
 
-				NodeType.refreshListOfNodeTypes(request);
+                NodeType.refreshListOfNodeTypes(request);
 
-				next = "/nodetype.jsp";
-				rd = request.getRequestDispatcher(next);
-				rd.forward(request, response);
-				return;
-			}
+                next = "/nodetype.jsp";
+                rd = request.getRequestDispatcher(next);
+                rd.forward(request, response);
+                return;
+            }
 
-			if (act.equals("Edit clusters")) {
-				Cluster.setListOfClusters(request);
-				next = "/cluster.jsp";
+            if (act.equals("Edit clusters")) {
+                Cluster.setListOfClusters(request);
+                next = "/cluster.jsp";
 
-				rd = request.getRequestDispatcher(next);
-				rd.forward(request, response);
-				return;
-			}
-			if (act.equals("Edit node sets")) {
+                rd = request.getRequestDispatcher(next);
+                rd.forward(request, response);
+                return;
+            }
+            if (act.equals("Edit node sets")) {
 
-				NodeSet.refreshListOfNodeSets(request);
+                NodeSet.refreshListOfNodeSets(request);
 
-				next = "/nodeset.jsp";
-				rd = request.getRequestDispatcher(next);
-				rd.forward(request, response);
-				return;
+                next = "/nodeset.jsp";
+                rd = request.getRequestDispatcher(next);
+                rd.forward(request, response);
+                return;
 
-			}
-			if (act.equals("Reports")) {
-				NodeType.refreshListOfNodeTypes(request);
-				Cluster.setListOfClusters(request);
-				NodeType.setBaselineNodeType(request);
-				ArrayList<String> clusters = Cluster.listClusters(request);
-				java.util.HashMap<String, ArrayList> joinMap = new java.util.HashMap<String, ArrayList>();
-				Iterator<String> c = clusters.iterator();
-				while (c.hasNext()) {
-					String cluster = c.next();
-					ArrayList<NodeSetNodeTypeJoin> nsntj = NodeSetNodeTypeJoin.getJoinForCluster(request, cluster);
-					joinMap.put(cluster, nsntj);
-				}
-				request.setAttribute("joinMap", joinMap);
+            }
+            if (act.equals("Reports")) {
+                NodeType.refreshListOfNodeTypes(request);
+                Cluster.setListOfClusters(request);
+                NodeType.setBaselineNodeType(request);
+                ArrayList<String> clusters = Cluster.listClusters(request);
+                java.util.HashMap<String, ArrayList> joinMap = new java.util.HashMap<String, ArrayList>();
+                Iterator<String> c = clusters.iterator();
+                while (c.hasNext()) {
+                    String cluster = c.next();
+                    ArrayList<NodeSetNodeTypeJoin> nsntj = NodeSetNodeTypeJoin.getJoinForCluster(request, cluster);
+                    joinMap.put(cluster, nsntj);
+                }
+                request.setAttribute("joinMap", joinMap);
 
-				next = "/reports.jsp";
-				rd = request.getRequestDispatcher(next);
-				rd.forward(request, response);
-				return;
-			}
-			logger.error("Error due to strange input.");
-			rd = request.getRequestDispatcher("/error.jsp");
-			rd.forward(request, response);
-			return;
+                next = "/reports.jsp";
+                rd = request.getRequestDispatcher(next);
+                rd.forward(request, response);
+                return;
+            }
+            logger.error("Error due to strange input.");
+            rd = request.getRequestDispatcher("/error.jsp");
+            rd.forward(request, response);
+            return;
 
-		} catch (ModelException e) {
-			logger.error("Had a ModelExcpetion in the MainScreen, " + e.getStackTrace());
-			rd = request.getRequestDispatcher("/error.jsp");
-			rd.forward(request, response);
-			return;
-		}
-	}
+        } catch (ModelException e) {
+            logger.error("Had a ModelExcpetion in the MainScreen, " , e);
+            rd = request.getRequestDispatcher("/error.jsp");
+            rd.forward(request, response);
+            return;
+        }
+    }
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
+    /**
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+     *      response)
+     */
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // TODO Auto-generated method stub
+        doGet(request, response);
+    }
 }

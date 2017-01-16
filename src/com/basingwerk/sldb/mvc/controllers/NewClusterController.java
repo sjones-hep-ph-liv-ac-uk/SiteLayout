@@ -15,85 +15,91 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.basingwerk.sldb.mvc.model.Cluster;
-import com.basingwerk.sldb.mvc.model.DatabaseConnection;
+import com.basingwerk.sldb.mvc.model.DBConnectionHolder;
 
 /**
  * Servlet implementation class NewClusterController
  */
 @WebServlet("/NewClusterController")
 public class NewClusterController extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	final static Logger logger = Logger.getLogger(NewClusterController.class);
+    private static final long serialVersionUID = 1L;
+    final static Logger logger = Logger.getLogger(NewClusterController.class);
 
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public NewClusterController() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public NewClusterController() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		DatabaseConnection dbConn = null;
-		RequestDispatcher rd = null;
-		HttpSession session = request.getSession();
-		dbConn = (DatabaseConnection) session.getAttribute("TheDatabaseConnection");
-		if (dbConn == null) {
-			logger.error("Error connecting to the database.");
-			rd = request.getRequestDispatcher("/error.jsp");
-			rd.forward(request, response);
-			return;
-		}
-		String clusterName = request.getParameter("clusterName");
-		String descr = request.getParameter("descr");
-		String sqlCommand = "INSERT INTO cluster (clusterName, Descr) VALUES ('" + clusterName + "','" + descr + "')";
+    /**
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+     *      response)
+     */
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // TODO Auto-generated method stub
+        DBConnectionHolder dbHolder = null;
+        RequestDispatcher rd = null;
+        HttpSession session = request.getSession();
+        dbHolder = (DBConnectionHolder) session.getAttribute("DBConnHolder");
+        if (dbHolder == null) {
+            logger.error("Error connecting to the database.");
+            rd = request.getRequestDispatcher("/error.jsp");
+            rd.forward(request, response);
+            return;
+        }
+        String clusterName = request.getParameter("clusterName");
+        String descr = request.getParameter("descr");
+        String sqlCommand = "INSERT INTO cluster (clusterName, Descr) VALUES ('" + clusterName + "','" + descr + "')";
 
-		java.sql.Statement statement;
-		int result = -1;
+        java.sql.Statement statement;
+        int result = -1;
 
-		try {
-			statement = dbConn.conn.createStatement();
-			result = statement.executeUpdate(sqlCommand);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			request.setAttribute("TheMessage", "It did not work. Perhaps that cluster exists already?");
-			rd = request.getRequestDispatcher("/recoverable_message.jsp");
-			rd.forward(request, response);
-			return;
-		}
-		try {
-			ArrayList<Cluster> clusterList = new ArrayList<Cluster>();
-			ResultSet r = dbConn.query("select clusterName,descr from cluster");
-			while (r.next()) {
-				Cluster c = new Cluster(r.getString("clusterName"), r.getString("descr"));
-				clusterList.add(c);
-			}
-			request.setAttribute("clusterList", clusterList);
-			String next = "/cluster.jsp";
+        try {
+            statement = dbHolder.theConnection.createStatement();
+            result = statement.executeUpdate(sqlCommand);
+            dbHolder.theConnection.commit();
+        } catch (SQLException e) {
+            try {
+                logger.info("Could not add new cluster, rolling back.");              
+                dbHolder.theConnection.rollback();
+            } catch (SQLException e1) {
+                logger.error ("Rollback failed, ",e1);
+            }
+            logger.error("Error while adding a cluster. " , e);
+            request.setAttribute("TheMessage", "It did not work. Perhaps that cluster exists already?");
+            rd = request.getRequestDispatcher("/recoverable_message.jsp");
+            rd.forward(request, response);
+            return;
+        }
+        try {
+            ArrayList<Cluster> clusterList = new ArrayList<Cluster>();
+            ResultSet r = dbHolder.query("select clusterName,descr from cluster");
+            while (r.next()) {
+                Cluster c = new Cluster(r.getString("clusterName"), r.getString("descr"));
+                clusterList.add(c);
+            }
+            request.setAttribute("clusterList", clusterList);
+            String next = "/cluster.jsp";
 
-			rd = request.getRequestDispatcher(next);
-			rd.forward(request, response);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return;
+            rd = request.getRequestDispatcher(next);
+            rd.forward(request, response);
+        } catch (SQLException e) {
+            logger.error("Error while adding a cluster. " , e);
+        }
+        return;
+    }
 
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
+    /**
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+     *      response)
+     */
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // TODO Auto-generated method stub
+        doGet(request, response);
+    }
 
 }
