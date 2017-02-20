@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.basingwerk.sldb.mvc.model.DBConnectionHolder;
+import com.basingwerk.sldb.mvc.model.AccessObject;
 import com.basingwerk.sldb.mvc.model.NodeSet;
 
 /**
@@ -39,11 +39,11 @@ public class NewNodeSetController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        DBConnectionHolder dbHolder = null;
+        AccessObject dbHolder = null;
         RequestDispatcher rd = null;
 
         HttpSession session = request.getSession();
-        dbHolder = (DBConnectionHolder) session.getAttribute("DBConnHolder");
+        dbHolder = (AccessObject) session.getAttribute("AccessObject");
         if (dbHolder == null) {
             logger.error("Error connecting to the database.");
             rd = request.getRequestDispatcher("/error.jsp");
@@ -62,14 +62,14 @@ public class NewNodeSetController extends HttpServlet {
         int result = -1;
 
         try {
-            statement = dbHolder.theConnection.createStatement();
+            statement = dbHolder.getTheConnection().createStatement();
             result = statement.executeUpdate(sqlCommand);
-            dbHolder.theConnection.commit();
+            dbHolder.getTheConnection().commit();
         } catch (SQLException e) {
             logger.error("Error inserting a node set.",e);
             try {
                 logger.info("could not add new node set, rolling back.");
-                dbHolder.theConnection.rollback();
+                dbHolder.getTheConnection().rollback();
             } catch (SQLException e1) {
                 logger.error ("Rollback failed, ",e1);
             }

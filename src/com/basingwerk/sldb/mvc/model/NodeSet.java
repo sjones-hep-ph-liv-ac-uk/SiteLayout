@@ -61,20 +61,23 @@ public class NodeSet {
     }
 
     public static void deleteNodeSet(HttpServletRequest request, String nodeSet) throws ModelException {
-        DBConnectionHolder dbHolder = null;
+        AccessObject dbHolder = null;
         try {
             HttpSession session = request.getSession();
-            dbHolder = (DBConnectionHolder) session.getAttribute("DBConnHolder");
-
+            dbHolder = (AccessObject) session.getAttribute("AccessObject");
+            if (dbHolder == null) {
+//                logger.error("Access object is null.");
+            }
+            logger.debug("AccessObject is not null.");
             String sqlCommand = "delete from nodeSet where nodeSetName = '" + nodeSet + "'";
 
-            Statement statement = dbHolder.theConnection.createStatement();
+            Statement statement = dbHolder.getTheConnection().createStatement();
             int result = statement.executeUpdate(sqlCommand);
-            dbHolder.theConnection.commit();
+            dbHolder.getTheConnection().commit();
         } catch (Exception e) {
             try {
                 logger.info ("Could not delete node set, rolling back.");
-                dbHolder.theConnection.rollback();
+                dbHolder.getTheConnection().rollback();
             } catch (SQLException e1) {
                 logger.error("Rollback failed, " , e1);
                 throw new ModelException("Cannot delete this node set.");
@@ -89,12 +92,14 @@ public class NodeSet {
 
     public static void refreshListOfNodeSets(HttpServletRequest request) throws ModelException {
         try {
-
             HttpSession session = request.getSession();
-            DBConnectionHolder dbHolder = (DBConnectionHolder) session.getAttribute("DBConnHolder");
+            AccessObject dbHolder = (AccessObject) session.getAttribute("AccessObject");
             ArrayList<NodeSet> nodeSetList = new ArrayList<NodeSet>();
 
             ResultSet r;
+            if (dbHolder == null) {
+                logger.error("Access object is null.");
+            }
             r = dbHolder.query("select nodeSetName, nodeTypeName ,nodeCount, cluster from nodeSet");
             while (r.next()) {
                 NodeSet n = new NodeSet(r.getString("nodeSetName"), r.getString("nodeTypeName"), r.getInt("nodeCount"),
@@ -102,7 +107,9 @@ public class NodeSet {
                 nodeSetList.add(n);
 
             }
-            request.setAttribute("nodeSetList", nodeSetList);
+            logger.info("Suppose did loop...");
+            session.setAttribute("nodeSetList", nodeSetList);
+            logger.info("Hm...");
         } catch (Exception e) {
             logger.error("Could not refresh the list of node sets, " , e);
             throw new ModelException("Cannot refresh node set page.");

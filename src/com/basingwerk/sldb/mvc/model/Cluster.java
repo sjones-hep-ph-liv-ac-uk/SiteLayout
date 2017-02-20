@@ -49,7 +49,7 @@ public class Cluster {
         try {
 
             HttpSession session = request.getSession();
-            DBConnectionHolder dbHolder = (DBConnectionHolder) session.getAttribute("DBConnHolder");
+            AccessObject dbHolder = (AccessObject) session.getAttribute("AccessObject");
             ArrayList<Cluster> clusterList = new ArrayList<Cluster>();
             ResultSet r;
             r = dbHolder.query("select clusterName,descr from cluster");
@@ -64,11 +64,11 @@ public class Cluster {
     }
 
     public static void updateSingleCluster(HttpServletRequest request, Cluster cluster) throws ModelException {
-        DBConnectionHolder dbHolder = null;
+        AccessObject dbHolder = null;
         try {
             RequestDispatcher rd = null;
             HttpSession session = request.getSession();
-            dbHolder = (DBConnectionHolder) session.getAttribute("DBConnHolder");
+            dbHolder = (AccessObject) session.getAttribute("AccessObject");
 
             String clusterName = cluster.getCluster();
             String descr = cluster.getDescr();
@@ -78,13 +78,13 @@ public class Cluster {
             java.sql.Statement statement;
             int result = -1;
 
-            statement = dbHolder.theConnection.createStatement();
+            statement = dbHolder.getTheConnection().createStatement();
             result = statement.executeUpdate(sqlCommand);
-            dbHolder.theConnection.commit();
+            dbHolder.getTheConnection().commit();
         } catch (SQLException e) {
             try {
                 logger.info ("Could not update cluster, rolling back.");
-                dbHolder.theConnection.rollback();
+                dbHolder.getTheConnection().rollback();
             } catch (SQLException e1) {
                 logger.error ("Rollback failed, ",e1);
                 throw new ModelException("Failed to update the cluster");
@@ -94,10 +94,10 @@ public class Cluster {
     }
 
     public static void setSingleCluster(HttpServletRequest request, String cluster) throws ModelException {
-        DBConnectionHolder dbHolder = null;
+        AccessObject dbHolder = null;
         try {
             HttpSession session = request.getSession();
-            dbHolder = (DBConnectionHolder) session.getAttribute("DBConnHolder");
+            dbHolder = (AccessObject) session.getAttribute("AccessObject");
             if (dbHolder != null) {
                 ResultSet r;
                 r = dbHolder.query("select clusterName,descr from cluster where clusterName = '" + cluster + "'");
@@ -107,11 +107,11 @@ public class Cluster {
                 }
                 request.setAttribute("cluster", c);
             }
-            dbHolder.theConnection.commit();
+            dbHolder.getTheConnection().commit();
         } catch (Exception e) {
             try {
                 logger.info ("Could not set cluster, rolling back.");
-                dbHolder.theConnection.rollback();
+                dbHolder.getTheConnection().rollback();
             } catch (SQLException e1) {
                 logger.error ("Rollback failed, ", e1);
                 throw new ModelException("Cannot refresh single cluster page.");
@@ -122,20 +122,20 @@ public class Cluster {
     }
 
     public static void deleteCluster(HttpServletRequest request, String cluster) throws ModelException {
-        DBConnectionHolder dbHolder = null;
+        AccessObject dbHolder = null;
         try {
             HttpSession session = request.getSession();
-            dbHolder = (DBConnectionHolder) session.getAttribute("DBConnHolder");
+            dbHolder = (AccessObject) session.getAttribute("AccessObject");
 
             String sqlCommand = "delete from cluster where clusterName = '" + cluster + "'";
 
-            Statement statement = dbHolder.theConnection.createStatement();
+            Statement statement = dbHolder.getTheConnection().createStatement();
             int result = statement.executeUpdate(sqlCommand);
-            dbHolder.theConnection.commit();
+            dbHolder.getTheConnection().commit();
         } catch (Exception e) {
             try {
                 logger.info ("Could not delete cluster, rolling back.");
-                dbHolder.theConnection.rollback();
+                dbHolder.getTheConnection().rollback();
             } catch (SQLException e1) {
                 logger.error ("Rollback failed, ",e1);
                 throw new ModelException("Cannot delete this cluster.");
@@ -151,7 +151,7 @@ public class Cluster {
         try {
 
             HttpSession session = request.getSession();
-            DBConnectionHolder dbHolder = (DBConnectionHolder) session.getAttribute("DBConnHolder");
+            AccessObject dbHolder = (AccessObject) session.getAttribute("AccessObject");
             Cluster c = null;
             ResultSet r = dbHolder.query("select clusterName,descr from cluster where clusterName = '" + clusterName + "'");
             while (r.next()) {
@@ -167,7 +167,7 @@ public class Cluster {
         ArrayList<Cluster> cl = new ArrayList<Cluster>();
         try {
             HttpSession session = request.getSession();
-            DBConnectionHolder dbHolder = (DBConnectionHolder) session.getAttribute("DBConnHolder");
+            AccessObject dbHolder = (AccessObject) session.getAttribute("AccessObject");
             Cluster c = null;
             ResultSet r = dbHolder.query("select clusterName,descr from cluster");
             while (r.next()) {
@@ -185,7 +185,7 @@ public class Cluster {
         ArrayList<String> cl = new ArrayList<String>();
         try {
             HttpSession session = request.getSession();
-            DBConnectionHolder dbHolder = (DBConnectionHolder) session.getAttribute("DBConnHolder");
+            AccessObject dbHolder = (AccessObject) session.getAttribute("AccessObject");
             Cluster c = null;
 
             ResultSet r = dbHolder.query("select clusterName,descr from cluster");

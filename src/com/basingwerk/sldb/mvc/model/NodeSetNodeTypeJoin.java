@@ -99,7 +99,7 @@ public class NodeSetNodeTypeJoin {
         ArrayList<NodeSetNodeTypeJoin> nsntj = new ArrayList<NodeSetNodeTypeJoin>();
         try {
             HttpSession session = request.getSession();
-            DBConnectionHolder dbHolder = (DBConnectionHolder) session.getAttribute("DBConnHolder");
+            AccessObject dbHolder = (AccessObject) session.getAttribute("AccessObject");
             String theSql = "select nodeSetName,nodeSet.nodeTypeName,nodeType.cpu,nodeCount,slot,hs06PerSlot  from nodeSet,nodeType "
                     + "where nodeSet.cluster='" + cluster + "' and nodeSet.nodeTypeName = nodeType.nodeTypeName;";
 

@@ -80,7 +80,7 @@ public class NodeType {
         ArrayList<String> nt = new ArrayList<String>();
         try {
             HttpSession session = request.getSession();
-            DBConnectionHolder dbHolder = (DBConnectionHolder) session.getAttribute("DBConnHolder");
+            AccessObject dbHolder = (AccessObject) session.getAttribute("AccessObject");
             NodeType c = null;
 
             ResultSet r = dbHolder.query("select nodeTypeName from nodeType");
@@ -98,7 +98,7 @@ public class NodeType {
         ArrayList<NodeType> nt = new ArrayList<NodeType>();
         try {
             HttpSession session = request.getSession();
-            DBConnectionHolder dbHolder = (DBConnectionHolder) session.getAttribute("DBConnHolder");
+            AccessObject dbHolder = (AccessObject) session.getAttribute("AccessObject");
             NodeType c = null;
 
             ResultSet r;
@@ -118,20 +118,20 @@ public class NodeType {
     // ---
 
     public static void deleteNodeType(HttpServletRequest request, String nodeType) throws ModelException {
-        DBConnectionHolder dbHolder = null;
+        AccessObject dbHolder = null;
         try {
             HttpSession session = request.getSession();
-            dbHolder = (DBConnectionHolder) session.getAttribute("DBConnHolder");
+            dbHolder = (AccessObject) session.getAttribute("AccessObject");
 
             String sqlCommand = "delete from nodeType where nodeTypeName = '" + nodeType + "'";
 
-            Statement statement = dbHolder.theConnection.createStatement();
+            Statement statement = dbHolder.getTheConnection().createStatement();
             int result = statement.executeUpdate(sqlCommand);
-            dbHolder.theConnection.commit();
+            dbHolder.getTheConnection().commit();
         } catch (Exception e) {
             try {
                 logger.info ("Could not delete node type, rolling back.");
-                dbHolder.theConnection.rollback();
+                dbHolder.getTheConnection().rollback();
 
             } catch (SQLException e1) {
                 logger.error ("Rollback failed, ",e1);
@@ -149,7 +149,7 @@ public class NodeType {
         try {
 
             HttpSession session = request.getSession();
-            DBConnectionHolder dbHolder = (DBConnectionHolder) session.getAttribute("DBConnHolder");
+            AccessObject dbHolder = (AccessObject) session.getAttribute("AccessObject");
 
             ResultSet r;
             r = dbHolder.query( "select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType where nodeTypeName='BASELINE'");
@@ -168,7 +168,7 @@ public class NodeType {
         try {
 
             HttpSession session = request.getSession();
-            DBConnectionHolder dbHolder = (DBConnectionHolder) session.getAttribute("DBConnHolder");
+            AccessObject dbHolder = (AccessObject) session.getAttribute("AccessObject");
             ArrayList<NodeType> nodeTypeList = new ArrayList<NodeType>();
 
             ResultSet r;
@@ -189,7 +189,7 @@ public class NodeType {
         try {
 
             HttpSession session = request.getSession();
-            DBConnectionHolder dbHolder = (DBConnectionHolder) session.getAttribute("DBConnHolder");
+            AccessObject dbHolder = (AccessObject) session.getAttribute("AccessObject");
             NodeType n = null;
             ResultSet r = dbHolder.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType where"
                     + "nodeTypeName = '" + nodeTypeName + "'");

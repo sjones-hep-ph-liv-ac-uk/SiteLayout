@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 
 import com.basingwerk.sldb.mvc.model.Cluster;
 import com.basingwerk.sldb.mvc.model.ModelException;
-import com.basingwerk.sldb.mvc.model.DBConnectionHolder;
+import com.basingwerk.sldb.mvc.model.AccessObject;
 
 /**
  * Servlet implementation class ClusterController

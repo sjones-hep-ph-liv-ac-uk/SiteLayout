@@ -20,7 +20,7 @@ import com.basingwerk.sldb.mvc.model.NodeSet;
 import com.basingwerk.sldb.mvc.model.NodeType;
 import com.basingwerk.sldb.mvc.model.Cluster;
 import com.basingwerk.sldb.mvc.model.ModelException;
-import com.basingwerk.sldb.mvc.model.DBConnectionHolder;
+import com.basingwerk.sldb.mvc.model.AccessObject;
 
 /**
  * Servlet implementation class NodeSetController
@@ -52,6 +52,23 @@ public class NodeSetController extends HttpServlet {
             rd.forward(request, response);
             return;
         }
+        act = request.getParameter("Refresh");
+        if (act != null) {
+          try {
+              NodeSet.refreshListOfNodeSets(request);
+          } catch (ModelException e) {
+                logger.error("Error refreshing ... " , e);
+                request.setAttribute("TheMessage", e.getMessage());
+                request.setAttribute("TheJsp", "main_screen.jsp");
+                rd = request.getRequestDispatcher("/recoverable_message.jsp");
+                rd.forward(request, response);
+                return;
+          }
+          rd = request.getRequestDispatcher("/nodeset.jsp");
+          rd.forward(request, response);
+          return;
+        }
+
         act = request.getParameter("New");
         if (act != null) {
 
@@ -112,7 +129,7 @@ public class NodeSetController extends HttpServlet {
 
                 try {
                     HttpSession session = request.getSession();
-                    DBConnectionHolder dbHolder = (DBConnectionHolder) session.getAttribute("DBConnHolder");
+                    AccessObject dbHolder = (AccessObject) session.getAttribute("AccessObject");
                     if (dbHolder != null) {
 
                         ResultSet r;

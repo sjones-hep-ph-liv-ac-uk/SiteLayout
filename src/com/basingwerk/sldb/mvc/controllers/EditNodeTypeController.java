@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.basingwerk.sldb.mvc.model.NodeType;
-import com.basingwerk.sldb.mvc.model.DBConnectionHolder;
+import com.basingwerk.sldb.mvc.model.AccessObject;
 
 /**
  * Servlet implementation class EditNodeTypeController
@@ -40,10 +40,10 @@ public class EditNodeTypeController extends HttpServlet {
             throws ServletException, IOException {
         // TODO Auto-generated method stub
 
-        DBConnectionHolder dbHolder = null;
+        AccessObject dbHolder = null;
         RequestDispatcher rd = null;
         HttpSession session = request.getSession();
-        dbHolder = (DBConnectionHolder) session.getAttribute("DBConnHolder");
+        dbHolder = (AccessObject) session.getAttribute("AccessObject");
         if (dbHolder == null) {
             logger.error("Could not connect to database.");
             rd = request.getRequestDispatcher("/error.jsp");
@@ -64,13 +64,13 @@ public class EditNodeTypeController extends HttpServlet {
         int result = -1;
 
         try {
-            statement = dbHolder.theConnection.createStatement();
+            statement = dbHolder.getTheConnection().createStatement();
             result = statement.executeUpdate(sqlCommand);
-            dbHolder.theConnection.commit();
+            dbHolder.getTheConnection().commit();
         } catch (SQLException e) {
             try {
                 logger.info ("Could not update node type, rolling back.");
-                dbHolder.theConnection.rollback();
+                dbHolder.getTheConnection().rollback();
             } catch (SQLException e1) {
                 logger.error ("Rollback failed, ",e1);
             }

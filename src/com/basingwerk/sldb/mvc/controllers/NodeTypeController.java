@@ -19,7 +19,7 @@ import javax.servlet.http.HttpSession;
 
 import com.basingwerk.sldb.mvc.model.NodeType;
 import com.basingwerk.sldb.mvc.model.ModelException;
-import com.basingwerk.sldb.mvc.model.DBConnectionHolder;
+import com.basingwerk.sldb.mvc.model.AccessObject;
 
 /**
  * Servlet implementation class NodetypeController
@@ -95,7 +95,7 @@ public class NodeTypeController extends HttpServlet {
 
                 try {
                     HttpSession session = request.getSession();
-                    DBConnectionHolder dbHolder = (DBConnectionHolder) session.getAttribute("DBConnHolder");
+                    AccessObject dbHolder = (AccessObject) session.getAttribute("AccessObject");
                     if (dbHolder != null) {
                         ResultSet r;
                         String sql = "select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType where"

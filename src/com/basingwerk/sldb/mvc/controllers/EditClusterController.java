@@ -11,8 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.basingwerk.sldb.mvc.model.AccessObject;
 import com.basingwerk.sldb.mvc.model.Cluster;
-import com.basingwerk.sldb.mvc.model.DBConnectionHolder;
+import com.basingwerk.sldb.mvc.model.AccessObject;
 import com.basingwerk.sldb.mvc.model.ModelException;
 
 /**
@@ -37,10 +38,10 @@ public class EditClusterController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        DBConnectionHolder dbHolder = null;
+        AccessObject dbHolder = null;
         RequestDispatcher rd = null;
         HttpSession session = request.getSession();
-        dbHolder = (DBConnectionHolder) session.getAttribute("DBConnHolder");
+        dbHolder = (AccessObject) session.getAttribute("AccessObject");
         if (dbHolder == null) {
             logger.error("Error connecting to the database.");
             rd = request.getRequestDispatcher("/error.jsp");

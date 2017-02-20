@@ -7,13 +7,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="java.util.List"%>
 <%
-	List nodeSetList = (List) request.getAttribute("nodeSetList");
+	List nodeSetList = (List) session.getAttribute("nodeSetList");
 %>
 
 <html>
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/SiteLayout.css">
-
+<link rel="stylesheet" href="${pageContext.request.contextPath}/SiteLayout.css">
 <head>
 Node Set
 
@@ -48,7 +46,7 @@ Node Set
 			<tr>
 				<td><input type="submit" value="Back" name="Back" /></td>
 				<td><input type="submit" value="New" name="New" /></td>
-				<td></td>
+				<td><input type="submit" value="Refresh" name="Refresh" /></td>
 				<td></td>
 			</tr>
 		</table>

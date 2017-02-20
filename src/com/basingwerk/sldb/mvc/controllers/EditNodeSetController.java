@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.basingwerk.sldb.mvc.model.DBConnectionHolder;
+import com.basingwerk.sldb.mvc.model.AccessObject;
 import com.basingwerk.sldb.mvc.model.NodeSet;
 
 /**
@@ -36,10 +36,10 @@ public class EditNodeSetController extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        DBConnectionHolder dbHolder = null;
+        AccessObject dbHolder = null;
         RequestDispatcher rd = null;
         HttpSession session = request.getSession();
-        dbHolder = (DBConnectionHolder) session.getAttribute("DBConnHolder");
+        dbHolder = (AccessObject) session.getAttribute("AccessObject");
         if (dbHolder == null) {
             logger.error("Could not connect to database.");
             rd = request.getRequestDispatcher("/error.jsp");
@@ -51,7 +51,6 @@ public class EditNodeSetController extends HttpServlet {
         String nodeCount = request.getParameter("nodeCount");
         String nodeTypeName = request.getParameter("nodeTypeList");
         String clusterName = request.getParameter("clusterList");
-        logger.debug("SJDEBUG: Got params...");
 
         String sqlCommand = "UPDATE nodeSet SET nodeSetName='" + nodeSetName + "', nodeTypeName='" + nodeTypeName
                 + "', nodeCount='" + nodeCount + "', cluster='" + clusterName + "' where nodeSetName='" + nodeSetName
@@ -61,17 +60,14 @@ public class EditNodeSetController extends HttpServlet {
         int result = -1;
 
         try {
-            logger.debug("SJDEBUG: About to do update.");
-            statement = dbHolder.theConnection.createStatement();
+            statement = dbHolder.getTheConnection().createStatement();
             result = statement.executeUpdate(sqlCommand);
-            logger.debug("SJDEBUG: About to do commit.");
-            dbHolder.theConnection.commit();
-            logger.debug("SJDEBUG: Done commit.");
+            dbHolder.getTheConnection().commit();
         } catch (SQLException e) {
             logger.error("Error while editing a node set" , e);
             try {
                 logger.info("Could not update node set, rolling back.");
-                dbHolder.theConnection.rollback();
+                dbHolder.getTheConnection().rollback();
             } catch (SQLException e1) {
                 logger.error ("Rollback failed, ",e1);
             }
