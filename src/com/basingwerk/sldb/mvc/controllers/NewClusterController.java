@@ -17,34 +17,23 @@ import javax.servlet.http.HttpSession;
 import com.basingwerk.sldb.mvc.model.Cluster;
 import com.basingwerk.sldb.mvc.model.AccessObject;
 
-/**
- * Servlet implementation class NewClusterController
- */
 @WebServlet("/NewClusterController")
+
 public class NewClusterController extends HttpServlet {
     private static final long serialVersionUID = 1L;
     final static Logger logger = Logger.getLogger(NewClusterController.class);
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
     public NewClusterController() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // TODO Auto-generated method stub
-        AccessObject dbHolder = null;
+        AccessObject ao = null;
         RequestDispatcher rd = null;
         HttpSession session = request.getSession();
-        dbHolder = (AccessObject) session.getAttribute("AccessObject");
-        if (dbHolder == null) {
+        ao = (AccessObject) session.getAttribute("AccessObject");
+        if (ao == null) {
             logger.error("Error connecting to the database.");
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
@@ -58,25 +47,24 @@ public class NewClusterController extends HttpServlet {
         int result = -1;
 
         try {
-            statement = dbHolder.getTheConnection().createStatement();
+            statement = ao.getTheConnection().createStatement();
             result = statement.executeUpdate(sqlCommand);
-            dbHolder.getTheConnection().commit();
+            ao.getTheConnection().commit();
         } catch (SQLException e) {
+            logger.info("Could not add new cluster, rolling back.");
             try {
-                logger.info("Could not add new cluster, rolling back.");              
-                dbHolder.getTheConnection().rollback();
-            } catch (SQLException e1) {
-                logger.error ("Rollback failed, ",e1);
+                ao.getTheConnection().rollback();
+            } catch (SQLException ex) {
+                logger.error("Rollback failed, ", ex);
             }
-            logger.error("Error while adding a cluster. " , e);
-            request.setAttribute("TheMessage", "It did not work. Perhaps that cluster exists already?");
+            request.setAttribute("TheMessage", "Sorry. Failed to add that cluster. Please try again.");
             rd = request.getRequestDispatcher("/recoverable_message.jsp");
             rd.forward(request, response);
             return;
         }
         try {
             ArrayList<Cluster> clusterList = new ArrayList<Cluster>();
-            ResultSet r = dbHolder.query("select clusterName,descr from cluster");
+            ResultSet r = ao.query("select clusterName,descr from cluster");
             while (r.next()) {
                 Cluster c = new Cluster(r.getString("clusterName"), r.getString("descr"));
                 clusterList.add(c);
@@ -87,18 +75,13 @@ public class NewClusterController extends HttpServlet {
             rd = request.getRequestDispatcher(next);
             rd.forward(request, response);
         } catch (SQLException e) {
-            logger.error("Error while adding a cluster. " , e);
+            logger.error("Error while adding a cluster. ", e);
         }
         return;
     }
 
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // TODO Auto-generated method stub
         doGet(request, response);
     }
 

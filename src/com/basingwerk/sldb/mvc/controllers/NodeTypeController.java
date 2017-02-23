@@ -21,29 +21,18 @@ import com.basingwerk.sldb.mvc.model.NodeType;
 import com.basingwerk.sldb.mvc.model.ModelException;
 import com.basingwerk.sldb.mvc.model.AccessObject;
 
-/**
- * Servlet implementation class NodetypeController
- */
 @WebServlet("/NodeTypeController")
 
 public class NodeTypeController extends HttpServlet {
     private static final long serialVersionUID = 1L;
     final static Logger logger = Logger.getLogger(NodeTypeController.class);
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
     public NodeTypeController() {
         super();
     }
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // TODO Auto-generated method stub
         RequestDispatcher rd = null;
         String act = null;
         act = request.getParameter("Back");
@@ -54,12 +43,10 @@ public class NodeTypeController extends HttpServlet {
         }
         act = request.getParameter("New");
         if (act != null) {
-
             rd = request.getRequestDispatcher("/new_nodetype.jsp");
             rd.forward(request, response);
             return;
         }
-
         Map params = request.getParameterMap();
         Iterator i = params.keySet().iterator();
         while (i.hasNext()) {
@@ -79,7 +66,7 @@ public class NodeTypeController extends HttpServlet {
                 try {
                     NodeType.refreshListOfNodeTypes(request);
                 } catch (ModelException e) {
-                    logger.error("ModelException when trying refreshListOfNodeTypes, " , e);
+                    logger.error("ModelException when trying to refresh NodeTypes, ", e);
 
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
@@ -95,22 +82,21 @@ public class NodeTypeController extends HttpServlet {
 
                 try {
                     HttpSession session = request.getSession();
-                    AccessObject dbHolder = (AccessObject) session.getAttribute("AccessObject");
-                    if (dbHolder != null) {
+                    AccessObject ao = (AccessObject) session.getAttribute("AccessObject");
+                    if (ao != null) {
                         ResultSet r;
                         String sql = "select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType where"
                                 + " nodeTypeName = '" + nodeType + "'";
-                        r = dbHolder.query(sql);
+                        r = ao.query(sql);
                         NodeType n = null;
                         while (r.next()) {
                             n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
                                     r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
                         }
-                        System.out.println("Node type: " + n);
                         request.setAttribute("nodeType", n);
                     }
                 } catch (SQLException e) {
-                    logger.error("A database error occurred, " , e);
+                    logger.error("A database error occurred, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
@@ -123,13 +109,8 @@ public class NodeTypeController extends HttpServlet {
         }
     }
 
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // TODO Auto-generated method stub
         doGet(request, response);
     }
 }

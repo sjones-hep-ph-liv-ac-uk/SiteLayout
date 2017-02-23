@@ -17,34 +17,25 @@ import javax.servlet.http.HttpSession;
 import com.basingwerk.sldb.mvc.model.AccessObject;
 import com.basingwerk.sldb.mvc.model.NodeSet;
 
-/**
- * Servlet implementation class NewNodeSetController
- */
 @WebServlet("/NewNodeSetController")
+
 public class NewNodeSetController extends HttpServlet {
     private static final long serialVersionUID = 1L;
     final static Logger logger = Logger.getLogger(NewNodeSetController.class);
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
     public NewNodeSetController() {
         super();
     }
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        AccessObject dbHolder = null;
+        AccessObject ao = null;
         RequestDispatcher rd = null;
 
         HttpSession session = request.getSession();
-        dbHolder = (AccessObject) session.getAttribute("AccessObject");
-        if (dbHolder == null) {
+        ao = (AccessObject) session.getAttribute("AccessObject");
+        if (ao == null) {
             logger.error("Error connecting to the database.");
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
@@ -62,19 +53,17 @@ public class NewNodeSetController extends HttpServlet {
         int result = -1;
 
         try {
-            statement = dbHolder.getTheConnection().createStatement();
+            statement = ao.getTheConnection().createStatement();
             result = statement.executeUpdate(sqlCommand);
-            dbHolder.getTheConnection().commit();
-        } catch (SQLException e) {
-            logger.error("Error inserting a node set.",e);
+            ao.getTheConnection().commit();
+        } catch (SQLException ex) {
+            logger.info("Could not add new node set, rolling back.");
             try {
-                logger.info("could not add new node set, rolling back.");
-                dbHolder.getTheConnection().rollback();
-            } catch (SQLException e1) {
-                logger.error ("Rollback failed, ",e1);
+                ao.getTheConnection().rollback();
+            } catch (SQLException ex1) {
+                logger.error("Rollback failed, ", ex1);
             }
-            logger.error("Error while adding a node set, " , e);
-            request.setAttribute("TheMessage", "It did not work. Perhaps that node set exists already?");
+            request.setAttribute("TheMessage", "Problem while adding a node set, please try again.");
             rd = request.getRequestDispatcher("/recoverable_message.jsp");
             rd.forward(request, response);
             return;
@@ -82,7 +71,7 @@ public class NewNodeSetController extends HttpServlet {
         try {
             ArrayList<NodeSet> nodeSetList = new ArrayList<NodeSet>();
 
-            ResultSet r = dbHolder.query("select nodeSetName ,nodeTypeName, nodeCount, cluster from nodeSet");
+            ResultSet r = ao.query("select nodeSetName ,nodeTypeName, nodeCount, cluster from nodeSet");
             while (r.next()) {
                 NodeSet n = new NodeSet(r.getString("nodeSetName"), r.getString("nodeTypeName"), r.getInt("nodeCount"),
                         r.getString("cluster"));
@@ -94,18 +83,13 @@ public class NewNodeSetController extends HttpServlet {
             rd = request.getRequestDispatcher(next);
             rd.forward(request, response);
         } catch (SQLException e) {
-            logger.error("Error while adding a node set, " , e);
+            logger.error("Error while adding a node set, ", e);
         }
         return;
     }
 
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         doGet(request, response);
     }
-
 }

@@ -14,26 +14,15 @@ import com.basingwerk.sldb.mvc.model.AccessObject;
 import com.basingwerk.sldb.mvc.model.AccessObjectException;
 import com.basingwerk.sldb.mvc.model.User;
 
-/**
- * Servlet implementation class LoginController
- */
 @WebServlet("/LoginController")
 
 public class LoginController extends HttpServlet {
     private static final long serialVersionUID = 1L;
     final static Logger logger = Logger.getLogger(LoginController.class);
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
     public LoginController() {
         super();
     }
-
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -54,7 +43,7 @@ public class LoginController extends HttpServlet {
                 User user = new User(username, password);
                 request.setAttribute("user", user);
 
-            } 
+            }
         } catch (AccessObjectException e) {
             logger.error("Error when trying to connect to database.");
             rd = request.getRequestDispatcher("/error.jsp");
@@ -62,14 +51,8 @@ public class LoginController extends HttpServlet {
         rd.forward(request, response);
     }
 
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // TODO Auto-generated method stub
         doGet(request, response);
     }
-
 }

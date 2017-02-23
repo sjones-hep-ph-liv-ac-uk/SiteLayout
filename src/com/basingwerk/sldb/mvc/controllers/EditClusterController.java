@@ -1,4 +1,4 @@
-package com.basingwerk.sldb.mvc.controllers;
+777package com.basingwerk.sldb.mvc.controllers;
 
 import org.apache.log4j.Logger;
 import java.io.IOException;
@@ -16,25 +16,16 @@ import com.basingwerk.sldb.mvc.model.Cluster;
 import com.basingwerk.sldb.mvc.model.AccessObject;
 import com.basingwerk.sldb.mvc.model.ModelException;
 
-/**
- * Servlet implementation class EditClusterController
- */
 @WebServlet("/EditClusterController")
+
 public class EditClusterController extends HttpServlet {
     private static final long serialVersionUID = 1L;
     final static Logger logger = Logger.getLogger(EditClusterController.class);
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
     public EditClusterController() {
         super();
     }
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -63,14 +54,8 @@ public class EditClusterController extends HttpServlet {
         return;
     }
 
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // TODO Auto-generated method stub
         doGet(request, response);
     }
-
 }

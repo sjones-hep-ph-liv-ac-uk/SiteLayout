@@ -19,26 +19,16 @@ import com.basingwerk.sldb.mvc.model.NodeSet;
 import com.basingwerk.sldb.mvc.model.NodeSetNodeTypeJoin;
 import com.basingwerk.sldb.mvc.model.NodeType;
 
-/**
- * Servlet implementation class MainScreenController
- */
 @WebServlet("/MainScreenController")
 
 public class MainScreenController extends HttpServlet {
     private static final long serialVersionUID = 1L;
     final static Logger logger = Logger.getLogger(MainScreenController.class);
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
     public MainScreenController() {
         super();
     }
 
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
@@ -53,9 +43,7 @@ public class MainScreenController extends HttpServlet {
             }
             String next = "";
             if (act.equals("Edit node types")) {
-
                 NodeType.refreshListOfNodeTypes(request);
-
                 next = "/nodetype.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -65,15 +53,12 @@ public class MainScreenController extends HttpServlet {
             if (act.equals("Edit clusters")) {
                 Cluster.setListOfClusters(request);
                 next = "/cluster.jsp";
-
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
                 return;
             }
             if (act.equals("Edit node sets")) {
-
                 NodeSet.refreshListOfNodeSets(request);
-
                 next = "/nodeset.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -84,7 +69,7 @@ public class MainScreenController extends HttpServlet {
                 NodeType.refreshListOfNodeTypes(request);
                 Cluster.setListOfClusters(request);
                 NodeType.setBaselineNodeType(request);
-                ArrayList<String> clusters = Cluster.listClusters(request);
+                ArrayList<String> clusters = Cluster.listAllClusterNames(request);
                 java.util.HashMap<String, ArrayList> joinMap = new java.util.HashMap<String, ArrayList>();
                 Iterator<String> c = clusters.iterator();
                 while (c.hasNext()) {
@@ -93,7 +78,6 @@ public class MainScreenController extends HttpServlet {
                     joinMap.put(cluster, nsntj);
                 }
                 request.setAttribute("joinMap", joinMap);
-
                 next = "/reports.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -105,20 +89,15 @@ public class MainScreenController extends HttpServlet {
             return;
 
         } catch (ModelException e) {
-            logger.error("Had a ModelExcpetion in the MainScreen, " , e);
+            logger.error("Had a ModelException in the MainScreen, ", e);
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
             return;
         }
     }
 
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // TODO Auto-generated method stub
         doGet(request, response);
     }
 }

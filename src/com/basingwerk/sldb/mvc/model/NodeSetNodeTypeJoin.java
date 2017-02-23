@@ -99,11 +99,11 @@ public class NodeSetNodeTypeJoin {
         ArrayList<NodeSetNodeTypeJoin> nsntj = new ArrayList<NodeSetNodeTypeJoin>();
         try {
             HttpSession session = request.getSession();
-            AccessObject dbHolder = (AccessObject) session.getAttribute("AccessObject");
+            AccessObject ao = (AccessObject) session.getAttribute("AccessObject");
             String theSql = "select nodeSetName,nodeSet.nodeTypeName,nodeType.cpu,nodeCount,slot,hs06PerSlot  from nodeSet,nodeType "
                     + "where nodeSet.cluster='" + cluster + "' and nodeSet.nodeTypeName = nodeType.nodeTypeName;";
 
-            ResultSet r = dbHolder.query(theSql);
+            ResultSet r = ao.query(theSql);
             while (r.next()) {
                 String nodeSetName = r.getString("nodeSetName");
                 String nodeTypeName = r.getString("nodeTypeName");
@@ -119,8 +119,8 @@ public class NodeSetNodeTypeJoin {
 
             }
         } catch (Exception e) {
-            logger.error("Could not get the joined set of node sets and types, " , e);
-            throw new ModelException("Cannot join.");
+            logger.error("Could not get the joined set of node sets and types, ", e);
+            throw new ModelException("Cannot join");
         }
         return nsntj;
     }

@@ -13,6 +13,11 @@ import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationExceptio
 
 public class NodeType {
     final static Logger logger = Logger.getLogger(NodeType.class);
+    private String nodeTypeName;
+    private int cpu;
+    private int slot;
+    private float hs06PerSlot;
+    private float memPerNode;
 
     public String toString() {
         String result;
@@ -70,39 +75,34 @@ public class NodeType {
         this.memPerNode = memPerNode;
     }
 
-    private String nodeTypeName;
-    private int cpu;
-    private int slot;
-    private float hs06PerSlot;
-    private float memPerNode;
 
-    public static ArrayList<String> listNodeTypes(HttpServletRequest request) throws ModelException {
+    public static ArrayList<String> listAllNodeTypes(HttpServletRequest request) throws ModelException {
         ArrayList<String> nt = new ArrayList<String>();
         try {
             HttpSession session = request.getSession();
-            AccessObject dbHolder = (AccessObject) session.getAttribute("AccessObject");
+            AccessObject ao = (AccessObject) session.getAttribute("AccessObject");
             NodeType c = null;
 
-            ResultSet r = dbHolder.query("select nodeTypeName from nodeType");
+            ResultSet r = ao.query("select nodeTypeName from nodeType");
             while (r.next()) {
                 nt.add(r.getString("nodeTypeName"));
             }
 
         } catch (Exception e) {
-            throw new ModelException("Cannot read node types.");
+            throw new ModelException("Cannot read node types");
         }
         return nt;
     }
 
-    public static ArrayList<NodeType> getNodeTypes(HttpServletRequest request) throws ModelException {
+    public static ArrayList<NodeType> getAllNodeTypes(HttpServletRequest request) throws ModelException {
         ArrayList<NodeType> nt = new ArrayList<NodeType>();
         try {
             HttpSession session = request.getSession();
-            AccessObject dbHolder = (AccessObject) session.getAttribute("AccessObject");
+            AccessObject ao = (AccessObject) session.getAttribute("AccessObject");
             NodeType c = null;
 
             ResultSet r;
-            r = dbHolder.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType");
+            r = ao.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType");
             while (r.next()) {
                 NodeType n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
                         r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
@@ -110,38 +110,34 @@ public class NodeType {
             }
 
         } catch (Exception e) {
-            throw new ModelException("Cannot read node types.");
+            throw new ModelException("Cannot read node types");
         }
         return nt;
     }
 
-    // ---
-
     public static void deleteNodeType(HttpServletRequest request, String nodeType) throws ModelException {
-        AccessObject dbHolder = null;
+        AccessObject ao = null;
         try {
             HttpSession session = request.getSession();
-            dbHolder = (AccessObject) session.getAttribute("AccessObject");
+            ao = (AccessObject) session.getAttribute("AccessObject");
 
             String sqlCommand = "delete from nodeType where nodeTypeName = '" + nodeType + "'";
 
-            Statement statement = dbHolder.getTheConnection().createStatement();
+            Statement statement = ao.getTheConnection().createStatement();
             int result = statement.executeUpdate(sqlCommand);
-            dbHolder.getTheConnection().commit();
+            ao.getTheConnection().commit();
         } catch (Exception e) {
+            logger.info("Could not delete node type, rolling back.");
             try {
-                logger.info ("Could not delete node type, rolling back.");
-                dbHolder.getTheConnection().rollback();
-
-            } catch (SQLException e1) {
-                logger.error ("Rollback failed, ",e1);
-                throw new ModelException("Cannot delete this node type.");
+                ao.getTheConnection().rollback();
+            } catch (SQLException ex) {
+                logger.error("Rollback failed, ", ex);
+                throw new ModelException("Cannot delete this node type");
             }
-            // MySQLIntegrityConstraintViolationException
             if (e instanceof MySQLIntegrityConstraintViolationException) {
-                throw new ModelException("This node type is still being used in a nodeset.");
+                throw new ModelException("This node type is still being used in a nodeset");
             }
-            throw new ModelException("Cannot delete this node type.");
+            throw new ModelException("Cannot delete this node type");
         }
     }
 
@@ -149,10 +145,11 @@ public class NodeType {
         try {
 
             HttpSession session = request.getSession();
-            AccessObject dbHolder = (AccessObject) session.getAttribute("AccessObject");
+            AccessObject ao = (AccessObject) session.getAttribute("AccessObject");
 
             ResultSet r;
-            r = dbHolder.query( "select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType where nodeTypeName='BASELINE'");
+            r = ao.query(
+                    "select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType where nodeTypeName='BASELINE'");
             while (r.next()) {
                 NodeType n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
                         r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
@@ -160,7 +157,7 @@ public class NodeType {
 
             }
         } catch (Exception e) {
-            throw new ModelException("Cannot set baseline node type.");
+            throw new ModelException("Cannot set baseline node type");
         }
     }
 
@@ -168,11 +165,11 @@ public class NodeType {
         try {
 
             HttpSession session = request.getSession();
-            AccessObject dbHolder = (AccessObject) session.getAttribute("AccessObject");
+            AccessObject ao = (AccessObject) session.getAttribute("AccessObject");
             ArrayList<NodeType> nodeTypeList = new ArrayList<NodeType>();
 
             ResultSet r;
-            r = dbHolder.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType");
+            r = ao.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType");
             while (r.next()) {
                 NodeType n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
                         r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
@@ -181,17 +178,17 @@ public class NodeType {
             }
             request.setAttribute("nodeTypeList", nodeTypeList);
         } catch (Exception e) {
-            throw new ModelException("Cannot refresh node type page.");
+            throw new ModelException("Cannot refresh node type page");
         }
     }
 
-    public static void readNodeType(HttpServletRequest request, String nodeTypeName) throws ModelException {
+    public static void getSingleNodeType(HttpServletRequest request, String nodeTypeName) throws ModelException {
         try {
 
             HttpSession session = request.getSession();
-            AccessObject dbHolder = (AccessObject) session.getAttribute("AccessObject");
+            AccessObject ao = (AccessObject) session.getAttribute("AccessObject");
             NodeType n = null;
-            ResultSet r = dbHolder.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType where"
+            ResultSet r = ao.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType where"
                     + "nodeTypeName = '" + nodeTypeName + "'");
             while (r.next()) {
                 n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
@@ -199,8 +196,7 @@ public class NodeType {
             }
             request.setAttribute("Nodetype", n);
         } catch (Exception e) {
-            throw new ModelException("Cannot refresh Nodetype page.");
+            throw new ModelException("Cannot refresh Nodetype page");
         }
     }
-
 }

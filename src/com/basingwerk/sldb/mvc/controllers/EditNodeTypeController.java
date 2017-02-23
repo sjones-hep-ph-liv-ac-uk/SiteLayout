@@ -15,36 +15,24 @@ import javax.servlet.http.HttpSession;
 import com.basingwerk.sldb.mvc.model.NodeType;
 import com.basingwerk.sldb.mvc.model.AccessObject;
 
-/**
- * Servlet implementation class EditNodeTypeController
- */
-
 @WebServlet("/EditNodeTypeController")
+
 public class EditNodeTypeController extends HttpServlet {
     private static final long serialVersionUID = 1L;
     final static Logger logger = Logger.getLogger(EditNodeTypeController.class);
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
     public EditNodeTypeController() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // TODO Auto-generated method stub
 
-        AccessObject dbHolder = null;
+        AccessObject ao = null;
         RequestDispatcher rd = null;
         HttpSession session = request.getSession();
-        dbHolder = (AccessObject) session.getAttribute("AccessObject");
-        if (dbHolder == null) {
+        ao = (AccessObject) session.getAttribute("AccessObject");
+        if (ao == null) {
             logger.error("Could not connect to database.");
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
@@ -64,18 +52,17 @@ public class EditNodeTypeController extends HttpServlet {
         int result = -1;
 
         try {
-            statement = dbHolder.getTheConnection().createStatement();
+            statement = ao.getTheConnection().createStatement();
             result = statement.executeUpdate(sqlCommand);
-            dbHolder.getTheConnection().commit();
-        } catch (SQLException e) {
+            ao.getTheConnection().commit();
+        } catch (SQLException ex) {
+            logger.info("Could not update node type, rolling back.");
             try {
-                logger.info ("Could not update node type, rolling back.");
-                dbHolder.getTheConnection().rollback();
-            } catch (SQLException e1) {
-                logger.error ("Rollback failed, ",e1);
+                ao.getTheConnection().rollback();
+            } catch (SQLException ex1) {
+                logger.error("Rollback failed, ", ex1);
             }
-            logger.error("Error while editing a node type. " , e);
-            request.setAttribute("TheMessage", "Did not save changes. Please try again.");
+            request.setAttribute("TheMessage", "Sorry. Failed to save changes. Please try again.");
             rd = request.getRequestDispatcher("/recoverable_message.jsp");
             rd.forward(request, response);
             return;
@@ -86,7 +73,7 @@ public class EditNodeTypeController extends HttpServlet {
             rd = request.getRequestDispatcher(next);
             rd.forward(request, response);
         } catch (Exception e) {
-            logger.error("Error when trying to refreshListOfNodeTypes, " , e );
+            logger.error("Error when trying to refreshListOfNodeTypes, ", e);
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
             return;
@@ -94,14 +81,8 @@ public class EditNodeTypeController extends HttpServlet {
         return;
     }
 
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // TODO Auto-generated method stub
         doGet(request, response);
     }
-
 }

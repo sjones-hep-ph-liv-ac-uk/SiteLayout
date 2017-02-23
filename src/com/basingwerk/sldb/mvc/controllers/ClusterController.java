@@ -20,27 +20,16 @@ import com.basingwerk.sldb.mvc.model.Cluster;
 import com.basingwerk.sldb.mvc.model.ModelException;
 import com.basingwerk.sldb.mvc.model.AccessObject;
 
-/**
- * Servlet implementation class ClusterController
- */
 @WebServlet("/ClusterController")
 
 public class ClusterController extends HttpServlet {
     private static final long serialVersionUID = 1L;
     final static Logger logger = Logger.getLogger(ClusterController.class);
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
     public ClusterController() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
@@ -77,7 +66,7 @@ public class ClusterController extends HttpServlet {
                 try {
                     Cluster.setListOfClusters(request);
                 } catch (ModelException e) {
-                    logger.error("Had a ModelException when trying to setListOfClusters, " , e);
+                    logger.error("Had a ModelException when trying to setListOfClusters, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
@@ -106,10 +95,6 @@ public class ClusterController extends HttpServlet {
         }
     }
 
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         doGet(request, response);

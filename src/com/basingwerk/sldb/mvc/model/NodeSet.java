@@ -61,58 +61,51 @@ public class NodeSet {
     }
 
     public static void deleteNodeSet(HttpServletRequest request, String nodeSet) throws ModelException {
-        AccessObject dbHolder = null;
+        AccessObject ao = null;
         try {
             HttpSession session = request.getSession();
-            dbHolder = (AccessObject) session.getAttribute("AccessObject");
-            if (dbHolder == null) {
-//                logger.error("Access object is null.");
-            }
-            logger.debug("AccessObject is not null.");
+            ao = (AccessObject) session.getAttribute("AccessObject");
             String sqlCommand = "delete from nodeSet where nodeSetName = '" + nodeSet + "'";
 
-            Statement statement = dbHolder.getTheConnection().createStatement();
+            Statement statement = ao.getTheConnection().createStatement();
             int result = statement.executeUpdate(sqlCommand);
-            dbHolder.getTheConnection().commit();
+            ao.getTheConnection().commit();
         } catch (Exception e) {
+            logger.info("Could not delete node set, rolling back.");
             try {
-                logger.info ("Could not delete node set, rolling back.");
-                dbHolder.getTheConnection().rollback();
-            } catch (SQLException e1) {
-                logger.error("Rollback failed, " , e1);
-                throw new ModelException("Cannot delete this node set.");
+                ao.getTheConnection().rollback();
+            } catch (SQLException ex) {
+                logger.error("Rollback failed, ", ex);
+                throw new ModelException("Cannot delete this node set");
             }
-            logger.error("Could not delete node set, " , e);
             if (e instanceof MySQLIntegrityConstraintViolationException) {
-                throw new ModelException("This node set is still being used by a cluster and/or a node type.");
+                throw new ModelException("This node set is still being used by a cluster and/or a node type");
             }
-            throw new ModelException("Cannot delete this node set.");
+            throw new ModelException("Cannot delete this node set");
         }
     }
 
     public static void refreshListOfNodeSets(HttpServletRequest request) throws ModelException {
         try {
             HttpSession session = request.getSession();
-            AccessObject dbHolder = (AccessObject) session.getAttribute("AccessObject");
+            AccessObject ao = (AccessObject) session.getAttribute("AccessObject");
             ArrayList<NodeSet> nodeSetList = new ArrayList<NodeSet>();
 
             ResultSet r;
-            if (dbHolder == null) {
+            if (ao == null) {
                 logger.error("Access object is null.");
             }
-            r = dbHolder.query("select nodeSetName, nodeTypeName ,nodeCount, cluster from nodeSet");
+            r = ao.query("select nodeSetName, nodeTypeName ,nodeCount, cluster from nodeSet");
             while (r.next()) {
                 NodeSet n = new NodeSet(r.getString("nodeSetName"), r.getString("nodeTypeName"), r.getInt("nodeCount"),
                         r.getString("cluster"));
                 nodeSetList.add(n);
 
             }
-            logger.info("Suppose did loop...");
             session.setAttribute("nodeSetList", nodeSetList);
-            logger.info("Hm...");
         } catch (Exception e) {
-            logger.error("Could not refresh the list of node sets, " , e);
-            throw new ModelException("Cannot refresh node set page.");
+            logger.error("Could not refresh the list of node sets, ", e);
+            throw new ModelException("Cannot refresh node set page");
         }
     }
 }

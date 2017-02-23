@@ -17,36 +17,25 @@ import javax.servlet.http.HttpSession;
 import com.basingwerk.sldb.mvc.model.AccessObject;
 import com.basingwerk.sldb.mvc.model.NodeType;
 
-/**
- * Servlet implementation class NewNodeTypeController
- */
 @WebServlet("/NewNodeTypeController")
+
 public class NewNodeTypeController extends HttpServlet {
     private static final long serialVersionUID = 1L;
     final static Logger logger = Logger.getLogger(NewNodeTypeController.class);
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
     public NewNodeTypeController() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // TODO Auto-generated method stub
 
-        AccessObject dbHolder = null;
+        AccessObject ao = null;
         RequestDispatcher rd = null;
 
         HttpSession session = request.getSession();
-        dbHolder = (AccessObject) session.getAttribute("AccessObject");
-        if (dbHolder == null) {
+        ao = (AccessObject) session.getAttribute("AccessObject");
+        if (ao == null) {
             logger.error("Error connecting to the database.");
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
@@ -66,20 +55,18 @@ public class NewNodeTypeController extends HttpServlet {
         int result = -1;
 
         try {
-            statement = dbHolder.getTheConnection().createStatement();
+            statement = ao.getTheConnection().createStatement();
             result = statement.executeUpdate(sqlCommand);
-            dbHolder.getTheConnection().commit();
+            ao.getTheConnection().commit();
 
-        } catch (SQLException e) {
+        } catch (SQLException ex) {
+            logger.info("Could not add new nodeType, rolling back.");
             try {
-                logger.info("Could not add new nodeType, rolling back.");
-                dbHolder.getTheConnection().rollback();
-            } catch (SQLException e1) {
-                logger.error ("Rollback failed, ",e1);
+                ao.getTheConnection().rollback();
+            } catch (SQLException ex1) {
+                logger.error("Rollback failed, ", ex1);
             }
-
-            logger.error("Error while adding a node type. " , e);
-            request.setAttribute("TheMessage", "It did not work. Perhaps that node type exists already?");
+            request.setAttribute("TheMessage", "Problem while adding a node type. Please try again.");
             rd = request.getRequestDispatcher("/recoverable_message.jsp");
             rd.forward(request, response);
             return;
@@ -87,7 +74,7 @@ public class NewNodeTypeController extends HttpServlet {
         try {
             ArrayList<NodeType> nodeTypeList = new ArrayList<NodeType>();
 
-            ResultSet r = dbHolder.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType");
+            ResultSet r = ao.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType");
             while (r.next()) {
                 NodeType n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
                         r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
@@ -99,20 +86,14 @@ public class NewNodeTypeController extends HttpServlet {
             rd = request.getRequestDispatcher(next);
             rd.forward(request, response);
         } catch (SQLException e) {
-            logger.error("Error while adding a node type. " , e);
+            logger.error("Error while adding a node type. ", e);
         }
         return;
 
     }
 
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // TODO Auto-generated method stub
         doGet(request, response);
     }
-
 }

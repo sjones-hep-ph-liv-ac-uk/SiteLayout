@@ -14,6 +14,7 @@ import com.basingwerk.sldb.mvc.controllers.NodeTypeController;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 public class Cluster {
+
     final static Logger logger = Logger.getLogger(NodeTypeController.class);
 
     private String clusterName;
@@ -23,10 +24,6 @@ public class Cluster {
         super();
         this.clusterName = clusterName;
         this.descr = descr;
-    }
-
-    public String toString() {
-        return clusterName + " " + descr;
     }
 
     public String getCluster() {
@@ -47,28 +44,27 @@ public class Cluster {
 
     public static void setListOfClusters(HttpServletRequest request) throws ModelException {
         try {
-
             HttpSession session = request.getSession();
-            AccessObject dbHolder = (AccessObject) session.getAttribute("AccessObject");
+            AccessObject ao = (AccessObject) session.getAttribute("AccessObject");
             ArrayList<Cluster> clusterList = new ArrayList<Cluster>();
             ResultSet r;
-            r = dbHolder.query("select clusterName,descr from cluster");
+            r = ao.query("select clusterName,descr from cluster");
             while (r.next()) {
                 Cluster c = new Cluster(r.getString("clusterName"), r.getString("descr"));
                 clusterList.add(c);
             }
             request.setAttribute("clusterList", clusterList);
         } catch (Exception e) {
-            throw new ModelException("Cannot refresh cluster page.");
+            throw new ModelException("Cannot refresh cluster page");
         }
     }
 
     public static void updateSingleCluster(HttpServletRequest request, Cluster cluster) throws ModelException {
-        AccessObject dbHolder = null;
+        AccessObject ao = null;
         try {
             RequestDispatcher rd = null;
             HttpSession session = request.getSession();
-            dbHolder = (AccessObject) session.getAttribute("AccessObject");
+            ao = (AccessObject) session.getAttribute("AccessObject");
 
             String clusterName = cluster.getCluster();
             String descr = cluster.getDescr();
@@ -78,42 +74,42 @@ public class Cluster {
             java.sql.Statement statement;
             int result = -1;
 
-            statement = dbHolder.getTheConnection().createStatement();
+            statement = ao.getTheConnection().createStatement();
             result = statement.executeUpdate(sqlCommand);
-            dbHolder.getTheConnection().commit();
+            ao.getTheConnection().commit();
         } catch (SQLException e) {
+            logger.info("Problem updating cluster, rolling back.");
             try {
-                logger.info ("Could not update cluster, rolling back.");
-                dbHolder.getTheConnection().rollback();
-            } catch (SQLException e1) {
-                logger.error ("Rollback failed, ",e1);
+                ao.getTheConnection().rollback();
+            } catch (SQLException ex) {
+                logger.error("Rollback failed, ", ex);
                 throw new ModelException("Failed to update the cluster");
             }
-            throw new ModelException("Failed to update the cluster");
+            throw new ModelException("Problem updating the cluster. Please try again.");
         }
     }
 
     public static void setSingleCluster(HttpServletRequest request, String cluster) throws ModelException {
-        AccessObject dbHolder = null;
+        AccessObject ao = null;
         try {
             HttpSession session = request.getSession();
-            dbHolder = (AccessObject) session.getAttribute("AccessObject");
-            if (dbHolder != null) {
+            ao = (AccessObject) session.getAttribute("AccessObject");
+            if (ao != null) {
                 ResultSet r;
-                r = dbHolder.query("select clusterName,descr from cluster where clusterName = '" + cluster + "'");
+                r = ao.query("select clusterName,descr from cluster where clusterName = '" + cluster + "'");
                 Cluster c = null;
                 while (r.next()) {
                     c = new Cluster(r.getString("clusterName"), r.getString("descr"));
                 }
                 request.setAttribute("cluster", c);
             }
-            dbHolder.getTheConnection().commit();
+            ao.getTheConnection().commit();
         } catch (Exception e) {
+            logger.info("Could not set cluster, rolling back.");
             try {
-                logger.info ("Could not set cluster, rolling back.");
-                dbHolder.getTheConnection().rollback();
-            } catch (SQLException e1) {
-                logger.error ("Rollback failed, ", e1);
+                ao.getTheConnection().rollback();
+            } catch (SQLException ex) {
+                logger.error("Rollback failed, ", ex);
                 throw new ModelException("Cannot refresh single cluster page.");
             }
             throw new ModelException("Cannot refresh single cluster page.");
@@ -122,22 +118,22 @@ public class Cluster {
     }
 
     public static void deleteCluster(HttpServletRequest request, String cluster) throws ModelException {
-        AccessObject dbHolder = null;
+        AccessObject ao = null;
         try {
             HttpSession session = request.getSession();
-            dbHolder = (AccessObject) session.getAttribute("AccessObject");
+            ao = (AccessObject) session.getAttribute("AccessObject");
 
             String sqlCommand = "delete from cluster where clusterName = '" + cluster + "'";
 
-            Statement statement = dbHolder.getTheConnection().createStatement();
+            Statement statement = ao.getTheConnection().createStatement();
             int result = statement.executeUpdate(sqlCommand);
-            dbHolder.getTheConnection().commit();
+            ao.getTheConnection().commit();
         } catch (Exception e) {
+            logger.info("Could not delete cluster, rolling back.");
             try {
-                logger.info ("Could not delete cluster, rolling back.");
-                dbHolder.getTheConnection().rollback();
-            } catch (SQLException e1) {
-                logger.error ("Rollback failed, ",e1);
+                ao.getTheConnection().rollback();
+            } catch (SQLException ex) {
+                logger.error("Rollback failed, ", ex);
                 throw new ModelException("Cannot delete this cluster.");
             }
             if (e instanceof MySQLIntegrityConstraintViolationException) {
@@ -147,13 +143,13 @@ public class Cluster {
         }
     }
 
-    public static void readCluster(HttpServletRequest request, String clusterName) throws ModelException {
+    public static void getOneCluster(HttpServletRequest request, String clusterName) throws ModelException {
         try {
 
             HttpSession session = request.getSession();
-            AccessObject dbHolder = (AccessObject) session.getAttribute("AccessObject");
+            AccessObject ao = (AccessObject) session.getAttribute("AccessObject");
             Cluster c = null;
-            ResultSet r = dbHolder.query("select clusterName,descr from cluster where clusterName = '" + clusterName + "'");
+            ResultSet r = ao.query("select clusterName,descr from cluster where clusterName = '" + clusterName + "'");
             while (r.next()) {
                 c = new Cluster(r.getString("clusterName"), r.getString("descr"));
             }
@@ -163,13 +159,13 @@ public class Cluster {
         }
     }
 
-    public static ArrayList<Cluster> getClusters(HttpServletRequest request) throws ModelException {
+    public static ArrayList<Cluster> getAllClusters(HttpServletRequest request) throws ModelException {
         ArrayList<Cluster> cl = new ArrayList<Cluster>();
         try {
             HttpSession session = request.getSession();
-            AccessObject dbHolder = (AccessObject) session.getAttribute("AccessObject");
+            AccessObject ao = (AccessObject) session.getAttribute("AccessObject");
             Cluster c = null;
-            ResultSet r = dbHolder.query("select clusterName,descr from cluster");
+            ResultSet r = ao.query("select clusterName,descr from cluster");
             while (r.next()) {
                 c = new Cluster(r.getString("clusterName"), r.getString("descr"));
                 cl.add(c);
@@ -181,14 +177,14 @@ public class Cluster {
         return cl;
     }
 
-    public static ArrayList<String> listClusters(HttpServletRequest request) throws ModelException {
+    public static ArrayList<String> listAllClusterNames(HttpServletRequest request) throws ModelException {
         ArrayList<String> cl = new ArrayList<String>();
         try {
             HttpSession session = request.getSession();
-            AccessObject dbHolder = (AccessObject) session.getAttribute("AccessObject");
+            AccessObject ao = (AccessObject) session.getAttribute("AccessObject");
             Cluster c = null;
 
-            ResultSet r = dbHolder.query("select clusterName,descr from cluster");
+            ResultSet r = ao.query("select clusterName,descr from cluster");
             while (r.next()) {
                 c = new Cluster(r.getString("clusterName"), r.getString("descr"));
                 cl.add(c.getCluster());
@@ -197,5 +193,9 @@ public class Cluster {
             throw new ModelException("Cannot list clusters.");
         }
         return cl;
+    }
+
+    public String toString() {
+        return clusterName + " " + descr;
     }
 }

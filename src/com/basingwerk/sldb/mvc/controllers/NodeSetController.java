@@ -22,26 +22,16 @@ import com.basingwerk.sldb.mvc.model.Cluster;
 import com.basingwerk.sldb.mvc.model.ModelException;
 import com.basingwerk.sldb.mvc.model.AccessObject;
 
-/**
- * Servlet implementation class NodeSetController
- */
 @WebServlet("/NodeSetController")
 
 public class NodeSetController extends HttpServlet {
     private static final long serialVersionUID = 1L;
     final static Logger logger = Logger.getLogger(NodeSetController.class);
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
     public NodeSetController() {
         super();
     }
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
@@ -54,19 +44,19 @@ public class NodeSetController extends HttpServlet {
         }
         act = request.getParameter("Refresh");
         if (act != null) {
-          try {
-              NodeSet.refreshListOfNodeSets(request);
-          } catch (ModelException e) {
-                logger.error("Error refreshing ... " , e);
+            try {
+                NodeSet.refreshListOfNodeSets(request);
+            } catch (ModelException e) {
+                logger.error("Error refreshing ... ", e);
                 request.setAttribute("TheMessage", e.getMessage());
                 request.setAttribute("TheJsp", "main_screen.jsp");
                 rd = request.getRequestDispatcher("/recoverable_message.jsp");
                 rd.forward(request, response);
                 return;
-          }
-          rd = request.getRequestDispatcher("/nodeset.jsp");
-          rd.forward(request, response);
-          return;
+            }
+            rd = request.getRequestDispatcher("/nodeset.jsp");
+            rd.forward(request, response);
+            return;
         }
 
         act = request.getParameter("New");
@@ -75,11 +65,11 @@ public class NodeSetController extends HttpServlet {
             ArrayList<String> cl = new ArrayList<String>();
             ArrayList<String> nt = new ArrayList<String>();
             try {
-                cl = Cluster.listClusters(request);
-                nt = NodeType.listNodeTypes(request);
+                cl = Cluster.listAllClusterNames(request);
+                nt = NodeType.listAllNodeTypes(request);
 
             } catch (ModelException e) {
-                logger.error("Error getting the clusters and node types, " , e);
+                logger.error("Error getting the clusters and node types, ", e);
                 request.setAttribute("TheMessage", e.getMessage());
                 request.setAttribute("TheJsp", "main_screen.jsp");
                 rd = request.getRequestDispatcher("/recoverable_message.jsp");
@@ -88,7 +78,6 @@ public class NodeSetController extends HttpServlet {
             }
             request.setAttribute("clusterList", cl);
             request.setAttribute("nodeTypeList", nt);
-
             rd = request.getRequestDispatcher("/new_nodeset.jsp");
             rd.forward(request, response);
             return;
@@ -104,7 +93,7 @@ public class NodeSetController extends HttpServlet {
                 try {
                     NodeSet.deleteNodeSet(request, nodeSet);
                 } catch (ModelException e) {
-                    logger.error("Error deleting a node set, " , e);
+                    logger.error("Error deleting a node set, ", e);
                     request.setAttribute("TheMessage", e.getMessage());
                     request.setAttribute("TheJsp", "main_screen.jsp");
                     rd = request.getRequestDispatcher("/recoverable_message.jsp");
@@ -114,7 +103,7 @@ public class NodeSetController extends HttpServlet {
                 try {
                     NodeSet.refreshListOfNodeSets(request);
                 } catch (ModelException e) {
-                    logger.error("Model error when trying refreshListOfNodeSets, " ,e);
+                    logger.error("Model error when trying refreshListOfNodeSets, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
@@ -126,18 +115,15 @@ public class NodeSetController extends HttpServlet {
             }
             if (key.startsWith("ED.")) {
                 String nodeSet = key.substring(3, key.length() - 1);
-
                 try {
                     HttpSession session = request.getSession();
-                    AccessObject dbHolder = (AccessObject) session.getAttribute("AccessObject");
-                    if (dbHolder != null) {
-
+                    AccessObject ao = (AccessObject) session.getAttribute("AccessObject");
+                    if (ao != null) {
                         ResultSet r;
-
                         String sql = "select  nodeSetName, nodeTypeName ,nodeCount, cluster from nodeSet where"
                                 + " nodeSetName = '" + nodeSet + "'";
 
-                        r = dbHolder.query(sql);
+                        r = ao.query(sql);
                         NodeSet n = null;
                         while (r.next()) {
                             n = new NodeSet(r.getString("nodeSetName"), r.getString("nodeTypeName"),
@@ -147,11 +133,11 @@ public class NodeSetController extends HttpServlet {
                         ArrayList<String> cl = new ArrayList<String>();
                         ArrayList<String> nt = new ArrayList<String>();
                         try {
-                            cl = Cluster.listClusters(request);
-                            nt = NodeType.listNodeTypes(request);
+                            cl = Cluster.listAllClusterNames(request);
+                            nt = NodeType.listAllNodeTypes(request);
 
                         } catch (ModelException e) {
-                            logger.error("Error getting the clusters and node types, " , e);
+                            logger.error("Error getting the clusters and node types, ", e);
                             request.setAttribute("TheMessage", e.getMessage());
                             request.setAttribute("TheJsp", "main_screen.jsp");
                             rd = request.getRequestDispatcher("/recoverable_message.jsp");
@@ -160,10 +146,9 @@ public class NodeSetController extends HttpServlet {
                         }
                         request.setAttribute("clusterList", cl);
                         request.setAttribute("nodeTypeList", nt);
-
                     }
                 } catch (SQLException e) {
-                    logger.error("Error with this node set, " , e  );
+                    logger.error("Error with this node set, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
@@ -176,13 +161,8 @@ public class NodeSetController extends HttpServlet {
         }
     }
 
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // TODO Auto-generated method stub
         doGet(request, response);
     }
 }
