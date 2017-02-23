@@ -1,4 +1,4 @@
-777package com.basingwerk.sldb.mvc.controllers;
+package com.basingwerk.sldb.mvc.controllers;
 
 import org.apache.log4j.Logger;
 import java.io.IOException;
@@ -13,7 +13,6 @@ import javax.servlet.http.HttpSession;
 
 import com.basingwerk.sldb.mvc.model.AccessObject;
 import com.basingwerk.sldb.mvc.model.Cluster;
-import com.basingwerk.sldb.mvc.model.AccessObject;
 import com.basingwerk.sldb.mvc.model.ModelException;
 
 @WebServlet("/EditClusterController")
