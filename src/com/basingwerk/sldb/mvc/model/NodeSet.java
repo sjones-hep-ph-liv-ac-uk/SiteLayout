@@ -85,7 +85,7 @@ public class NodeSet {
         }
     }
 
-    public static void refreshListOfNodeSets(HttpServletRequest request) throws ModelException {
+    public static void refreshListOfNodeSets(HttpServletRequest request, String col, String order) throws ModelException {
         try {
             HttpSession session = request.getSession();
             AccessObject ao = (AccessObject) session.getAttribute("AccessObject");
@@ -95,12 +95,11 @@ public class NodeSet {
             if (ao == null) {
                 logger.error("Access object is null.");
             }
-            r = ao.query("select nodeSetName, nodeTypeName ,nodeCount, cluster from nodeSet");
+            r = ao.query("select nodeSetName, nodeTypeName ,nodeCount, cluster from nodeSet order by " + col + " " + order);
             while (r.next()) {
                 NodeSet n = new NodeSet(r.getString("nodeSetName"), r.getString("nodeTypeName"), r.getInt("nodeCount"),
                         r.getString("cluster"));
                 nodeSetList.add(n);
-
             }
             session.setAttribute("nodeSetList", nodeSetList);
         } catch (Exception e) {
@@ -109,3 +108,4 @@ public class NodeSet {
         }
     }
 }
+

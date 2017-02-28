@@ -24,10 +24,34 @@ Node Set
 	<form action="NodeSetController" method="post">
 		<table class="tg">
 			<tr>
-				<td>Node set name</td>
-				<td>Node type</td>
-				<td>Count</td>
-				<td>Cluster</td>
+				<td>
+					<input type="image" src="Down-48.png" alt="Submit" width="15px"
+					height="15px" value="SORTDOWN.nodeSetName" name="SORTDOWN.nodeSetName">
+				Node set name
+					<input type="image" src="Up-48.png" alt="Submit" width="15px"
+					height="15px" value="SORTUP.nodeSetName" name="SORTUP.nodeSetName">
+				</td>
+				<td>
+					<input type="image" src="Down-48.png" alt="Submit" width="15px"
+					height="15px" value="SORTDOWN.nodeTypeName" name="SORTDOWN.nodeTypeName">
+				Node type
+					<input type="image" src="Up-48.png" alt="Submit" width="15px"
+					height="15px" value="SORTUP.nodeTypeName" name="SORTUP.nodeTypeName">
+				</td>
+				<td>
+					<input type="image" src="Down-48.png" alt="Submit" width="15px"
+					height="15px" value="SORTDOWN.nodeCount" name="SORTDOWN.nodeCount">
+				Count
+					<input type="image" src="Up-48.png" alt="Submit" width="15px"
+					height="15px" value="SORTUP.nodeCount" name="SORTUP.nodeCount">
+				</td>
+				<td>
+					<input type="image" src="Down-48.png" alt="Submit" width="15px"
+					height="15px" value="SORTDOWN.cluster" name="SORTDOWN.cluster">
+				Cluster
+					<input type="image" src="Up-48.png" alt="Submit" width="15px"
+					height="15px" value="SORTUP.cluster" name="SORTUP.cluster">
+				</td>
 				<td></td>
 				<td></td>
 			</tr>

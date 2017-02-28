@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 
 import com.basingwerk.sldb.mvc.model.Cluster;
 import com.basingwerk.sldb.mvc.model.ModelException;
+import com.basingwerk.sldb.mvc.model.NodeType;
 import com.basingwerk.sldb.mvc.model.AccessObject;
 
 @WebServlet("/ClusterController")
@@ -51,7 +52,38 @@ public class ClusterController extends HttpServlet {
         Iterator i = params.keySet().iterator();
         while (i.hasNext()) {
             String key = (String) i.next();
-            String value = ((String[]) params.get(key))[0];
+//            String value = ((String[]) params.get(key))[0];
+            
+            String order = "ASC";
+            if (key.startsWith("SORT")) {
+                String sortCmd = key.substring(4, key.length()).trim().replaceAll("\\.[xy]$","");
+                String c = "";
+                if (sortCmd.startsWith("UP.")) {
+                    order = "ASC";
+                    c = sortCmd.substring(3, sortCmd.length()).trim();
+                }
+                else {
+                    order = "DESC";
+                    c = sortCmd.substring(5, sortCmd.length()).trim();
+                }
+                
+                try {
+                    Cluster.refreshListOfClusters(request,c,order);
+                } catch (ModelException e) {
+                    request.setAttribute("TheMessage", e.getMessage());
+                    request.setAttribute("TheJsp", "main_screen.jsp");
+                    rd = request.getRequestDispatcher("/recoverable_message.jsp");
+                    rd.forward(request, response);
+                    return;
+                }
+                String next = "/cluster.jsp";
+                rd = request.getRequestDispatcher(next);
+                rd.forward(request, response);
+                return;
+            }
+            
+            
+            
             if (key.startsWith("DEL.")) {
                 String cluster = key.substring(4, key.length() - 1);
                 try {
@@ -64,7 +96,7 @@ public class ClusterController extends HttpServlet {
                     return;
                 }
                 try {
-                    Cluster.setListOfClusters(request);
+                    Cluster.refreshListOfClusters(request,"clusterName","ASC");
                 } catch (ModelException e) {
                     logger.error("Had a ModelException when trying to setListOfClusters, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");

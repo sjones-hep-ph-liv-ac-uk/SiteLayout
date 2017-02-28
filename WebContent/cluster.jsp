@@ -22,8 +22,22 @@
 
 		<table class="tg">
 			<tr>
-				<td>Cluster name</td>
-				<td>Description</td>
+				<td>
+					<input type="image" src="Down-48.png" alt="Submit" width="15px"
+					height="15px" value="SORTDOWN.clusterName" name="SORTDOWN.clusterName">
+				Cluster name
+					<input type="image" src="Up-48.png" alt="Submit"
+					width="15px" height="15px" value="SORTUP.clusterName"
+					name="SORTUP.clusterName">
+				</td>
+				<td>
+					<input type="image" src="Down-48.png" alt="Submit" width="15px"
+					height="15px" value="SORTDOWN.descr" name="SORTDOWN.descr">
+				Description
+					<input type="image" src="Up-48.png" alt="Submit"
+					width="15px" height="15px" value="SORTUP.descr"
+					name="SORTUP.descr">
+				</td>
 				<td></td>
 				<td></td>
 			</tr>

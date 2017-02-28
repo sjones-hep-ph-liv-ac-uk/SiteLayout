@@ -42,13 +42,13 @@ public class Cluster {
         this.descr = descr;
     }
 
-    public static void setListOfClusters(HttpServletRequest request) throws ModelException {
+    public static void refreshListOfClusters(HttpServletRequest request ,String col, String order) throws ModelException {
         try {
             HttpSession session = request.getSession();
             AccessObject ao = (AccessObject) session.getAttribute("AccessObject");
             ArrayList<Cluster> clusterList = new ArrayList<Cluster>();
             ResultSet r;
-            r = ao.query("select clusterName,descr from cluster");
+            r = ao.query("select clusterName,descr from cluster order by " + col + " " + order);
             while (r.next()) {
                 Cluster c = new Cluster(r.getString("clusterName"), r.getString("descr"));
                 clusterList.add(c);

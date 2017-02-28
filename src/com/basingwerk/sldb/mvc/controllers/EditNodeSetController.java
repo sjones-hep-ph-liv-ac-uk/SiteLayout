@@ -67,7 +67,7 @@ public class EditNodeSetController extends HttpServlet {
             return;
         }
         try {
-            NodeSet.refreshListOfNodeSets(request);
+            NodeSet.refreshListOfNodeSets(request,"nodeSetName","ASC");
             String next = "/nodeset.jsp";
             rd = request.getRequestDispatcher(next);
             rd.forward(request, response);

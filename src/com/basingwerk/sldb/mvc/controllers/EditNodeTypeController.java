@@ -68,7 +68,7 @@ public class EditNodeTypeController extends HttpServlet {
             return;
         }
         try {
-            NodeType.refreshListOfNodeTypes(request);
+            NodeType.refreshListOfNodeTypes(request,"nodeTypeName","ASC");
             String next = "/nodetype.jsp";
             rd = request.getRequestDispatcher(next);
             rd.forward(request, response);

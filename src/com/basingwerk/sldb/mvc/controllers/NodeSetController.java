@@ -45,7 +45,7 @@ public class NodeSetController extends HttpServlet {
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
-                NodeSet.refreshListOfNodeSets(request);
+                NodeSet.refreshListOfNodeSets(request,"nodeSetName","ASC");
             } catch (ModelException e) {
                 logger.error("Error refreshing ... ", e);
                 request.setAttribute("TheMessage", e.getMessage());
@@ -87,7 +87,35 @@ public class NodeSetController extends HttpServlet {
         Iterator i = params.keySet().iterator();
         while (i.hasNext()) {
             String key = (String) i.next();
-            String value = ((String[]) params.get(key))[0];
+            
+            String order = "ASC";
+            if (key.startsWith("SORT")) {
+                String sortCmd = key.substring(4, key.length()).trim().replaceAll("\\.[xy]$","");
+                String c = "";
+                if (sortCmd.startsWith("UP.")) {
+                    order = "ASC";
+                    c = sortCmd.substring(3, sortCmd.length()).trim();
+                }
+                else {
+                    order = "DESC";
+                    c = sortCmd.substring(5, sortCmd.length()).trim();
+                }
+                
+                try {
+                    NodeSet.refreshListOfNodeSets(request, c,order);
+                } catch (ModelException e) {
+                    request.setAttribute("TheMessage", e.getMessage());
+                    request.setAttribute("TheJsp", "main_screen.jsp");
+                    rd = request.getRequestDispatcher("/recoverable_message.jsp");
+                    rd.forward(request, response);
+                    return;
+                }
+                String next = "/nodeset.jsp";
+                rd = request.getRequestDispatcher(next);
+                rd.forward(request, response);
+                return;
+            }
+            
             if (key.startsWith("DEL.")) {
                 String nodeSet = key.substring(4, key.length() - 1);
                 try {
@@ -101,7 +129,7 @@ public class NodeSetController extends HttpServlet {
                     return;
                 }
                 try {
-                    NodeSet.refreshListOfNodeSets(request);
+                    NodeSet.refreshListOfNodeSets(request,"nodeSetName","ASC");
                 } catch (ModelException e) {
                     logger.error("Model error when trying refreshListOfNodeSets, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");

@@ -161,7 +161,7 @@ public class NodeType {
         }
     }
 
-    public static void refreshListOfNodeTypes(HttpServletRequest request) throws ModelException {
+    public static void refreshListOfNodeTypes(HttpServletRequest request, String col, String order) throws ModelException {
         try {
 
             HttpSession session = request.getSession();
@@ -169,7 +169,8 @@ public class NodeType {
             ArrayList<NodeType> nodeTypeList = new ArrayList<NodeType>();
 
             ResultSet r;
-            r = ao.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType");
+            // ORDER BY column1, column2, .. columnN] [ASC | DESC
+            r = ao.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType order by " + col + " " + order);
             while (r.next()) {
                 NodeType n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
                         r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));

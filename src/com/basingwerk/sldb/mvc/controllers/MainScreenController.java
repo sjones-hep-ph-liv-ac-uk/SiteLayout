@@ -43,7 +43,7 @@ public class MainScreenController extends HttpServlet {
             }
             String next = "";
             if (act.equals("Edit node types")) {
-                NodeType.refreshListOfNodeTypes(request);
+                NodeType.refreshListOfNodeTypes(request,"nodeTypeName","ASC");
                 next = "/nodetype.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -51,14 +51,14 @@ public class MainScreenController extends HttpServlet {
             }
 
             if (act.equals("Edit clusters")) {
-                Cluster.setListOfClusters(request);
+                Cluster.refreshListOfClusters(request,"clusterName","ASC");
                 next = "/cluster.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
                 return;
             }
             if (act.equals("Edit node sets")) {
-                NodeSet.refreshListOfNodeSets(request);
+                NodeSet.refreshListOfNodeSets(request,"nodeSetName","ASC");
                 next = "/nodeset.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -66,8 +66,8 @@ public class MainScreenController extends HttpServlet {
 
             }
             if (act.equals("Reports")) {
-                NodeType.refreshListOfNodeTypes(request);
-                Cluster.setListOfClusters(request);
+                NodeType.refreshListOfNodeTypes(request,"nodeTypeName","ASC");
+                Cluster.refreshListOfClusters(request,"clusterName","ASC");
                 NodeType.setBaselineNodeType(request);
                 ArrayList<String> clusters = Cluster.listAllClusterNames(request);
                 java.util.HashMap<String, ArrayList> joinMap = new java.util.HashMap<String, ArrayList>();
