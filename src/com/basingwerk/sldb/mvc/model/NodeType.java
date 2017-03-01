@@ -17,12 +17,12 @@ public class NodeType {
     private int cpu;
     private int slot;
     private float hs06PerSlot;
-    private float memPerNode;
+    private float memPerSlot;
 
     public String toString() {
         String result;
         result = nodeTypeName + Integer.toString(cpu) + Integer.toString(slot) + Float.toString(hs06PerSlot)
-                + Float.toString(memPerNode);
+                + Float.toString(memPerSlot);
         return result;
     }
 
@@ -58,21 +58,21 @@ public class NodeType {
         this.hs06PerSlot = hs06PerSlot;
     }
 
-    public float getMemPerNode() {
-        return memPerNode;
+    public float getmemPerSlot() {
+        return memPerSlot;
     }
 
-    public void setMemPerNode(float memPerNode) {
-        this.memPerNode = memPerNode;
+    public void setmemPerSlot(float memPerSlot) {
+        this.memPerSlot = memPerSlot;
     }
 
-    public NodeType(String nodeTypeName, int cpu, int slot, float hs06PerSlot, float memPerNode) {
+    public NodeType(String nodeTypeName, int cpu, int slot, float hs06PerSlot, float memPerSlot) {
         super();
         this.nodeTypeName = nodeTypeName;
         this.cpu = cpu;
         this.slot = slot;
         this.hs06PerSlot = hs06PerSlot;
-        this.memPerNode = memPerNode;
+        this.memPerSlot = memPerSlot;
     }
 
 
@@ -102,10 +102,10 @@ public class NodeType {
             NodeType c = null;
 
             ResultSet r;
-            r = ao.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType");
+            r = ao.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerSlot from nodeType");
             while (r.next()) {
                 NodeType n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
-                        r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
+                        r.getFloat("hs06PerSlot"), r.getFloat("memPerSlot"));
                 nt.add(n);
             }
 
@@ -149,10 +149,10 @@ public class NodeType {
 
             ResultSet r;
             r = ao.query(
-                    "select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType where nodeTypeName='BASELINE'");
+                    "select nodeTypeName,cpu,slot,hs06PerSlot,memPerSlot from nodeType where nodeTypeName='BASELINE'");
             while (r.next()) {
                 NodeType n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
-                        r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
+                        r.getFloat("hs06PerSlot"), r.getFloat("memPerSlot"));
                 request.setAttribute("baseline", n);
 
             }
@@ -170,15 +170,16 @@ public class NodeType {
 
             ResultSet r;
             // ORDER BY column1, column2, .. columnN] [ASC | DESC
-            r = ao.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType order by " + col + " " + order);
+            r = ao.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerSlot from nodeType order by " + col + " " + order);
             while (r.next()) {
                 NodeType n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
-                        r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
+                        r.getFloat("hs06PerSlot"), r.getFloat("memPerSlot"));
                 nodeTypeList.add(n);
 
             }
             request.setAttribute("nodeTypeList", nodeTypeList);
         } catch (Exception e) {
+            logger.error("Had an when trying to refresh node type, ", e);
             throw new ModelException("Cannot refresh node type page");
         }
     }
@@ -189,11 +190,11 @@ public class NodeType {
             HttpSession session = request.getSession();
             AccessObject ao = (AccessObject) session.getAttribute("AccessObject");
             NodeType n = null;
-            ResultSet r = ao.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType where"
+            ResultSet r = ao.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerSlot from nodeType where"
                     + "nodeTypeName = '" + nodeTypeName + "'");
             while (r.next()) {
                 n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
-                        r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
+                        r.getFloat("hs06PerSlot"), r.getFloat("memPerSlot"));
             }
             request.setAttribute("Nodetype", n);
         } catch (Exception e) {

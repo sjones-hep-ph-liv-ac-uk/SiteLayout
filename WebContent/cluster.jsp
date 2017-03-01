@@ -47,9 +47,9 @@
 					<td><c:out value="${cluster.cluster}" /></td>
 					<td><c:out value="${cluster.descr}" /></td>
 					<td class="tg-yw4l"><input type="submit" value="Del"
-						name=DEL.${cluster.cluster}/></td>
+						name=DEL.${cluster.cluster}></td>
 					<td class="tg-yw4l"><input type="submit" value="Edit"
-						name=ED.${cluster.cluster}/></td>
+						name=ED.${cluster.cluster}></td>
 				</tr>
 			</c:forEach>
 			<tr>

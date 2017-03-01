@@ -24,7 +24,7 @@
                 CPU per node : <input type="text" name="cpu" value="${nodeType.cpu}"> <BR>
 		Slots per node : <input type="text" name="slot" value="${nodeType.slot}"> <BR> 
                 HS06 per slot : <input type="text" name="hs06PerSlot" value="${nodeType.hs06PerSlot}"> <BR> 
-                GBs per node : <input type="text" name="memPerNode" value="${nodeType.memPerNode}"> <BR> 
+                GBs per node : <input type="text" name="memPerSlot" value="${nodeType.memPerSlot}"> <BR> 
                                <input type="submit" />
 	</form>
 </body>

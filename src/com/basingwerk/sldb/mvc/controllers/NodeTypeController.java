@@ -52,6 +52,7 @@ public class NodeTypeController extends HttpServlet {
         while (i.hasNext()) {
             String key = (String) i.next();
             // String value = ((String[]) params.get(key))[0];
+            logger.error("DEBUG: key:" + key + ":");
             String order = "ASC";
             if (key.startsWith("SORT")) {
                 String sortCmd = key.substring(4, key.length()).trim().replaceAll("\\.[xy]$","");
@@ -80,7 +81,7 @@ public class NodeTypeController extends HttpServlet {
                 return;
             }
             if (key.startsWith("DEL.")) {
-                String nodeType = key.substring(4, key.length() - 1);
+                String nodeType = key.substring(4, key.length());
                 try {
                     NodeType.deleteNodeType(request, nodeType);
                 } catch (ModelException e) {
@@ -105,22 +106,24 @@ public class NodeTypeController extends HttpServlet {
                 return;
             }
             if (key.startsWith("ED.")) {
-                String nodeType = key.substring(3, key.length() - 1);
+                String nodeType = key.substring(3, key.length());
+                logger.error("DEBUG: nodetype:" + nodeType + ":");
 
                 try {
                     HttpSession session = request.getSession();
                     AccessObject ao = (AccessObject) session.getAttribute("AccessObject");
                     if (ao != null) {
                         ResultSet r;
-                        String sql = "select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType where"
+                        String sql = "select nodeTypeName,cpu,slot,hs06PerSlot,memPerSlot from nodeType where"
                                 + " nodeTypeName = '" + nodeType + "'";
                         r = ao.query(sql);
                         NodeType n = null;
                         while (r.next()) {
                             n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
-                                    r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
+                                    r.getFloat("hs06PerSlot"), r.getFloat("memPerSlot"));
                         }
                         request.setAttribute("nodeType", n);
+                        // logger.error("DEBUG: set req:" + r.getString("nodeTypeName") + ":");
                     }
                 } catch (SQLException e) {
                     logger.error("A database error occurred, ", e);

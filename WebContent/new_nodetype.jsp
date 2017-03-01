@@ -17,7 +17,7 @@
 		CPUs per node : <input type="text" name="cpu"> <BR> 
                 Slots per node : <input type="text" name="slot"> <BR> 
                 HS06 per slot : <input type="text" name="hs06PerSlot"> <BR> 
-                GBs per node : <input type="text" name="memPerNode"> <BR> 
+                GBs per node : <input type="text" name="memPerSlot"> <BR> 
                                <input type="submit" />
 	</form>
 </body>

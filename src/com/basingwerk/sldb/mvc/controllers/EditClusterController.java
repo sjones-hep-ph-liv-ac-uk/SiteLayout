@@ -50,6 +50,17 @@ public class EditClusterController extends HttpServlet {
             rd.forward(request, response);
             return;
         }
+        try {
+            Cluster.refreshListOfClusters(request,"clusterName","ASC");
+        } catch (ModelException e) {
+            request.setAttribute("TheMessage", e.getMessage());
+            rd = request.getRequestDispatcher("/recoverable_message.jsp");
+            rd.forward(request, response);
+            return;
+        }
+        String next = "/cluster.jsp";
+        rd = request.getRequestDispatcher(next);
+        rd.forward(request, response);
         return;
     }
 

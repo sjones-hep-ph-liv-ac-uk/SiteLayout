@@ -52,7 +52,7 @@
 				<td><c:out value="${baseline.cpu}" /></td>
 				<td><c:out value="${baseline.slot}" /></td>
 				<td><c:out value="${baseline.hs06PerSlot}" /></td>
-				<td><c:out value="${baseline.memPerNode}" /></td>
+				<td><c:out value="${baseline.memPerSlot}" /></td>
 				<td><c:out value="undefined" /></td>
 				<td>0.0</td>
 			</tr>
@@ -64,8 +64,8 @@
 						<td><c:out value="${nodeType.cpu}" /></td>
 						<td><c:out value="${nodeType.slot}" /></td>
 						<td><c:out value="${nodeType.hs06PerSlot}" /></td>
-						<td><c:out value="${nodeType.memPerNode}" /></td>
-						<td><fmt:formatNumber type="number" groupingUsed="0" maxFractionDigits="4" value="${nodeType.memPerNode / nodeType.slot}" /></td>
+						<td><c:out value="${nodeType.memPerSlot}" /></td>
+						<td><fmt:formatNumber type="number" groupingUsed="0" maxFractionDigits="4" value="${nodeType.memPerSlot / nodeType.slot}" /></td>
 						<td><fmt:formatNumber type="number" groupingUsed="0" maxFractionDigits="4" value="${nodeType.hs06PerSlot / baseline.hs06PerSlot}" /></td>
 					</tr>
 				</c:if>

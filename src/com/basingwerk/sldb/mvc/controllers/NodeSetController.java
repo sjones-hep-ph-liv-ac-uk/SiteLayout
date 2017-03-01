@@ -117,7 +117,8 @@ public class NodeSetController extends HttpServlet {
             }
             
             if (key.startsWith("DEL.")) {
-                String nodeSet = key.substring(4, key.length() - 1);
+           String nodeSet = key.substring(4, key.length() );
+           logger.error("nodeSet:" + nodeSet + ":");
                 try {
                     NodeSet.deleteNodeSet(request, nodeSet);
                 } catch (ModelException e) {
@@ -142,8 +143,9 @@ public class NodeSetController extends HttpServlet {
                 return;
             }
             if (key.startsWith("ED.")) {
-                String nodeSet = key.substring(3, key.length() - 1);
-                try {
+                String nodeSet = key.substring(3, key.length() );
+                logger.error("nodeSet:" + nodeSet + ":");
+                               try {
                     HttpSession session = request.getSession();
                     AccessObject ao = (AccessObject) session.getAttribute("AccessObject");
                     if (ao != null) {

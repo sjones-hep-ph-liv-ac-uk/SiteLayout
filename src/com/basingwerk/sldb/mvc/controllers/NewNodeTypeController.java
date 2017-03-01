@@ -46,10 +46,10 @@ public class NewNodeTypeController extends HttpServlet {
         String cpu = request.getParameter("cpu");
         String slot = request.getParameter("slot");
         String hs06PerSlot = request.getParameter("hs06PerSlot");
-        String memPerNode = request.getParameter("memPerNode");
+        String memPerSlot = request.getParameter("memPerSlot");
 
-        String sqlCommand = "INSERT INTO nodeType (nodeTypeName,cpu,slot,hs06PerSlot,memPerNode) VALUES ('"
-                + nodeTypeName + "','" + cpu + "','" + slot + "','" + hs06PerSlot + "','" + memPerNode + "')";
+        String sqlCommand = "INSERT INTO nodeType (nodeTypeName,cpu,slot,hs06PerSlot,memPerSlot) VALUES ('"
+                + nodeTypeName + "','" + cpu + "','" + slot + "','" + hs06PerSlot + "','" + memPerSlot + "')";
 
         java.sql.Statement statement;
         int result = -1;
@@ -74,10 +74,10 @@ public class NewNodeTypeController extends HttpServlet {
         try {
             ArrayList<NodeType> nodeTypeList = new ArrayList<NodeType>();
 
-            ResultSet r = ao.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType");
+            ResultSet r = ao.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerSlot from nodeType");
             while (r.next()) {
                 NodeType n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
-                        r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
+                        r.getFloat("hs06PerSlot"), r.getFloat("memPerSlot"));
                 nodeTypeList.add(n);
 
             }

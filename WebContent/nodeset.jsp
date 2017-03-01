@@ -62,9 +62,9 @@ Node Set
 					<td><c:out value="${nodeSet.nodeCount}" /></td>
 					<td><c:out value="${nodeSet.cluster}" /></td>
 					<td class="tg-yw4l"><input type="submit" value="Del"
-						name=DEL.${nodeSet.nodeSetName}/></td>
+						name=DEL.${nodeSet.nodeSetName}></td>
 					<td class="tg-yw4l"><input type="submit" value="Edit"
-						name=ED.${nodeSet.nodeSetName}/></td>
+						name=ED.${nodeSet.nodeSetName}></td>
 				</tr>
 			</c:forEach>
 			<tr>

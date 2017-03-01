@@ -85,7 +85,8 @@ public class ClusterController extends HttpServlet {
             
             
             if (key.startsWith("DEL.")) {
-                String cluster = key.substring(4, key.length() - 1);
+                String cluster = key.substring(4, key.length());
+                logger.error("cluster:" + cluster  + ":");
                 try {
                     Cluster.deleteCluster(request, cluster);
                 } catch (ModelException e) {
@@ -109,7 +110,8 @@ public class ClusterController extends HttpServlet {
                 return;
             }
             if (key.startsWith("ED.")) {
-                String cluster = key.substring(3, key.length() - 1);
+                String cluster = key.substring(3, key.length() );
+                logger.error("cluster:" + cluster  + ":");
                 try {
                     Cluster.setSingleCluster(request, cluster);
                 } catch (ModelException e) {

@@ -48,10 +48,10 @@
 					type="image" src="Up-48.png" alt="Submit" width="15px"
 					height="15px" value="SORTUP.hs06PerSlot" name="SORTUP.hs06PerSlot"></td>
 				<td><input type="image" src="Down-48.png" alt="Submit"
-					width="15px" height="15px" value="SORTDOWN.memPerNode"
-					name="SORTDOWN.memPerNode"> GB per node <input type="image"
+					width="15px" height="15px" value="SORTDOWN.memPerSlot"
+					name="SORTDOWN.memPerSlot"> GB per node <input type="image"
 					src="Up-48.png" alt="Submit" width="15px" height="15px"
-					value="SORTUP.memPerNode" name="SORTUP.memPerNode"></td>
+					value="SORTUP.memPerSlot" name="SORTUP.memPerSlot"></td>
 				<td></td>
 				<td></td>
 			</tr>
@@ -61,11 +61,11 @@
 					<td><c:out value="${nodeType.cpu}" /></td>
 					<td><c:out value="${nodeType.slot}" /></td>
 					<td><c:out value="${nodeType.hs06PerSlot}" /></td>
-					<td><c:out value="${nodeType.memPerNode}" /></td>
+					<td><c:out value="${nodeType.memPerSlot}" /></td>
 					<td class="tg-yw4l"><input type="submit" value="Del"
-						name=DEL.${nodeType.nodeTypeName} /></td>
+						name=DEL.${nodeType.nodeTypeName}></td>
 					<td class="tg-yw4l"><input type="submit" value="Edit"
-						name=ED.${nodeType.nodeTypeName} /></td>
+						name=ED.${nodeType.nodeTypeName}></td>
 				</tr>
 			</c:forEach>
 			<tr>
