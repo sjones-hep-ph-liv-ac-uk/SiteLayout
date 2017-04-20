@@ -3,6 +3,7 @@ package com.basingwerk.sldb.mvc.controllers;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -18,7 +19,9 @@ import org.apache.log4j.Logger;
 
 import com.basingwerk.sldb.mvc.model.Cluster;
 import com.basingwerk.sldb.mvc.model.ModelException;
+import com.basingwerk.sldb.mvc.model.ModelExceptionRollbackWorked;
 import com.basingwerk.sldb.mvc.model.NodeType;
+import com.basingwerk.sldb.mvc.model.Site;
 import com.basingwerk.sldb.mvc.model.AccessObject;
 
 @WebServlet("/ClusterController")
@@ -43,6 +46,18 @@ public class ClusterController extends HttpServlet {
         }
         act = request.getParameter("New");
         if (act != null) {
+
+            ArrayList<String> s = new ArrayList<String>();
+            try {
+                s = Site.listAllSites(request);
+
+            } catch (ModelException e) {
+                logger.error("WTF! Error getting the sites , ", e);
+                rd = request.getRequestDispatcher("/error.jsp");
+                rd.forward(request, response);
+                return;
+            }
+            request.setAttribute("siteList", s);
             rd = request.getRequestDispatcher("/new_cluster.jsp");
             rd.forward(request, response);
             return;
@@ -52,27 +67,24 @@ public class ClusterController extends HttpServlet {
         Iterator i = params.keySet().iterator();
         while (i.hasNext()) {
             String key = (String) i.next();
-//            String value = ((String[]) params.get(key))[0];
-            
+
             String order = "ASC";
             if (key.startsWith("SORT")) {
-                String sortCmd = key.substring(4, key.length()).trim().replaceAll("\\.[xy]$","");
+                String sortCmd = key.substring(4, key.length()).trim().replaceAll("\\.[xy]$", "");
                 String c = "";
                 if (sortCmd.startsWith("UP.")) {
                     order = "ASC";
                     c = sortCmd.substring(3, sortCmd.length()).trim();
-                }
-                else {
+                } else {
                     order = "DESC";
                     c = sortCmd.substring(5, sortCmd.length()).trim();
                 }
-                
+
                 try {
-                    Cluster.refreshListOfClusters(request,c,order);
+                    Cluster.refreshListOfClusters(request, c, order);
                 } catch (ModelException e) {
-                    request.setAttribute("TheMessage", e.getMessage());
-                    request.setAttribute("TheJsp", "main_screen.jsp");
-                    rd = request.getRequestDispatcher("/recoverable_message.jsp");
+                    logger.error("WTF! A ModelException occurred, ", e);
+                    rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
                 }
@@ -81,25 +93,32 @@ public class ClusterController extends HttpServlet {
                 rd.forward(request, response);
                 return;
             }
-            
-            
-            
+
             if (key.startsWith("DEL.")) {
                 String cluster = key.substring(4, key.length());
-                logger.error("cluster:" + cluster  + ":");
+                logger.error("cluster:" + cluster + ":");
                 try {
                     Cluster.deleteCluster(request, cluster);
-                } catch (ModelException e) {
-                    request.setAttribute("TheMessage", e.getMessage());
-                    request.setAttribute("TheJsp", "main_screen.jsp");
-                    rd = request.getRequestDispatcher("/recoverable_message.jsp");
-                    rd.forward(request, response);
-                    return;
+                } catch (ModelException e1) {
+                    if (e1 instanceof ModelExceptionRollbackWorked) {
+                        logger.info("Rollback worked.");
+                        request.setAttribute("theMessage", "Could not delete that cluster at this time. Please try again.");
+                        request.setAttribute("theJsp", "main_screen.jsp");
+                        rd = request.getRequestDispatcher("/recoverable_message.jsp");
+                        rd.forward(request, response);
+                        return;
+                    } else {
+                        logger.error("WTF! failed to roll back, ", e1);
+                        rd = request.getRequestDispatcher("/error.jsp");
+                        rd.forward(request, response);
+                        return;
+                    }
                 }
+                    
                 try {
-                    Cluster.refreshListOfClusters(request,"clusterName","ASC");
+                    Cluster.refreshListOfClusters(request, "clusterName", "ASC");
                 } catch (ModelException e) {
-                    logger.error("Had a ModelException when trying to setListOfClusters, ", e);
+                    logger.error("WTF! Had a ModelException when trying to setListOfClusters, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
@@ -110,14 +129,25 @@ public class ClusterController extends HttpServlet {
                 return;
             }
             if (key.startsWith("ED.")) {
-                String cluster = key.substring(3, key.length() );
-                logger.error("cluster:" + cluster  + ":");
+                String cluster = key.substring(3, key.length());
                 try {
                     Cluster.setSingleCluster(request, cluster);
+
+                    ArrayList<String> s = new ArrayList<String>();
+                    try {
+                        s = Site.listAllSites(request);
+
+                    } catch (ModelException e) {
+                        logger.error("WTF! A ModelException occurred, ", e);
+                        rd = request.getRequestDispatcher("/error.jsp");
+                        rd.forward(request, response);
+                        return;
+                    }
+                    request.setAttribute("siteList", s);
+
                 } catch (ModelException e) {
-                    request.setAttribute("TheMessage", e.getMessage());
-                    request.setAttribute("TheJsp", "main_screen.jsp");
-                    rd = request.getRequestDispatcher("/recoverable_message.jsp");
+                    logger.error("WTF! A ModelException occurred, ", e);
+                    rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
                 }

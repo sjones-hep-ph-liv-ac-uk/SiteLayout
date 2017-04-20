@@ -96,14 +96,14 @@ public class NodeSetNodeTypeJoin {
 
     public static ArrayList<NodeSetNodeTypeJoin> getJoinForCluster(HttpServletRequest request, String cluster)
             throws ModelException {
+        AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
         ArrayList<NodeSetNodeTypeJoin> nsntj = new ArrayList<NodeSetNodeTypeJoin>();
         try {
-            HttpSession session = request.getSession();
-            AccessObject ao = (AccessObject) session.getAttribute("AccessObject");
+
             String theSql = "select nodeSetName,nodeSet.nodeTypeName,nodeType.cpu,nodeCount,slot,hs06PerSlot  from nodeSet,nodeType "
                     + "where nodeSet.cluster='" + cluster + "' and nodeSet.nodeTypeName = nodeType.nodeTypeName;";
 
-            ResultSet r = ao.query(theSql);
+            ResultSet r = modelAo.query(theSql);
             while (r.next()) {
                 String nodeSetName = r.getString("nodeSetName");
                 String nodeTypeName = r.getString("nodeTypeName");

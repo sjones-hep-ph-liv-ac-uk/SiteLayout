@@ -4,6 +4,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%
+	String theMessage = (String) request.getAttribute("theMessage");
+	String theJsp = (String) request.getAttribute("theJsp");
+%>
 
 <html>
 <link rel="stylesheet"
@@ -15,8 +19,8 @@
 </head>
 <body>
 	Message
-	<BR> Some error happened. ${TheMessage}
+	<BR> Some error happened. ${theMessage}
 	<br>
-	<a href="${TheJsp}">Go somewhere else ... </a>
+	<a href="${theJsp}">Go someplace else ... </a>
 </body>
 </html>

@@ -15,6 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.basingwerk.sldb.mvc.model.Cluster;
+import com.basingwerk.sldb.mvc.model.ModelException;
+import com.basingwerk.sldb.mvc.model.ModelExceptionRollbackFailed;
+import com.basingwerk.sldb.mvc.model.ModelExceptionRollbackWorked;
 import com.basingwerk.sldb.mvc.model.AccessObject;
 
 @WebServlet("/NewClusterController")
@@ -32,57 +35,60 @@ public class NewClusterController extends HttpServlet {
         AccessObject ao = null;
         RequestDispatcher rd = null;
         HttpSession session = request.getSession();
-        ao = (AccessObject) session.getAttribute("AccessObject");
+        ao = (AccessObject) session.getAttribute("accessObject");
         if (ao == null) {
-            logger.error("Error connecting to the database.");
-            rd = request.getRequestDispatcher("/error.jsp");
-            rd.forward(request, response);
-            return;
-        }
-        String clusterName = request.getParameter("clusterName");
-        String descr = request.getParameter("descr");
-        String sqlCommand = "INSERT INTO cluster (clusterName, Descr) VALUES ('" + clusterName + "','" + descr + "')";
-
-        java.sql.Statement statement;
-        int result = -1;
-
-        try {
-            statement = ao.getTheConnection().createStatement();
-            result = statement.executeUpdate(sqlCommand);
-            ao.getTheConnection().commit();
-        } catch (SQLException e) {
-            logger.info("Could not add new cluster, rolling back.");
-            try {
-                ao.getTheConnection().rollback();
-            } catch (SQLException ex) {
-                logger.error("Rollback failed, ", ex);
-            }
-            request.setAttribute("TheMessage", "Sorry. Failed to add that cluster. Please try again.");
+            logger.error("Error when trying to connect to database.");
+            request.setAttribute("theMessage", "No access to database. You can try to login again.");
+            request.setAttribute("theJsp", "login.jsp");
             rd = request.getRequestDispatcher("/recoverable_message.jsp");
             rd.forward(request, response);
             return;
         }
+
         try {
-            ArrayList<Cluster> clusterList = new ArrayList<Cluster>();
-            ResultSet r = ao.query("select clusterName,descr from cluster");
-            while (r.next()) {
-                Cluster c = new Cluster(r.getString("clusterName"), r.getString("descr"));
-                clusterList.add(c);
+            Cluster.addCluster(request);
+        } catch (ModelException e1) {
+            if (e1 instanceof ModelExceptionRollbackWorked) {
+                logger.info("Rollback worked.");
+                request.setAttribute("theMessage", "Could not add that cluster at this time. Please try again.");
+                request.setAttribute("theJsp", "main_screen.jsp");
+                rd = request.getRequestDispatcher("/recoverable_message.jsp");
+                rd.forward(request, response);
+                return;
+            } else {
+                logger.error("WTF! failed to roll back, ", e1);
+                rd = request.getRequestDispatcher("/error.jsp");
+                rd.forward(request, response);
+                return;
             }
+        }
+
+        try {
+            ArrayList<Cluster> clusterList = Cluster.queryCluster(request);
             request.setAttribute("clusterList", clusterList);
             String next = "/cluster.jsp";
-
             rd = request.getRequestDispatcher(next);
             rd.forward(request, response);
-        } catch (SQLException e) {
-            logger.error("Error while adding a cluster. ", e);
+            return;
+        } catch (ModelException e1) {
+            if (e1 instanceof ModelExceptionRollbackWorked) {
+                logger.info("Rollback worked.");
+                request.setAttribute("theMessage", "Could not get the cluster at this time. Please try again.");
+                request.setAttribute("theJsp", "main_screen.jsp");
+                rd = request.getRequestDispatcher("/recoverable_message.jsp");
+                rd.forward(request, response);
+                return;
+            } else {
+                logger.error("WTF! failed to roll back, ", e1);
+                rd = request.getRequestDispatcher("/error.jsp");
+                rd.forward(request, response);
+                return;
+            }
         }
-        return;
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         doGet(request, response);
     }
-
 }

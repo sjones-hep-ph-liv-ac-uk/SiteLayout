@@ -15,7 +15,7 @@ grant ALL PRIVILEGES ON resources.* TO 'resources'@'127.0.0.1';
 SET TRANSACTION ISOLATION LEVEL SERIALIZABLE; 
 SET autocommit = 0;
 
-DROP TABLE nodeType;
+#DROP TABLE nodeType;
 CREATE TABLE nodeType(
   nodeTypeName varchar(10),
   cpu integer,
@@ -23,16 +23,29 @@ CREATE TABLE nodeType(
   hs06PerSlot float,
   memPerNode float,
   PRIMARY KEY( nodeTypeName)
-);
+) TYPE = INNODB;
 
-DROP TABLE cluster;
+#DROP TABLE site;
+CREATE TABLE site (
+  siteName varchar(50),
+  description  varchar(50),
+  location varchar(50),
+  longitude float,
+  latitude float,
+  admin varchar(50),
+  PRIMARY KEY( siteName )
+) TYPE = INNODB;
+
+#DROP TABLE cluster;
 CREATE TABLE cluster (
   clusterName  varchar(20),
   descr        varchar(50),
-  PRIMARY KEY( clusterName )
-);
+  siteName varchar(50) NOT NULL,
+  PRIMARY KEY( clusterName ),
+  FOREIGN KEY (siteName) REFERENCES site(siteName) 
+) TYPE = INNODB;
 
-DROP TABLE nodeSet;
+#DROP TABLE nodeSet;
 CREATE TABLE nodeSet (
   nodeSetName varchar(10),
   nodeTypeName varchar(10),
@@ -41,8 +54,6 @@ CREATE TABLE nodeSet (
   PRIMARY KEY( nodeSetName ),
   FOREIGN KEY (cluster) REFERENCES cluster(clusterName) ,
   FOREIGN KEY (nodeTypeName) REFERENCES nodeType(nodeTypeName)
-);
+) TYPE = INNODB;
 
-#ALTER TABLE resources.cluster engine=InnoDB;                             |
-#ALTER TABLE resources.nodeSet engine=InnoDB;                             |
-#ALTER TABLE resources.nodeType engine=InnoDB;                
+

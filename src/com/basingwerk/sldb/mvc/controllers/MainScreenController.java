@@ -18,6 +18,7 @@ import com.basingwerk.sldb.mvc.model.ModelException;
 import com.basingwerk.sldb.mvc.model.NodeSet;
 import com.basingwerk.sldb.mvc.model.NodeSetNodeTypeJoin;
 import com.basingwerk.sldb.mvc.model.NodeType;
+import com.basingwerk.sldb.mvc.model.Site;
 
 @WebServlet("/MainScreenController")
 
@@ -36,14 +37,22 @@ public class MainScreenController extends HttpServlet {
 
             String act = request.getParameter("SomeButton");
             if (act == null) {
-                logger.error("Error when looking at SomeButton.");
+                logger.error("WTF! Null found when looking at SomeButton.");
                 rd = request.getRequestDispatcher("/error.jsp");
                 rd.forward(request, response);
                 return;
             }
             String next = "";
+            if (act.equals("Edit sites")) {
+                Site.refreshListOfSites(request, "siteName", "ASC");
+                next = "/site.jsp";
+                rd = request.getRequestDispatcher(next);
+                rd.forward(request, response);
+                return;
+            }
+
             if (act.equals("Edit node types")) {
-                NodeType.refreshListOfNodeTypes(request,"nodeTypeName","ASC");
+                NodeType.refreshListOfNodeTypes(request, "nodeTypeName", "ASC");
                 next = "/nodetype.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -51,14 +60,14 @@ public class MainScreenController extends HttpServlet {
             }
 
             if (act.equals("Edit clusters")) {
-                Cluster.refreshListOfClusters(request,"clusterName","ASC");
+                Cluster.refreshListOfClusters(request, "clusterName", "ASC");
                 next = "/cluster.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
                 return;
             }
             if (act.equals("Edit node sets")) {
-                NodeSet.refreshListOfNodeSets(request,"nodeSetName","ASC");
+                NodeSet.refreshListOfNodeSets(request, "nodeSetName", "ASC");
                 next = "/nodeset.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -66,8 +75,8 @@ public class MainScreenController extends HttpServlet {
 
             }
             if (act.equals("Reports")) {
-                NodeType.refreshListOfNodeTypes(request,"nodeTypeName","ASC");
-                Cluster.refreshListOfClusters(request,"clusterName","ASC");
+                NodeType.refreshListOfNodeTypes(request, "nodeTypeName", "ASC");
+                Cluster.refreshListOfClusters(request, "clusterName", "ASC");
                 NodeType.setBaselineNodeType(request);
                 ArrayList<String> clusters = Cluster.listAllClusterNames(request);
                 java.util.HashMap<String, ArrayList> joinMap = new java.util.HashMap<String, ArrayList>();
@@ -83,13 +92,13 @@ public class MainScreenController extends HttpServlet {
                 rd.forward(request, response);
                 return;
             }
-            logger.error("Error due to strange input.");
+            logger.error("WTF! Never seen that button before.");
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
             return;
 
         } catch (ModelException e) {
-            logger.error("Had a ModelException in the MainScreen, ", e);
+            logger.error("WTF! Had a ModelException in the MainScreen, ", e);
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
             return;

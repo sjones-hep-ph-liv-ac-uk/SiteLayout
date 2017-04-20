@@ -37,18 +37,20 @@ public class LoginController extends HttpServlet {
             ao = new AccessObject(database, username, password);
             if (ao != null) {
                 HttpSession session = request.getSession();
-                session.setAttribute("AccessObject", ao);
-
-                rd = request.getRequestDispatcher("/main_screen.jsp");
+                session.setAttribute("accessObject", ao);
                 User user = new User(username, password);
                 request.setAttribute("user", user);
-
+                rd = request.getRequestDispatcher("/main_screen.jsp");
+                rd.forward(request, response);
+                return;
             }
         } catch (AccessObjectException e) {
             logger.error("Error when trying to connect to database.");
-            rd = request.getRequestDispatcher("/error.jsp");
+            request.setAttribute("theMessage", "Error when trying to connect to database. You can try to login again.");
+            request.setAttribute("theJsp", "login.jsp");
+            rd = request.getRequestDispatcher("/recoverable_message.jsp");
+            rd.forward(request, response);
         }
-        rd.forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

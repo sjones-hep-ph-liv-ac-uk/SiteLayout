@@ -60,20 +60,135 @@ public class NodeSet {
         this.cluster = cluster;
     }
 
-    public static void deleteNodeSet(HttpServletRequest request, String nodeSet) throws ModelException {
-        AccessObject ao = null;
+    public static NodeSet queryOneNodeSet(HttpServletRequest request, String nodeSetName) throws ModelException {
+        AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
+        NodeSet nodeSet = null;
+        ResultSet r;
+        String sql = "select  nodeSetName, nodeTypeName ,nodeCount, cluster from nodeSet where" + " nodeSetName = '"
+                + nodeSetName + "'";
         try {
-            HttpSession session = request.getSession();
-            ao = (AccessObject) session.getAttribute("AccessObject");
+            r = modelAo.query(sql);
+            NodeSet n = null;
+            while (r.next()) {
+                n = new NodeSet(r.getString("nodeSetName"), r.getString("nodeTypeName"), r.getInt("nodeCount"),
+                        r.getString("cluster"));
+            }
+        } catch (SQLException e) {
+            logger.info("Could not read the node sets, rolling back.");
+            try {
+                modelAo.getTheConnection().rollback();
+            } catch (SQLException ex) {
+                throw new ModelExceptionRollbackFailed("Rollback failed", ex);
+            }
+            throw new ModelExceptionRollbackFailed("Rollback worked", null);
+        }
+
+        return nodeSet;
+
+    }
+
+    public static ArrayList<NodeSet> queryNodeSetList(HttpServletRequest request) throws ModelException {
+        AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
+
+        ArrayList<NodeSet> nodeSetList = new ArrayList<NodeSet>();
+
+        ResultSet r;
+        try {
+            r = modelAo.query("select nodeSetName ,nodeTypeName, nodeCount, cluster from nodeSet");
+            while (r.next()) {
+                NodeSet n = new NodeSet(r.getString("nodeSetName"), r.getString("nodeTypeName"), r.getInt("nodeCount"),
+                        r.getString("cluster"));
+                nodeSetList.add(n);
+
+            }
+        } catch (SQLException e) {
+            logger.info("Could not read the node sets, rolling back.");
+            try {
+                modelAo.getTheConnection().rollback();
+            } catch (SQLException ex) {
+                throw new ModelExceptionRollbackFailed("Rollback failed", ex);
+            }
+            throw new ModelExceptionRollbackFailed("Rollback worked", null);
+        }
+
+        return nodeSetList;
+
+    }
+
+    public static void addNodeSet(HttpServletRequest request) throws ModelException {
+        AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
+
+        String clusterName = request.getParameter("clusterList");
+        String nodeTypeName = request.getParameter("nodeTypeList");
+
+        String nodeSetName = request.getParameter("nodeSetName");
+        String nodeCount = request.getParameter("nodeCount");
+        String sqlCommand = "INSERT INTO nodeSet (nodeSetName ,nodeTypeName, nodeCount, cluster) VALUES" + "('"
+                + nodeSetName + "','" + nodeTypeName + "'," + nodeCount + ",'" + clusterName + "')";
+
+        java.sql.Statement statement;
+        int result = -1;
+
+        try {
+            statement = modelAo.getTheConnection().createStatement();
+            result = statement.executeUpdate(sqlCommand);
+            modelAo.getTheConnection().commit();
+        }
+
+        catch (SQLException e) {
+            logger.info("Could not add new node set, rolling back.");
+            try {
+                modelAo.getTheConnection().rollback();
+            } catch (SQLException ex) {
+                throw new ModelExceptionRollbackFailed("Rollback failed", ex);
+            }
+            throw new ModelExceptionRollbackFailed("Rollback worked", null);
+        }
+    }
+
+    public static void updateNodeSet(HttpServletRequest request) throws ModelException {
+        AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
+
+        String nodeSetName = request.getParameter("nodeSetName");
+        String nodeCount = request.getParameter("nodeCount");
+        String nodeTypeName = request.getParameter("nodeTypeList");
+        String clusterName = request.getParameter("clusterList");
+
+        String sqlCommand = "UPDATE nodeSet SET nodeSetName='" + nodeSetName + "', nodeTypeName='" + nodeTypeName
+                + "', nodeCount='" + nodeCount + "', cluster='" + clusterName + "' where nodeSetName='" + nodeSetName
+                + "'";
+
+        java.sql.Statement statement;
+        int result = -1;
+
+        try {
+            statement = modelAo.getTheConnection().createStatement();
+            result = statement.executeUpdate(sqlCommand);
+            modelAo.getTheConnection().commit();
+        } catch (SQLException ex) {
+            logger.info("Could not edit that node set, rollback", ex);
+            try {
+                modelAo.getTheConnection().rollback();
+            } catch (SQLException ex2) {
+                throw new ModelExceptionRollbackFailed("Rollback failed", ex2);
+            }
+            throw new ModelExceptionRollbackWorked("Rollback worked", null);
+        }
+    }
+
+    public static void deleteNodeSet(HttpServletRequest request, String nodeSet) throws ModelException {
+        AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
+        try {
+
             String sqlCommand = "delete from nodeSet where nodeSetName = '" + nodeSet + "'";
 
-            Statement statement = ao.getTheConnection().createStatement();
+            Statement statement = modelAo.getTheConnection().createStatement();
             int result = statement.executeUpdate(sqlCommand);
-            ao.getTheConnection().commit();
+            modelAo.getTheConnection().commit();
         } catch (Exception e) {
             logger.info("Could not delete node set, rolling back.");
             try {
-                ao.getTheConnection().rollback();
+                modelAo.getTheConnection().rollback();
             } catch (SQLException ex) {
                 logger.error("Rollback failed, ", ex);
                 throw new ModelException("Cannot delete this node set");
@@ -85,27 +200,28 @@ public class NodeSet {
         }
     }
 
-    public static void refreshListOfNodeSets(HttpServletRequest request, String col, String order) throws ModelException {
+    public static void refreshListOfNodeSets(HttpServletRequest request, String col, String order)
+            throws ModelException {
+        AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
         try {
-            HttpSession session = request.getSession();
-            AccessObject ao = (AccessObject) session.getAttribute("AccessObject");
+
             ArrayList<NodeSet> nodeSetList = new ArrayList<NodeSet>();
 
             ResultSet r;
-            if (ao == null) {
+            if (modelAo == null) {
                 logger.error("Access object is null.");
             }
-            r = ao.query("select nodeSetName, nodeTypeName ,nodeCount, cluster from nodeSet order by " + col + " " + order);
+            r = modelAo.query(
+                    "select nodeSetName, nodeTypeName ,nodeCount, cluster from nodeSet order by " + col + " " + order);
             while (r.next()) {
                 NodeSet n = new NodeSet(r.getString("nodeSetName"), r.getString("nodeTypeName"), r.getInt("nodeCount"),
                         r.getString("cluster"));
                 nodeSetList.add(n);
             }
-            session.setAttribute("nodeSetList", nodeSetList);
+            request.getSession().setAttribute("nodeSetList", nodeSetList);
         } catch (Exception e) {
             logger.error("Could not refresh the list of node sets, ", e);
             throw new ModelException("Cannot refresh node set page");
         }
     }
 }
-

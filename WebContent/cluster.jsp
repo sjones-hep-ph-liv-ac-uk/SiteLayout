@@ -38,6 +38,15 @@
 					width="15px" height="15px" value="SORTUP.descr"
 					name="SORTUP.descr">
 				</td>
+				
+				<td>
+					<input type="image" src="Down-48.png" alt="Submit" width="15px"
+					height="15px" value="SORTDOWN.siteName" name="SORTDOWN.siteName">
+				Site name
+					<input type="image" src="Up-48.png" alt="Submit"
+					width="15px" height="15px" value="SORTUP.siteName" name="SORTUP.siteName">
+				</td>
+				
 				<td></td>
 				<td></td>
 			</tr>
@@ -46,6 +55,7 @@
 				<tr>
 					<td><c:out value="${cluster.cluster}" /></td>
 					<td><c:out value="${cluster.descr}" /></td>
+					<td><c:out value="${cluster.siteName}" /></td>
 					<td class="tg-yw4l"><input type="submit" value="Del"
 						name=DEL.${cluster.cluster}></td>
 					<td class="tg-yw4l"><input type="submit" value="Edit"
@@ -55,6 +65,7 @@
 			<tr>
 				<td><input type="submit" value="Back" name="Back" /></td>
 				<td><input type="submit" value="New" name="New" /></td>
+				<td></td>
 				<td></td>
 				<td></td>
 			</tr>

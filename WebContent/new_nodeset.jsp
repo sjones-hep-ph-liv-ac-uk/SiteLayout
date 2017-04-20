@@ -8,8 +8,6 @@
 <%@ page import="java.util.List"%>
 <%
 	List nodeTypeList = (List) request.getAttribute("nodeTypeList");
-%>
-<%
 	List clusterList = (List) request.getAttribute("clusterList");
 %>
 <!-- <c:set var="baseline" value="BASELINE" /> -->

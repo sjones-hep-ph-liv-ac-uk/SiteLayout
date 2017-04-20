@@ -2,7 +2,9 @@ package com.basingwerk.sldb.mvc.controllers;
 
 import org.apache.log4j.Logger;
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -15,38 +17,29 @@ import javax.servlet.http.HttpSession;
 import com.basingwerk.sldb.mvc.model.AccessObject;
 import com.basingwerk.sldb.mvc.model.ModelException;
 import com.basingwerk.sldb.mvc.model.ModelExceptionRollbackWorked;
-import com.basingwerk.sldb.mvc.model.NodeSet;
+import com.basingwerk.sldb.mvc.model.Site;
 
-@WebServlet("/EditNodeSetController")
+@WebServlet("/NewSiteController")
 
-public class EditNodeSetController extends HttpServlet {
+public class NewSiteController extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    final static Logger logger = Logger.getLogger(EditNodeSetController.class);
+    final static Logger logger = Logger.getLogger(NewSiteController.class);
 
-    public EditNodeSetController() {
+    public NewSiteController() {
         super();
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        AccessObject ao = null;
+
         RequestDispatcher rd = null;
-        HttpSession session = request.getSession();
-        ao = (AccessObject) session.getAttribute("accessObject");
-        if (ao == null) {
-            logger.error("Error when trying to connect to database.");
-            request.setAttribute("theMessage", "No access to database. You can try to login again.");
-            request.setAttribute("theJsp", "login.jsp");
-            rd = request.getRequestDispatcher("/recoverable_message.jsp");
-            rd.forward(request, response);
-            return;
-        }
+
         try {
-            NodeSet.updateNodeSet(request);
+            Site.addSite(request);
         } catch (ModelException e) {
             if (e instanceof ModelExceptionRollbackWorked) {
                 logger.info("A rollback worked.");
-                request.setAttribute("theMessage", "The task could not be done. Please try again.");
+                request.setAttribute("theMessage", "The site type could not be added. Please try again.");
                 request.setAttribute("theJsp", "main_screen.jsp");
                 rd = request.getRequestDispatcher("/recoverable_message.jsp");
                 rd.forward(request, response);
@@ -59,27 +52,30 @@ public class EditNodeSetController extends HttpServlet {
             }
         }
 
+        ArrayList<Site> siteList = null;
         try {
-            NodeSet.refreshListOfNodeSets(request, "nodeSetName", "ASC");
-            String next = "/nodeset.jsp";
-            rd = request.getRequestDispatcher(next);
-            rd.forward(request, response);
-            return;
-        } catch (ModelException e) {
-            if (e instanceof ModelExceptionRollbackWorked) {
-                logger.info("A rollback worked.");
-                request.setAttribute("theMessage", "The task could not be done. Please try again.");
+            siteList = Site.querySiteList(request);
+        } catch (ModelException e1) {
+            if (e1 instanceof ModelExceptionRollbackWorked) {
+                logger.info("Rollback worked.");
+                request.setAttribute("theMessage", "Could not update that site at this time. Please try again.");
                 request.setAttribute("theJsp", "main_screen.jsp");
                 rd = request.getRequestDispatcher("/recoverable_message.jsp");
                 rd.forward(request, response);
                 return;
             } else {
-                logger.error("WTF! Rollback failed.");
+                logger.error("WTF! failed to roll back, ", e1);
                 rd = request.getRequestDispatcher("/error.jsp");
                 rd.forward(request, response);
                 return;
             }
         }
+
+        request.setAttribute("siteList", siteList);
+        String next = "/site.jsp";
+        rd = request.getRequestDispatcher(next);
+        rd.forward(request, response);
+        return;
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

@@ -31,13 +31,6 @@ version="2.3"> -->
     <url-pattern>/NodeSetController</url-pattern> 
   </servlet-mapping>
  
-  <servlet>
-    <servlet-name>EditNodeTypeController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.EditNodeTypeController </servlet-class> </servlet>
-  <servlet-mapping>
-    <servlet-name>EditNodeTypeController</servlet-name>
-    <url-pattern>/EditNodeTypeController</url-pattern>
-  </servlet-mapping>
  
   <servlet>
     <servlet-name>NewClusterController</servlet-name>
@@ -75,14 +68,6 @@ version="2.3"> -->
     <url-pattern>/ClusterController</url-pattern>
   </servlet-mapping>
  
-  <servlet>
-    <servlet-name>NewNodeTypeController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.NewNodeTypeController </servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>NewNodeTypeController</servlet-name>
-    <url-pattern>/NewNodeTypeController</url-pattern>
-  </servlet-mapping>
  
   <servlet>
     <servlet-name>NewNodeSetController</servlet-name>
@@ -110,7 +95,7 @@ version="2.3"> -->
     <servlet-name>EditClusterController</servlet-name>
     <url-pattern>/EditClusterController</url-pattern>
   </servlet-mapping>
- 
+
   <servlet>
     <servlet-name>NodeTypeController</servlet-name>
     <servlet-class>com.basingwerk.sldb.mvc.controllers.NodeTypeController </servlet-class>
@@ -119,6 +104,50 @@ version="2.3"> -->
     <servlet-name>NodeTypeController</servlet-name>
     <url-pattern>/NodeTypeController</url-pattern>
   </servlet-mapping>
+ 
+  <servlet>
+    <servlet-name>NewNodeTypeController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.NewNodeTypeController </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>NewNodeTypeController</servlet-name>
+    <url-pattern>/NewNodeTypeController</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>EditNodeTypeController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.EditNodeTypeController </servlet-class> </servlet>
+  <servlet-mapping>
+    <servlet-name>EditNodeTypeController</servlet-name>
+    <url-pattern>/EditNodeTypeController</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>SiteController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.SiteController </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SiteController</servlet-name>
+    <url-pattern>/SiteController</url-pattern>
+  </servlet-mapping>
+ 
+  <servlet>
+    <servlet-name>NewSiteController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.NewSiteController </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>NewSiteController</servlet-name>
+    <url-pattern>/NewSiteController</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>EditSiteController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.EditSiteController </servlet-class> </servlet>
+  <servlet-mapping>
+    <servlet-name>EditSiteController</servlet-name>
+    <url-pattern>/EditSiteController</url-pattern>
+  </servlet-mapping>
+
   <welcome-file-list>
     <welcome-file>login.jsp</welcome-file>
   </welcome-file-list>

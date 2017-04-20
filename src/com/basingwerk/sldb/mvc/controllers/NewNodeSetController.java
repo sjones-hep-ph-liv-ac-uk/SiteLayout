@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.basingwerk.sldb.mvc.model.AccessObject;
+import com.basingwerk.sldb.mvc.model.ModelException;
+import com.basingwerk.sldb.mvc.model.ModelExceptionRollbackWorked;
 import com.basingwerk.sldb.mvc.model.NodeSet;
 
 @WebServlet("/NewNodeSetController")
@@ -34,58 +36,57 @@ public class NewNodeSetController extends HttpServlet {
         RequestDispatcher rd = null;
 
         HttpSession session = request.getSession();
-        ao = (AccessObject) session.getAttribute("AccessObject");
+        ao = (AccessObject) session.getAttribute("accessObject");
         if (ao == null) {
-            logger.error("Error connecting to the database.");
-            rd = request.getRequestDispatcher("/error.jsp");
-            rd.forward(request, response);
-            return;
-        }
-        String clusterName = request.getParameter("clusterList");
-        String nodeTypeName = request.getParameter("nodeTypeList");
-
-        String nodeSetName = request.getParameter("nodeSetName");
-        String nodeCount = request.getParameter("nodeCount");
-        String sqlCommand = "INSERT INTO nodeSet (nodeSetName ,nodeTypeName, nodeCount, cluster) VALUES" + "('"
-                + nodeSetName + "','" + nodeTypeName + "'," + nodeCount + ",'" + clusterName + "')";
-
-        java.sql.Statement statement;
-        int result = -1;
-
-        try {
-            statement = ao.getTheConnection().createStatement();
-            result = statement.executeUpdate(sqlCommand);
-            ao.getTheConnection().commit();
-        } catch (SQLException ex) {
-            logger.info("Could not add new node set, rolling back.");
-            try {
-                ao.getTheConnection().rollback();
-            } catch (SQLException ex1) {
-                logger.error("Rollback failed, ", ex1);
-            }
-            request.setAttribute("TheMessage", "Problem while adding a node set, please try again.");
+            logger.error("Error when trying to connect to database.");
+            request.setAttribute("theMessage", "No access to database. You can try to login again.");
+            request.setAttribute("theJsp", "login.jsp");
             rd = request.getRequestDispatcher("/recoverable_message.jsp");
             rd.forward(request, response);
             return;
         }
+
         try {
-            ArrayList<NodeSet> nodeSetList = new ArrayList<NodeSet>();
-
-            ResultSet r = ao.query("select nodeSetName ,nodeTypeName, nodeCount, cluster from nodeSet");
-            while (r.next()) {
-                NodeSet n = new NodeSet(r.getString("nodeSetName"), r.getString("nodeTypeName"), r.getInt("nodeCount"),
-                        r.getString("cluster"));
-                nodeSetList.add(n);
-
+            NodeSet.addNodeSet(request);
+        } catch (ModelException e1) {
+            if (e1 instanceof ModelExceptionRollbackWorked) {
+                logger.info("Rollback worked.");
+                request.setAttribute("theMessage", "Could not update that site at this time. Please try again.");
+                request.setAttribute("theJsp", "main_screen.jsp");
+                rd = request.getRequestDispatcher("/recoverable_message.jsp");
+                rd.forward(request, response);
+                return;
+            } else {
+                logger.error("WTF! failed to roll back, ", e1);
+                rd = request.getRequestDispatcher("/error.jsp");
+                rd.forward(request, response);
+                return;
             }
+        }
+
+        try {
+            ArrayList<NodeSet> nodeSetList = NodeSet.queryNodeSetList(request);
+            
             request.setAttribute("nodeSetList", nodeSetList);
             String next = "/nodeset.jsp";
             rd = request.getRequestDispatcher(next);
             rd.forward(request, response);
-        } catch (SQLException e) {
-            logger.error("Error while adding a node set, ", e);
+            return;
+        } catch (ModelException e1) {
+            if (e1 instanceof ModelExceptionRollbackWorked) {
+                logger.info("Rollback worked.");
+                request.setAttribute("theMessage", "Could not get that node set at this time. Please try again.");
+                request.setAttribute("theJsp", "main_screen.jsp");
+                rd = request.getRequestDispatcher("/recoverable_message.jsp");
+                rd.forward(request, response);
+                return;
+            } else {
+                logger.error("WTF! failed to roll back, ", e1);
+                rd = request.getRequestDispatcher("/error.jsp");
+                rd.forward(request, response);
+                return;
+            }
         }
-        return;
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

@@ -20,6 +20,7 @@ import com.basingwerk.sldb.mvc.model.NodeSet;
 import com.basingwerk.sldb.mvc.model.NodeType;
 import com.basingwerk.sldb.mvc.model.Cluster;
 import com.basingwerk.sldb.mvc.model.ModelException;
+import com.basingwerk.sldb.mvc.model.ModelExceptionRollbackWorked;
 import com.basingwerk.sldb.mvc.model.AccessObject;
 
 @WebServlet("/NodeSetController")
@@ -45,12 +46,10 @@ public class NodeSetController extends HttpServlet {
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
-                NodeSet.refreshListOfNodeSets(request,"nodeSetName","ASC");
+                NodeSet.refreshListOfNodeSets(request, "nodeSetName", "ASC");
             } catch (ModelException e) {
-                logger.error("Error refreshing ... ", e);
-                request.setAttribute("TheMessage", e.getMessage());
-                request.setAttribute("TheJsp", "main_screen.jsp");
-                rd = request.getRequestDispatcher("/recoverable_message.jsp");
+                logger.error("WTF! ModelException while refreshing the list of node sets, ", e);
+                rd = request.getRequestDispatcher("/error.jsp");
                 rd.forward(request, response);
                 return;
             }
@@ -69,10 +68,8 @@ public class NodeSetController extends HttpServlet {
                 nt = NodeType.listAllNodeTypes(request);
 
             } catch (ModelException e) {
-                logger.error("Error getting the clusters and node types, ", e);
-                request.setAttribute("TheMessage", e.getMessage());
-                request.setAttribute("TheJsp", "main_screen.jsp");
-                rd = request.getRequestDispatcher("/recoverable_message.jsp");
+                logger.error("WTF! ModelException when preparing data, ", e);
+                rd = request.getRequestDispatcher("/error.jsp");
                 rd.forward(request, response);
                 return;
             }
@@ -87,26 +84,24 @@ public class NodeSetController extends HttpServlet {
         Iterator i = params.keySet().iterator();
         while (i.hasNext()) {
             String key = (String) i.next();
-            
+
             String order = "ASC";
             if (key.startsWith("SORT")) {
-                String sortCmd = key.substring(4, key.length()).trim().replaceAll("\\.[xy]$","");
+                String sortCmd = key.substring(4, key.length()).trim().replaceAll("\\.[xy]$", "");
                 String c = "";
                 if (sortCmd.startsWith("UP.")) {
                     order = "ASC";
                     c = sortCmd.substring(3, sortCmd.length()).trim();
-                }
-                else {
+                } else {
                     order = "DESC";
                     c = sortCmd.substring(5, sortCmd.length()).trim();
                 }
-                
+
                 try {
-                    NodeSet.refreshListOfNodeSets(request, c,order);
+                    NodeSet.refreshListOfNodeSets(request, c, order);
                 } catch (ModelException e) {
-                    request.setAttribute("TheMessage", e.getMessage());
-                    request.setAttribute("TheJsp", "main_screen.jsp");
-                    rd = request.getRequestDispatcher("/recoverable_message.jsp");
+                    logger.error("WTF! ModelException when trying to refresh node sets, ", e);
+                    rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
                 }
@@ -115,24 +110,22 @@ public class NodeSetController extends HttpServlet {
                 rd.forward(request, response);
                 return;
             }
-            
+
             if (key.startsWith("DEL.")) {
-           String nodeSet = key.substring(4, key.length() );
-           logger.error("nodeSet:" + nodeSet + ":");
+                String nodeSet = key.substring(4, key.length());
                 try {
                     NodeSet.deleteNodeSet(request, nodeSet);
                 } catch (ModelException e) {
                     logger.error("Error deleting a node set, ", e);
-                    request.setAttribute("TheMessage", e.getMessage());
-                    request.setAttribute("TheJsp", "main_screen.jsp");
-                    rd = request.getRequestDispatcher("/recoverable_message.jsp");
+                    logger.error("WTF! ModelException when deleteing a node set, ", e);
+                    rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
                 }
                 try {
-                    NodeSet.refreshListOfNodeSets(request,"nodeSetName","ASC");
+                    NodeSet.refreshListOfNodeSets(request, "nodeSetName", "ASC");
                 } catch (ModelException e) {
-                    logger.error("Model error when trying refreshListOfNodeSets, ", e);
+                    logger.error("WTF! Model error when trying refreshListOfNodeSets, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
@@ -143,46 +136,42 @@ public class NodeSetController extends HttpServlet {
                 return;
             }
             if (key.startsWith("ED.")) {
-                String nodeSet = key.substring(3, key.length() );
-                logger.error("nodeSet:" + nodeSet + ":");
-                               try {
-                    HttpSession session = request.getSession();
-                    AccessObject ao = (AccessObject) session.getAttribute("AccessObject");
-                    if (ao != null) {
-                        ResultSet r;
-                        String sql = "select  nodeSetName, nodeTypeName ,nodeCount, cluster from nodeSet where"
-                                + " nodeSetName = '" + nodeSet + "'";
-
-                        r = ao.query(sql);
-                        NodeSet n = null;
-                        while (r.next()) {
-                            n = new NodeSet(r.getString("nodeSetName"), r.getString("nodeTypeName"),
-                                    r.getInt("nodeCount"), r.getString("cluster"));
-                        }
-                        request.setAttribute("nodeSet", n);
-                        ArrayList<String> cl = new ArrayList<String>();
-                        ArrayList<String> nt = new ArrayList<String>();
-                        try {
-                            cl = Cluster.listAllClusterNames(request);
-                            nt = NodeType.listAllNodeTypes(request);
-
-                        } catch (ModelException e) {
-                            logger.error("Error getting the clusters and node types, ", e);
-                            request.setAttribute("TheMessage", e.getMessage());
-                            request.setAttribute("TheJsp", "main_screen.jsp");
-                            rd = request.getRequestDispatcher("/recoverable_message.jsp");
-                            rd.forward(request, response);
-                            return;
-                        }
-                        request.setAttribute("clusterList", cl);
-                        request.setAttribute("nodeTypeList", nt);
+                String nodeSetName = key.substring(3, key.length());
+                NodeSet ns;
+                try {
+                    ns = NodeSet.queryOneNodeSet(request, nodeSetName);
+                } catch (ModelException e) {
+                    if (e instanceof ModelExceptionRollbackWorked) {
+                        logger.info("A rollback worked.");
+                        request.setAttribute("theMessage",
+                                "Could not read one node set at this time. Please try again.");
+                        request.setAttribute("theJsp", "main_screen.jsp");
+                        rd = request.getRequestDispatcher("/recoverable_message.jsp");
+                        rd.forward(request, response);
+                        return;
+                    } else {
+                        logger.error("WTF! Rollback failed.");
+                        rd = request.getRequestDispatcher("/error.jsp");
+                        rd.forward(request, response);
+                        return;
                     }
-                } catch (SQLException e) {
-                    logger.error("Error with this node set, ", e);
+                }
+                request.setAttribute("nodeSet", ns);
+                ArrayList<String> cl = new ArrayList<String>();
+                ArrayList<String> nt = new ArrayList<String>();
+                try {
+                    cl = Cluster.listAllClusterNames(request);
+                    nt = NodeType.listAllNodeTypes(request);
+
+                } catch (ModelException e) {
+                    logger.error("WTF! ModelException when preparing data, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
                 }
+                request.setAttribute("clusterList", cl);
+                request.setAttribute("nodeTypeList", nt);
+
                 String next = "/edit_nodeset.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);

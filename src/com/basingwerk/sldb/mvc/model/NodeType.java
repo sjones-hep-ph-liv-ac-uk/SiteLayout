@@ -17,12 +17,12 @@ public class NodeType {
     private int cpu;
     private int slot;
     private float hs06PerSlot;
-    private float memPerSlot;
+    private float memPerNode;
 
     public String toString() {
         String result;
         result = nodeTypeName + Integer.toString(cpu) + Integer.toString(slot) + Float.toString(hs06PerSlot)
-                + Float.toString(memPerSlot);
+                + Float.toString(memPerNode);
         return result;
     }
 
@@ -58,32 +58,29 @@ public class NodeType {
         this.hs06PerSlot = hs06PerSlot;
     }
 
-    public float getmemPerSlot() {
-        return memPerSlot;
+    public float getMemPerNode() {
+        return memPerNode;
     }
 
-    public void setmemPerSlot(float memPerSlot) {
-        this.memPerSlot = memPerSlot;
+    public void setMemPerNode(float memPerNode) {
+        this.memPerNode = memPerNode;
     }
 
-    public NodeType(String nodeTypeName, int cpu, int slot, float hs06PerSlot, float memPerSlot) {
+    public NodeType(String nodeTypeName, int cpu, int slot, float hs06PerSlot, float memPerNode) {
         super();
         this.nodeTypeName = nodeTypeName;
         this.cpu = cpu;
         this.slot = slot;
         this.hs06PerSlot = hs06PerSlot;
-        this.memPerSlot = memPerSlot;
+        this.memPerNode = memPerNode;
     }
 
-
     public static ArrayList<String> listAllNodeTypes(HttpServletRequest request) throws ModelException {
+        AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
         ArrayList<String> nt = new ArrayList<String>();
         try {
-            HttpSession session = request.getSession();
-            AccessObject ao = (AccessObject) session.getAttribute("AccessObject");
-            NodeType c = null;
 
-            ResultSet r = ao.query("select nodeTypeName from nodeType");
+            ResultSet r = modelAo.query("select nodeTypeName from nodeType");
             while (r.next()) {
                 nt.add(r.getString("nodeTypeName"));
             }
@@ -95,17 +92,17 @@ public class NodeType {
     }
 
     public static ArrayList<NodeType> getAllNodeTypes(HttpServletRequest request) throws ModelException {
+        AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
         ArrayList<NodeType> nt = new ArrayList<NodeType>();
         try {
-            HttpSession session = request.getSession();
-            AccessObject ao = (AccessObject) session.getAttribute("AccessObject");
+
             NodeType c = null;
 
             ResultSet r;
-            r = ao.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerSlot from nodeType");
+            r = modelAo.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType");
             while (r.next()) {
                 NodeType n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
-                        r.getFloat("hs06PerSlot"), r.getFloat("memPerSlot"));
+                        r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
                 nt.add(n);
             }
 
@@ -115,21 +112,131 @@ public class NodeType {
         return nt;
     }
 
-    public static void deleteNodeType(HttpServletRequest request, String nodeType) throws ModelException {
-        AccessObject ao = null;
+    public static NodeType queryOneNodeType(HttpServletRequest request, String nodeTypeName) throws ModelException {
+        AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
+        NodeType n = null;
+        ResultSet r;
+        String sql = "select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType where" + " nodeTypeName = '"
+                + nodeTypeName + "'";
+        NodeType nt = null;
         try {
-            HttpSession session = request.getSession();
-            ao = (AccessObject) session.getAttribute("AccessObject");
+            r = modelAo.query(sql);
+            while (r.next()) {
+                nt = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
+                        r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
+            }
+
+        } catch (SQLException e) {
+            logger.info("Could not read the node type, rolling back.");
+            try {
+                modelAo.getTheConnection().rollback();
+            } catch (SQLException ex) {
+                throw new ModelExceptionRollbackFailed("Rollback failed", ex);
+            }
+            throw new ModelExceptionRollbackFailed("Rollback worked", null);
+        }
+
+        return n;
+    }
+
+    public static ArrayList<NodeType> queryNodeTypeList(HttpServletRequest request) throws ModelException {
+        AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
+        ArrayList<NodeType> nodeTypeList = new ArrayList<NodeType>();
+        ResultSet r;
+        try {
+            r = modelAo.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType");
+            while (r.next()) {
+                NodeType n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
+                        r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
+                nodeTypeList.add(n);
+
+            }
+        } catch (SQLException e) {
+            logger.info("Could not read the node types, rolling back.");
+            try {
+                modelAo.getTheConnection().rollback();
+            } catch (SQLException ex) {
+                throw new ModelExceptionRollbackFailed("Rollback failed", ex);
+            }
+            throw new ModelExceptionRollbackFailed("Rollback worked", null);
+        }
+
+        return nodeTypeList;
+    }
+
+    public static void addNodeType(HttpServletRequest request) throws ModelException {
+        AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
+        String nodeTypeName = request.getParameter("nodeTypeName");
+        String cpu = request.getParameter("cpu");
+        String slot = request.getParameter("slot");
+        String hs06PerSlot = request.getParameter("hs06PerSlot");
+        String memPerNode = request.getParameter("memPerNode");
+
+        String sqlCommand = "INSERT INTO nodeType (nodeTypeName,cpu,slot,hs06PerSlot,memPerNode) VALUES ('"
+                + nodeTypeName + "','" + cpu + "','" + slot + "','" + hs06PerSlot + "','" + memPerNode + "')";
+
+        java.sql.Statement statement;
+        int result = -1;
+
+        try {
+            statement = modelAo.getTheConnection().createStatement();
+            result = statement.executeUpdate(sqlCommand);
+            modelAo.getTheConnection().commit();
+
+        } catch (SQLException e) {
+            logger.info("Could not add new node set, rolling back.");
+            try {
+                modelAo.getTheConnection().rollback();
+            } catch (SQLException ex) {
+                throw new ModelExceptionRollbackFailed("Rollback failed", ex);
+            }
+            throw new ModelExceptionRollbackFailed("Rollback worked", null);
+        }
+    }
+
+    public static void updateNodeType(HttpServletRequest request) throws ModelException {
+        AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
+
+        String nodeTypeName = request.getParameter("nodeTypeName");
+        String cpu = request.getParameter("cpu");
+        String slot = request.getParameter("slot");
+        String hs06PerSlot = request.getParameter("hs06PerSlot");
+        String memPerNode = request.getParameter("memPerNode");
+
+        String sqlCommand = "UPDATE nodeType set cpu='" + cpu + "', slot='" + slot + "', hs06PerSlot='" + hs06PerSlot
+                + "', memPerNode='" + memPerNode + "' where nodeTypeName='" + nodeTypeName + "'";
+
+        java.sql.Statement statement;
+        int result = -1;
+
+        try {
+            statement = modelAo.getTheConnection().createStatement();
+            result = statement.executeUpdate(sqlCommand);
+            modelAo.getTheConnection().commit();
+        } catch (SQLException ex) {
+            logger.info("Could not update node type, rolling back.");
+            try {
+                modelAo.getTheConnection().rollback();
+            } catch (SQLException ex1) {
+                throw new ModelExceptionRollbackFailed("Rollback failed", ex1);
+            }
+            throw new ModelExceptionRollbackWorked("Rollback worked", null);
+        }
+    }
+
+    public static void deleteNodeType(HttpServletRequest request, String nodeType) throws ModelException {
+        AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
+        try {
 
             String sqlCommand = "delete from nodeType where nodeTypeName = '" + nodeType + "'";
 
-            Statement statement = ao.getTheConnection().createStatement();
+            Statement statement = modelAo.getTheConnection().createStatement();
             int result = statement.executeUpdate(sqlCommand);
-            ao.getTheConnection().commit();
+            modelAo.getTheConnection().commit();
         } catch (Exception e) {
             logger.info("Could not delete node type, rolling back.");
             try {
-                ao.getTheConnection().rollback();
+                modelAo.getTheConnection().rollback();
             } catch (SQLException ex) {
                 logger.error("Rollback failed, ", ex);
                 throw new ModelException("Cannot delete this node type");
@@ -144,15 +251,17 @@ public class NodeType {
     public static void setBaselineNodeType(HttpServletRequest request) throws ModelException {
         try {
 
-            HttpSession session = request.getSession();
-            AccessObject ao = (AccessObject) session.getAttribute("AccessObject");
+            AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
+            if (modelAo == null) {
+                throw new ModelException("No access to database");
+            }
 
             ResultSet r;
-            r = ao.query(
-                    "select nodeTypeName,cpu,slot,hs06PerSlot,memPerSlot from nodeType where nodeTypeName='BASELINE'");
+            r = modelAo.query(
+                    "select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType where nodeTypeName='BASELINE'");
             while (r.next()) {
                 NodeType n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
-                        r.getFloat("hs06PerSlot"), r.getFloat("memPerSlot"));
+                        r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
                 request.setAttribute("baseline", n);
 
             }
@@ -161,42 +270,47 @@ public class NodeType {
         }
     }
 
-    public static void refreshListOfNodeTypes(HttpServletRequest request, String col, String order) throws ModelException {
+    public static void refreshListOfNodeTypes(HttpServletRequest request, String col, String order)
+            throws ModelException {
+        AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
         try {
+            if (modelAo == null) {
+                throw new ModelException("No access to database");
+            }
 
-            HttpSession session = request.getSession();
-            AccessObject ao = (AccessObject) session.getAttribute("AccessObject");
             ArrayList<NodeType> nodeTypeList = new ArrayList<NodeType>();
 
             ResultSet r;
-            // ORDER BY column1, column2, .. columnN] [ASC | DESC
-            r = ao.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerSlot from nodeType order by " + col + " " + order);
+            r = modelAo.query(
+                    "select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType order by " + col + " " + order);
             while (r.next()) {
                 NodeType n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
-                        r.getFloat("hs06PerSlot"), r.getFloat("memPerSlot"));
+                        r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
                 nodeTypeList.add(n);
 
             }
             request.setAttribute("nodeTypeList", nodeTypeList);
         } catch (Exception e) {
-            logger.error("Had an when trying to refresh node type, ", e);
+            logger.error("Had an error when trying to refresh node type, ", e);
             throw new ModelException("Cannot refresh node type page");
         }
     }
 
     public static void getSingleNodeType(HttpServletRequest request, String nodeTypeName) throws ModelException {
+        AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
         try {
+            if (modelAo == null) {
+                throw new ModelException("No access to database");
+            }
 
-            HttpSession session = request.getSession();
-            AccessObject ao = (AccessObject) session.getAttribute("AccessObject");
             NodeType n = null;
-            ResultSet r = ao.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerSlot from nodeType where"
+            ResultSet r = modelAo.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType where"
                     + "nodeTypeName = '" + nodeTypeName + "'");
             while (r.next()) {
                 n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
-                        r.getFloat("hs06PerSlot"), r.getFloat("memPerSlot"));
+                        r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
             }
-            request.setAttribute("Nodetype", n);
+            request.setAttribute("nodetype", n);
         } catch (Exception e) {
             throw new ModelException("Cannot refresh Nodetype page");
         }

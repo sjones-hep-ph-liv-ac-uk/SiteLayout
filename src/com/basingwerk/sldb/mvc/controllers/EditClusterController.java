@@ -28,33 +28,35 @@ public class EditClusterController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        AccessObject dbHolder = null;
+        AccessObject ao = null;
         RequestDispatcher rd = null;
         HttpSession session = request.getSession();
-        dbHolder = (AccessObject) session.getAttribute("AccessObject");
-        if (dbHolder == null) {
-            logger.error("Error connecting to the database.");
-            rd = request.getRequestDispatcher("/error.jsp");
+        ao = (AccessObject) session.getAttribute("accessObject");
+        if (ao == null) {
+            request.setAttribute("theMessage", "No access to database. You can try to login again.");
+            request.setAttribute("theJsp", "login.jsp");
+            rd = request.getRequestDispatcher("/recoverable_message.jsp");
             rd.forward(request, response);
             return;
         }
 
         String clusterName = request.getParameter("clusterName");
         String descr = request.getParameter("descr");
+        String siteName = request.getParameter("siteList");
 
         try {
-            Cluster.updateSingleCluster(request, new Cluster(clusterName, descr));
+            Cluster.updateSingleCluster(request, new Cluster(clusterName, descr, siteName));
         } catch (ModelException e) {
-            request.setAttribute("TheMessage", e.getMessage());
-            rd = request.getRequestDispatcher("/recoverable_message.jsp");
+            logger.error("WTF! A ModelException occurred, ", e);
+            rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
             return;
         }
         try {
-            Cluster.refreshListOfClusters(request,"clusterName","ASC");
+            Cluster.refreshListOfClusters(request, "clusterName", "ASC");
         } catch (ModelException e) {
-            request.setAttribute("TheMessage", e.getMessage());
-            rd = request.getRequestDispatcher("/recoverable_message.jsp");
+            logger.error("WTF! A ModelException occurred, ", e);
+            rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
             return;
         }
