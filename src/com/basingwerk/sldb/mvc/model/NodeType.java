@@ -91,26 +91,26 @@ public class NodeType {
         return nt;
     }
 
-    public static ArrayList<NodeType> getAllNodeTypes(HttpServletRequest request) throws ModelException {
-        AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
-        ArrayList<NodeType> nt = new ArrayList<NodeType>();
-        try {
-
-            NodeType c = null;
-
-            ResultSet r;
-            r = modelAo.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType");
-            while (r.next()) {
-                NodeType n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
-                        r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
-                nt.add(n);
-            }
-
-        } catch (Exception e) {
-            throw new ModelException("Cannot read node types");
-        }
-        return nt;
-    }
+//    public static ArrayList<NodeType> getAllNodeTypes(HttpServletRequest request) throws ModelException {
+//        AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
+//        ArrayList<NodeType> nt = new ArrayList<NodeType>();
+//        try {
+//
+//            NodeType c = null;
+//
+//            ResultSet r;
+//            r = modelAo.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType");
+//            while (r.next()) {
+//                NodeType n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
+//                        r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
+//                nt.add(n);
+//            }
+//
+//        } catch (Exception e) {
+//            throw new ModelException("Cannot read node types");
+//        }
+//        return nt;
+//    }
 
     public static NodeType queryOneNodeType(HttpServletRequest request, String nodeTypeName) throws ModelException {
         AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
@@ -299,23 +299,23 @@ public class NodeType {
         }
     }
 
-    public static void getSingleNodeType(HttpServletRequest request, String nodeTypeName) throws ModelException {
-        AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
-        try {
-            if (modelAo == null) {
-                throw new ModelException("No access to database");
-            }
-
-            NodeType n = null;
-            ResultSet r = modelAo.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType where"
-                    + "nodeTypeName = '" + nodeTypeName + "'");
-            while (r.next()) {
-                n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
-                        r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
-            }
-            request.setAttribute("nodetype", n);
-        } catch (Exception e) {
-            throw new ModelException("Cannot refresh Nodetype page");
-        }
-    }
+//    public static void getSingleNodeType(HttpServletRequest request, String nodeTypeName) throws ModelException {
+//        AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
+//        try {
+//            if (modelAo == null) {
+//                throw new ModelException("No access to database");
+//            }
+//
+//            NodeType n = null;
+//            ResultSet r = modelAo.query("select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType where"
+//                    + "nodeTypeName = '" + nodeTypeName + "'");
+//            while (r.next()) {
+//                n = new NodeType(r.getString("nodeTypeName"), r.getInt("cpu"), r.getInt("slot"),
+//                        r.getFloat("hs06PerSlot"), r.getFloat("memPerNode"));
+//            }
+//            request.setAttribute("nodetype", n);
+//        } catch (Exception e) {
+//            throw new ModelException("Cannot refresh Nodetype page");
+//        }
+//    }
 }

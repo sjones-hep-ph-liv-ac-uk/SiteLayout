@@ -227,40 +227,40 @@ public class Cluster {
         }
     }
 
-    public static void getOneCluster(AccessObject modelAo, HttpServletRequest request, String clusterName)
-            throws ModelException {
-        try {
+//    public static void getOneCluster(AccessObject modelAo, HttpServletRequest request, String clusterName)
+//            throws ModelException {
+//        try {
+//
+//
+//            Cluster c = null;
+//            ResultSet r = modelAo
+//                    .query("select clusterName,descr,clusterSetName from cluster where clusterName = '" + clusterName + "'");
+//            while (r.next()) {
+//                c = new Cluster(r.getString("clusterName"), r.getString("descr"), r.getString("clusterSetName"));
+//            }
+//            request.setAttribute("cluster", c);
+//        } catch (Exception e) {
+//            throw new ModelException("Cannot refresh cluster page.");
+//        }
+//    }
 
-
-            Cluster c = null;
-            ResultSet r = modelAo
-                    .query("select clusterName,descr,clusterSetName from cluster where clusterName = '" + clusterName + "'");
-            while (r.next()) {
-                c = new Cluster(r.getString("clusterName"), r.getString("descr"), r.getString("clusterSetName"));
-            }
-            request.setAttribute("cluster", c);
-        } catch (Exception e) {
-            throw new ModelException("Cannot refresh cluster page.");
-        }
-    }
-
-    public static ArrayList<Cluster> getAllClusters(AccessObject modelAo, HttpServletRequest request)
-            throws ModelException {
-        ArrayList<Cluster> cl = new ArrayList<Cluster>();
-        try {
-
-            Cluster c = null;
-            ResultSet r = modelAo.query("select clusterName,descr,clusterSetName from cluster");
-            while (r.next()) {
-                c = new Cluster(r.getString("clusterName"), r.getString("descr"), r.getString("clusterSetName"));
-                cl.add(c);
-            }
-
-        } catch (Exception e) {
-            throw new ModelException("Cannot get clusters.");
-        }
-        return cl;
-    }
+//    public static ArrayList<Cluster> getAllClusters(AccessObject modelAo, HttpServletRequest request)
+//            throws ModelException {
+//        ArrayList<Cluster> cl = new ArrayList<Cluster>();
+//        try {
+//
+//            Cluster c = null;
+//            ResultSet r = modelAo.query("select clusterName,descr,clusterSetName from cluster");
+//            while (r.next()) {
+//                c = new Cluster(r.getString("clusterName"), r.getString("descr"), r.getString("clusterSetName"));
+//                cl.add(c);
+//            }
+//
+//        } catch (Exception e) {
+//            throw new ModelException("Cannot get clusters.");
+//        }
+//        return cl;
+//    }
     
     public static ArrayList<String> listClusterSetNames(HttpServletRequest request, String clusterSetName) throws ModelException {
         AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");

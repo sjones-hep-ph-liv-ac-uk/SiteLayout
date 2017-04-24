@@ -148,24 +148,24 @@ public class ClusterSet {
         return clusterSetNameList;
     }
 
-    public static ArrayList<ClusterSet> getAllClusterSets(HttpServletRequest request) throws ModelException {
-        AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
-        ArrayList<ClusterSet> clusterSetList = new ArrayList<ClusterSet>();
-        try {
-
-            ResultSet r;
-            r = modelAo.query("select clusterSetName, description ,location ,longitude ,latitude ,admin from clusterSet");
-            while (r.next()) {
-                ClusterSet n = new ClusterSet(r.getString("clusterSetName"), r.getString("description "), r.getString("location "),
-                        r.getFloat("longitude"), r.getFloat("latitude"), r.getString("admin"));
-                clusterSetList.add(n);
-            }
-
-        } catch (Exception e) {
-            throw new ModelException("Cannot read cluster sets");
-        }
-        return clusterSetList;
-    }
+//    public static ArrayList<ClusterSet> getAllClusterSets(HttpServletRequest request) throws ModelException {
+//        AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
+//        ArrayList<ClusterSet> clusterSetList = new ArrayList<ClusterSet>();
+//        try {
+//
+//            ResultSet r;
+//            r = modelAo.query("select clusterSetName, description ,location ,longitude ,latitude ,admin from clusterSet");
+//            while (r.next()) {
+//                ClusterSet n = new ClusterSet(r.getString("clusterSetName"), r.getString("description "), r.getString("location "),
+//                        r.getFloat("longitude"), r.getFloat("latitude"), r.getString("admin"));
+//                clusterSetList.add(n);
+//            }
+//
+//        } catch (Exception e) {
+//            throw new ModelException("Cannot read cluster sets");
+//        }
+//        return clusterSetList;
+//    }
 
     public static void addClusterSet(HttpServletRequest request) throws ModelException {
         AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
@@ -274,23 +274,24 @@ public class ClusterSet {
         }
     }
 
-    public static void getSingleClusterSet(HttpServletRequest request, String clusterSetName) throws ModelException {
-        AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
-        try {
-
-            ClusterSet s = null;
-            ResultSet r = modelAo
-                    .query("select clusterSetName, description ,location ,longitude ,latitude ,admin from clusterSet where"
-                            + "clusterSetName = '" + clusterSetName + "'");
-            while (r.next()) {
-                s = new ClusterSet(r.getString("clusterSetName"), r.getString("description "), r.getString("location "),
-                        r.getFloat("longitude"), r.getFloat("latitude"), r.getString("admin"));
-            }
-            request.setAttribute("clusterSet", s);
-        } catch (Exception e) {
-            throw new ModelException("Cannot refresh ClusterSet page");
-        }
-    }
+//    public static void getSingleClusterSet(HttpServletRequest request, String clusterSetName) throws ModelException {
+//        AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
+//        try {
+//
+//            ClusterSet s = null;
+//            ResultSet r = modelAo
+//                    .query("select clusterSetName, description ,location ,longitude ,latitude ,admin from clusterSet where"
+//                            + "clusterSetName = '" + clusterSetName + "'");
+//            while (r.next()) {
+//                s = new ClusterSet(r.getString("clusterSetName"), r.getString("description "), r.getString("location "),
+//                        r.getFloat("longitude"), r.getFloat("latitude"), r.getString("admin"));
+//            }
+//            request.setAttribute("clusterSet", s);
+//        } catch (Exception e) {
+//            throw new ModelException("Cannot refresh ClusterSet page");
+//        }
+//    }
+    
     public String toString() {
         String result;
         result = clusterSetName.toString() + " " + description.toString() + " " + location.toString() + " "
