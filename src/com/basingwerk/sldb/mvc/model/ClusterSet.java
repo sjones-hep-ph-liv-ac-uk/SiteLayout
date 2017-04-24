@@ -20,12 +20,6 @@ public class Site {
     private Float latitude;
     private String admin;
 
-    public String toString() {
-        String result;
-        result = siteName.toString() + " " + description.toString() + " " + location.toString() + " "
-                + longitude.toString() + " " + latitude.toString() + " " + admin.toString();
-        return result;
-    }
 
     public String getDescription() {
         return description;
@@ -269,7 +263,6 @@ public class Site {
             while (r.next()) {
                 Site s = new Site(r.getString("siteName"), r.getString("description"), r.getString("location"),
                         r.getFloat("longitude"), r.getFloat("latitude"), r.getString("admin"));
-                // logger.error("HAVING A LOOK ..." + s.toString());
                 siteList.add(s);
             }
             request.setAttribute("siteList", siteList);
@@ -296,4 +289,11 @@ public class Site {
             throw new ModelException("Cannot refresh Site page");
         }
     }
+    public String toString() {
+        String result;
+        result = siteName.toString() + " " + description.toString() + " " + location.toString() + " "
+                + longitude.toString() + " " + latitude.toString() + " " + admin.toString();
+        return result;
+    }
+    
 }

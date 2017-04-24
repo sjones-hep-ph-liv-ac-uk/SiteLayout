@@ -2,6 +2,8 @@ package com.basingwerk.sldb.mvc.controllers;
 
 import org.apache.log4j.Logger;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -14,14 +16,16 @@ import javax.servlet.http.HttpSession;
 import com.basingwerk.sldb.mvc.model.AccessObject;
 import com.basingwerk.sldb.mvc.model.Cluster;
 import com.basingwerk.sldb.mvc.model.ModelException;
+import com.basingwerk.sldb.mvc.model.NodeSetNodeTypeJoin;
+import com.basingwerk.sldb.mvc.model.NodeType;
 
-@WebServlet("/EditClusterController")
+@WebServlet("/SelectSiteController")
 
-public class EditClusterController extends HttpServlet {
+public class SelectSiteController extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    final static Logger logger = Logger.getLogger(EditClusterController.class);
+    final static Logger logger = Logger.getLogger(SelectSiteController.class);
 
-    public EditClusterController() {
+    public SelectSiteController() {
         super();
     }
 
@@ -40,30 +44,36 @@ public class EditClusterController extends HttpServlet {
             return;
         }
 
-        String clusterName = request.getParameter("clusterName");
-        String descr = request.getParameter("descr");
+        // String clusterName = request.getParameter("clusterName");
+        // String descr = request.getParameter("descr");
         String siteName = request.getParameter("siteList");
 
+        ArrayList<String> clusters = null;
         try {
-            Cluster.updateSingleCluster(request, new Cluster(clusterName, descr, siteName));
+            NodeType.refreshListOfNodeTypes(request, "nodeTypeName", "ASC");
+
+            Cluster.refreshListOfSiteClusters(request, siteName, "clusterName", "ASC");
+            NodeType.setBaselineNodeType(request);
+
+            clusters = Cluster.listSiteClusterNames(request, siteName);
+            java.util.HashMap<String, ArrayList> joinMap = new java.util.HashMap<String, ArrayList>();
+            Iterator<String> c = clusters.iterator();
+            while (c.hasNext()) {
+                String cluster = c.next();
+                ArrayList<NodeSetNodeTypeJoin> nsntj = NodeSetNodeTypeJoin.getJoinForCluster(request, cluster);
+                joinMap.put(cluster, nsntj);
+            }
+            request.setAttribute("joinMap", joinMap);
+            rd = request.getRequestDispatcher("/reports.jsp");
+            rd.forward(request, response);
+            return;
         } catch (ModelException e) {
-            logger.error("WTF! A ModelException occurred, ", e);
+            logger.error("WTF! Had a ModelException in SelectSiteController, ", e);
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
             return;
         }
-        try {
-            Cluster.refreshListOfAllClusters(request, "clusterName", "ASC");
-        } catch (ModelException e) {
-            logger.error("WTF! A ModelException occurred, ", e);
-            rd = request.getRequestDispatcher("/error.jsp");
-            rd.forward(request, response);
-            return;
-        }
-        String next = "/cluster.jsp";
-        rd = request.getRequestDispatcher(next);
-        rd.forward(request, response);
-        return;
+
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

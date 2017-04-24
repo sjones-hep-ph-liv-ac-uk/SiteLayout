@@ -32,7 +32,7 @@
 <title>Reports</title>
 </head>
 <body>
-	Reports
+	Report
 	<br>
 
 	<form action="main_screen.jsp" method="post">

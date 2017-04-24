@@ -81,7 +81,7 @@ public class ClusterController extends HttpServlet {
                 }
 
                 try {
-                    Cluster.refreshListOfClusters(request, c, order);
+                    Cluster.refreshListOfAllClusters(request, c, order);
                 } catch (ModelException e) {
                     logger.error("WTF! A ModelException occurred, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -116,7 +116,7 @@ public class ClusterController extends HttpServlet {
                 }
                     
                 try {
-                    Cluster.refreshListOfClusters(request, "clusterName", "ASC");
+                    Cluster.refreshListOfAllClusters(request, "clusterName", "ASC");
                 } catch (ModelException e) {
                     logger.error("WTF! Had a ModelException when trying to setListOfClusters, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");

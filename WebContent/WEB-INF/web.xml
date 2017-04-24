@@ -40,6 +40,15 @@ version="2.3"> -->
     <servlet-name>NewClusterController</servlet-name>
     <url-pattern>/NewClusterController</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>SelectSiteController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.SelectSiteController </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SelectSiteController</servlet-name>
+    <url-pattern>/SelectSiteController</url-pattern>
+  </servlet-mapping>
  
   <servlet>
     <servlet-name>EditNodeSetController</servlet-name>

@@ -60,7 +60,7 @@ public class MainScreenController extends HttpServlet {
             }
 
             if (act.equals("Edit clusters")) {
-                Cluster.refreshListOfClusters(request, "clusterName", "ASC");
+                Cluster.refreshListOfAllClusters(request, "clusterName", "ASC");
                 next = "/cluster.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -75,22 +75,28 @@ public class MainScreenController extends HttpServlet {
 
             }
             if (act.equals("Reports")) {
-                NodeType.refreshListOfNodeTypes(request, "nodeTypeName", "ASC");
-                Cluster.refreshListOfClusters(request, "clusterName", "ASC");
-                NodeType.setBaselineNodeType(request);
-                ArrayList<String> clusters = Cluster.listAllClusterNames(request);
-                java.util.HashMap<String, ArrayList> joinMap = new java.util.HashMap<String, ArrayList>();
-                Iterator<String> c = clusters.iterator();
-                while (c.hasNext()) {
-                    String cluster = c.next();
-                    ArrayList<NodeSetNodeTypeJoin> nsntj = NodeSetNodeTypeJoin.getJoinForCluster(request, cluster);
-                    joinMap.put(cluster, nsntj);
-                }
-                request.setAttribute("joinMap", joinMap);
-                next = "/reports.jsp";
+                Site.refreshListOfSites(request, "siteName", "ASC");
+                next = "/select_site.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
                 return;
+                
+//                NodeType.refreshListOfNodeTypes(request, "nodeTypeName", "ASC");
+//                Cluster.refreshListOfClusters(request, "clusterName", "ASC");
+//                NodeType.setBaselineNodeType(request);
+//                ArrayList<String> clusters = Cluster.listAllClusterNames(request);
+//                java.util.HashMap<String, ArrayList> joinMap = new java.util.HashMap<String, ArrayList>();
+//                Iterator<String> c = clusters.iterator();
+//                while (c.hasNext()) {
+//                    String cluster = c.next();
+//                    ArrayList<NodeSetNodeTypeJoin> nsntj = NodeSetNodeTypeJoin.getJoinForCluster(request, cluster);
+//                    joinMap.put(cluster, nsntj);
+//                }
+//                request.setAttribute("joinMap", joinMap);
+//                next = "/reports.jsp";
+//                rd = request.getRequestDispatcher(next);
+//                rd.forward(request, response);
+//                return;
             }
             logger.error("WTF! Never seen that button before.");
             rd = request.getRequestDispatcher("/error.jsp");
