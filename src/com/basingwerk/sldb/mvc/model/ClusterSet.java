@@ -11,9 +11,9 @@ import javax.servlet.http.HttpSession;
 
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
-public class Site {
-    final static Logger logger = Logger.getLogger(Site.class);
-    private String siteName;
+public class ClusterSet {
+    final static Logger logger = Logger.getLogger(ClusterSet.class);
+    private String clusterSetName;
     private String description;
     private String location;
     private Float longitude;
@@ -61,30 +61,30 @@ public class Site {
         this.admin = admin;
     }
 
-    public String getSiteName() {
-        return siteName;
+    public String getClusterSetName() {
+        return clusterSetName;
     }
 
-    public void setSiteName(String siteName) {
-        this.siteName = siteName;
+    public void setclusterSetName(String clusterSetName) {
+        this.clusterSetName = clusterSetName;
     }
 
-    public static Site queryOneSite(HttpServletRequest request, String siteName) throws ModelException {
+    public static ClusterSet queryOneClusterSet(HttpServletRequest request, String clusterSetName) throws ModelException {
         AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
         ResultSet r;
-        String sql = "select siteName,description,location,longitude, latitude, admin from site where" + " siteName = '"
-                + siteName + "'";
-        Site site = null;
+        String sql = "select clusterSetName,description,location,longitude, latitude, admin from clusterSet where" + " clusterSetName = '"
+                + clusterSetName + "'";
+        ClusterSet clusterSet = null;
         try {
             r = modelAo.query(sql);
             while (r.next()) {
-                site = new Site(r.getString("siteName"), r.getString("description"), r.getString("location"),
+                clusterSet = new ClusterSet(r.getString("clusterSetName"), r.getString("description"), r.getString("location"),
                         r.getFloat("longitude"), r.getFloat("latitude"), r.getString("admin"));
             }
         }
 
         catch (SQLException e) {
-            logger.info("Could not read the site, rolling back.");
+            logger.info("Could not read the cluster set, rolling back.");
             try {
                 modelAo.getTheConnection().rollback();
             } catch (SQLException ex) {
@@ -92,23 +92,23 @@ public class Site {
             }
             throw new ModelExceptionRollbackFailed("Rollback worked", null);
         }
-        return site;
+        return clusterSet;
 
     }
 
-    public static ArrayList<Site> querySiteList(HttpServletRequest request) throws ModelException {
+    public static ArrayList<ClusterSet> queryClusterSetList(HttpServletRequest request) throws ModelException {
         AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
-        ArrayList<Site> siteList = new ArrayList<Site>();
+        ArrayList<ClusterSet> clusterSetList = new ArrayList<ClusterSet>();
         ResultSet r;
         try {
-            r = modelAo.query("select siteName,description,location,longitude,latitude,admin from site");
+            r = modelAo.query("select clusterSetName,description,location,longitude,latitude,admin from clusterSet");
             while (r.next()) {
-                Site n = new Site(r.getString("siteName"), r.getString("description"), r.getString("location"),
+                ClusterSet n = new ClusterSet(r.getString("clusterSetName"), r.getString("description"), r.getString("location"),
                         r.getFloat("longitude"), r.getFloat("latitude"), r.getString("admin"));
-                siteList.add(n);
+                clusterSetList.add(n);
             }
         } catch (SQLException e) {
-            logger.info("Could not read the sites, rolling back.");
+            logger.info("Could not read the cluster sets, rolling back.");
             try {
                 modelAo.getTheConnection().rollback();
             } catch (SQLException ex) {
@@ -116,13 +116,13 @@ public class Site {
             }
             throw new ModelExceptionRollbackFailed("Rollback worked", null);
         }
-        return siteList;
+        return clusterSetList;
 
     }
 
-    public Site(String siteName, String description, String location, Float longitude, Float latitude, String admin) {
+    public ClusterSet(String clusterSetName, String description, String location, Float longitude, Float latitude, String admin) {
         super();
-        this.siteName = siteName;
+        this.clusterSetName = clusterSetName;
         this.description = description;
         this.location = location;
         this.longitude = longitude;
@@ -130,55 +130,55 @@ public class Site {
         this.admin = admin;
     }
 
-    public static ArrayList<String> listAllSites(HttpServletRequest request) throws ModelException {
+    public static ArrayList<String> listAllClusterSets(HttpServletRequest request) throws ModelException {
         AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
 
-        ArrayList<String> siteNameList = new ArrayList<String>();
+        ArrayList<String> clusterSetNameList = new ArrayList<String>();
         try {
 
-            Site s = null;
+            ClusterSet s = null;
 
-            ResultSet r = modelAo.query("select siteName, description ,location ,longitude ,latitude ,admin from site");
+            ResultSet r = modelAo.query("select clusterSetName, description ,location ,longitude ,latitude ,admin from clusterSet");
             while (r.next()) {
-                siteNameList.add(r.getString("siteName"));
+                clusterSetNameList.add(r.getString("clusterSetName"));
             }
         } catch (Exception e) {
-            throw new ModelException("Cannot Read sites");
+            throw new ModelException("Cannot read cluster sets");
         }
-        return siteNameList;
+        return clusterSetNameList;
     }
 
-    public static ArrayList<Site> getAllSites(HttpServletRequest request) throws ModelException {
+    public static ArrayList<ClusterSet> getAllClusterSets(HttpServletRequest request) throws ModelException {
         AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
-        ArrayList<Site> siteList = new ArrayList<Site>();
+        ArrayList<ClusterSet> clusterSetList = new ArrayList<ClusterSet>();
         try {
 
             ResultSet r;
-            r = modelAo.query("select siteName, description ,location ,longitude ,latitude ,admin from site");
+            r = modelAo.query("select clusterSetName, description ,location ,longitude ,latitude ,admin from clusterSet");
             while (r.next()) {
-                Site n = new Site(r.getString("siteName"), r.getString("description "), r.getString("location "),
+                ClusterSet n = new ClusterSet(r.getString("clusterSetName"), r.getString("description "), r.getString("location "),
                         r.getFloat("longitude"), r.getFloat("latitude"), r.getString("admin"));
-                siteList.add(n);
+                clusterSetList.add(n);
             }
 
         } catch (Exception e) {
-            throw new ModelException("Cannot read sites");
+            throw new ModelException("Cannot read cluster sets");
         }
-        return siteList;
+        return clusterSetList;
     }
 
-    public static void addSite(HttpServletRequest request) throws ModelException {
+    public static void addClusterSet(HttpServletRequest request) throws ModelException {
         AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
 
-        String siteName = request.getParameter("siteName");
+        String clusterSetName = request.getParameter("clusterSetName");
         String description = request.getParameter("description");
         String location = request.getParameter("location");
         String longitude = request.getParameter("longitude");
         String latitude = request.getParameter("latitude");
         String admin = request.getParameter("admin");
 
-        String sqlCommand = "INSERT INTO site (siteName,description,location,longitude,latitude,admin) VALUES ('"
-                + siteName + "','" + description + "','" + location + "','" + longitude + "','" + longitude + "','"
+        String sqlCommand = "INSERT INTO clusterSet (clusterSetName,description,location,longitude,latitude,admin) VALUES ('"
+                + clusterSetName + "','" + description + "','" + location + "','" + longitude + "','" + longitude + "','"
                 + admin + "')";
 
         java.sql.Statement statement;
@@ -189,7 +189,7 @@ public class Site {
             result = statement.executeUpdate(sqlCommand);
             modelAo.getTheConnection().commit();
         } catch (SQLException ex) {
-            logger.info("Could not add site, rolling back.");
+            logger.info("Could not add cluster set, rolling back.");
             try {
                 modelAo.getTheConnection().rollback();
             } catch (SQLException ex1) {
@@ -199,18 +199,19 @@ public class Site {
         }
     }
 
-    public static void updateSite(HttpServletRequest request) throws ModelException {
+    public static void updateClusterSet(HttpServletRequest request) throws ModelException {
         AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
-        String siteName = request.getParameter("siteName");
+
+        String clusterSetName = request.getParameter("clusterSetName");
         String description = request.getParameter("description");
         String location = request.getParameter("location");
         String longitude = request.getParameter("longitude");
         String latitude = request.getParameter("latitude");
         String admin = request.getParameter("admin");
 
-        String sqlCommand = "UPDATE site set description='" + description + "', location='" + location
+        String sqlCommand = "UPDATE clusterSet set description='" + description + "', location='" + location
                 + "', longitude='" + longitude + "', latitude='" + latitude + "', admin='" + admin
-                + "' where siteName='" + siteName + "'";
+                + "' where clusterSetName='" + clusterSetName + "'";
 
         java.sql.Statement statement;
         int result = -1;
@@ -220,7 +221,8 @@ public class Site {
             result = statement.executeUpdate(sqlCommand);
             modelAo.getTheConnection().commit();
         } catch (SQLException ex) {
-            logger.info("Could not update site, rolling back.");
+            logger.error("SJDEBUG: " + sqlCommand);
+            logger.info("Could not update cluster set, rolling back, ", ex);
             try {
                 modelAo.getTheConnection().rollback();
             } catch (SQLException ex1) {
@@ -230,18 +232,18 @@ public class Site {
         }
     }
 
-    public static void deleteSite(HttpServletRequest request, String site) throws ModelException {
+    public static void deleteClusterSet(HttpServletRequest request, String clusterSet) throws ModelException {
         AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
         try {
             HttpSession session = request.getSession();
 
-            String sqlCommand = "delete from site where siteName = '" + site + "'";
+            String sqlCommand = "delete from clusterSet where clusterSetName = '" + clusterSet + "'";
 
             Statement statement = modelAo.getTheConnection().createStatement();
             int result = statement.executeUpdate(sqlCommand);
             modelAo.getTheConnection().commit();
         } catch (SQLException ex) {
-            logger.info("Could not update site, rolling back.");
+            logger.info("Could not update cluster set, rolling back.");
             try {
                 modelAo.getTheConnection().rollback();
             } catch (SQLException ex1) {
@@ -251,47 +253,47 @@ public class Site {
         }
     }
 
-    public static void refreshListOfSites(HttpServletRequest request, String col, String order) throws ModelException {
+    public static void refreshClusterSets(HttpServletRequest request, String col, String order) throws ModelException {
         AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
         try {
 
-            ArrayList<Site> siteList = new ArrayList<Site>();
+            ArrayList<ClusterSet> clusterSetList = new ArrayList<ClusterSet>();
 
             ResultSet r;
-            r = modelAo.query("select siteName,description,location,longitude,latitude,admin from site  order by " + col
+            r = modelAo.query("select clusterSetName,description,location,longitude,latitude,admin from clusterSet  order by " + col
                     + " " + order);
             while (r.next()) {
-                Site s = new Site(r.getString("siteName"), r.getString("description"), r.getString("location"),
+                ClusterSet s = new ClusterSet(r.getString("clusterSetName"), r.getString("description"), r.getString("location"),
                         r.getFloat("longitude"), r.getFloat("latitude"), r.getString("admin"));
-                siteList.add(s);
+                clusterSetList.add(s);
             }
-            request.setAttribute("siteList", siteList);
+            request.setAttribute("clusterSetList", clusterSetList);
         } catch (Exception e) {
-            logger.error("Had an error when trying to refresh site, ", e);
-            throw new ModelException("Cannot refresh site page");
+            logger.error("Had an error when trying to refresh cluster set, ", e);
+            throw new ModelException("Cannot refresh ClusterSet page");
         }
     }
 
-    public static void getSingleSite(HttpServletRequest request, String siteName) throws ModelException {
+    public static void getSingleClusterSet(HttpServletRequest request, String clusterSetName) throws ModelException {
         AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
         try {
 
-            Site s = null;
+            ClusterSet s = null;
             ResultSet r = modelAo
-                    .query("select siteName, description ,location ,longitude ,latitude ,admin from site where"
-                            + "siteName = '" + siteName + "'");
+                    .query("select clusterSetName, description ,location ,longitude ,latitude ,admin from clusterSet where"
+                            + "clusterSetName = '" + clusterSetName + "'");
             while (r.next()) {
-                s = new Site(r.getString("siteName"), r.getString("description "), r.getString("location "),
+                s = new ClusterSet(r.getString("clusterSetName"), r.getString("description "), r.getString("location "),
                         r.getFloat("longitude"), r.getFloat("latitude"), r.getString("admin"));
             }
-            request.setAttribute("site", s);
+            request.setAttribute("clusterSet", s);
         } catch (Exception e) {
-            throw new ModelException("Cannot refresh Site page");
+            throw new ModelException("Cannot refresh ClusterSet page");
         }
     }
     public String toString() {
         String result;
-        result = siteName.toString() + " " + description.toString() + " " + location.toString() + " "
+        result = clusterSetName.toString() + " " + description.toString() + " " + location.toString() + " "
                 + longitude.toString() + " " + latitude.toString() + " " + admin.toString();
         return result;
     }

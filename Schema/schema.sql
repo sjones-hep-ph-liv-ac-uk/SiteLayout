@@ -25,24 +25,24 @@ CREATE TABLE nodeType(
   PRIMARY KEY( nodeTypeName)
 ) TYPE = INNODB;
 
-#DROP TABLE site;
-CREATE TABLE site (
-  siteName varchar(50),
+#DROP TABLE clusterSet;
+CREATE TABLE clusterSet (
+  clusterSetName varchar(50),
   description  varchar(50),
   location varchar(50),
   longitude float,
   latitude float,
   admin varchar(50),
-  PRIMARY KEY( siteName )
+  PRIMARY KEY( clusterSetName )
 ) TYPE = INNODB;
 
 #DROP TABLE cluster;
 CREATE TABLE cluster (
   clusterName  varchar(20),
   descr        varchar(50),
-  siteName varchar(50) NOT NULL,
+  clusterSetName varchar(50) NOT NULL,
   PRIMARY KEY( clusterName ),
-  FOREIGN KEY (siteName) REFERENCES site(siteName) 
+  FOREIGN KEY (clusterSetName) REFERENCES clusterSet(clusterSetName) 
 ) TYPE = INNODB;
 
 #DROP TABLE nodeSet;

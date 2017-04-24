@@ -19,13 +19,13 @@ import com.basingwerk.sldb.mvc.model.ModelException;
 import com.basingwerk.sldb.mvc.model.NodeSetNodeTypeJoin;
 import com.basingwerk.sldb.mvc.model.NodeType;
 
-@WebServlet("/SelectSiteController")
+@WebServlet("/SelectClusterSetController")
 
-public class SelectSiteController extends HttpServlet {
+public class SelectClusterSetController extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    final static Logger logger = Logger.getLogger(SelectSiteController.class);
+    final static Logger logger = Logger.getLogger(SelectClusterSetController.class);
 
-    public SelectSiteController() {
+    public SelectClusterSetController() {
         super();
     }
 
@@ -46,16 +46,16 @@ public class SelectSiteController extends HttpServlet {
 
         // String clusterName = request.getParameter("clusterName");
         // String descr = request.getParameter("descr");
-        String siteName = request.getParameter("siteList");
+        String clusterSetName = request.getParameter("clusterSetList");
 
         ArrayList<String> clusters = null;
         try {
             NodeType.refreshListOfNodeTypes(request, "nodeTypeName", "ASC");
 
-            Cluster.refreshListOfSiteClusters(request, siteName, "clusterName", "ASC");
+            Cluster.refreshClusterSet(request, clusterSetName, "clusterName", "ASC");
             NodeType.setBaselineNodeType(request);
 
-            clusters = Cluster.listSiteClusterNames(request, siteName);
+            clusters = Cluster.listClusterSetNames(request, clusterSetName);
             java.util.HashMap<String, ArrayList> joinMap = new java.util.HashMap<String, ArrayList>();
             Iterator<String> c = clusters.iterator();
             while (c.hasNext()) {
@@ -68,7 +68,7 @@ public class SelectSiteController extends HttpServlet {
             rd.forward(request, response);
             return;
         } catch (ModelException e) {
-            logger.error("WTF! Had a ModelException in SelectSiteController, ", e);
+            logger.error("WTF! Had a ModelException in SelectClusterSetController, ", e);
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
             return;

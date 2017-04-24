@@ -51,7 +51,7 @@ public class NewNodeSetController extends HttpServlet {
         } catch (ModelException e1) {
             if (e1 instanceof ModelExceptionRollbackWorked) {
                 logger.info("Rollback worked.");
-                request.setAttribute("theMessage", "Could not update that site at this time. Please try again.");
+                request.setAttribute("theMessage", "Could not add that data at this time. Please try again.");
                 request.setAttribute("theJsp", "main_screen.jsp");
                 rd = request.getRequestDispatcher("/recoverable_message.jsp");
                 rd.forward(request, response);

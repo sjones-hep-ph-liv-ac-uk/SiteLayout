@@ -22,7 +22,7 @@
 			</tr>
 			<tr>
 				<td class="tg-yw4l"><input type="submit"
-					value="Edit sites" name="SomeButton" /></td>
+					value="Edit cluster sets" name="SomeButton" /></td>
 			</tr>
 			<tr>
 				<td class="tg-yw4l"><input type="submit"

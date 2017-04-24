@@ -42,10 +42,10 @@ public class EditClusterController extends HttpServlet {
 
         String clusterName = request.getParameter("clusterName");
         String descr = request.getParameter("descr");
-        String siteName = request.getParameter("siteList");
+        String clusterSetName = request.getParameter("clusterSetList");
 
         try {
-            Cluster.updateSingleCluster(request, new Cluster(clusterName, descr, siteName));
+            Cluster.updateSingleCluster(request, new Cluster(clusterName, descr, clusterSetName));
         } catch (ModelException e) {
             logger.error("WTF! A ModelException occurred, ", e);
             rd = request.getRequestDispatcher("/error.jsp");

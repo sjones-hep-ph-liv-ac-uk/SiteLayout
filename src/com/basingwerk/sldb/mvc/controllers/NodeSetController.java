@@ -137,7 +137,7 @@ public class NodeSetController extends HttpServlet {
             }
             if (key.startsWith("ED.")) {
                 String nodeSetName = key.substring(3, key.length());
-                NodeSet ns;
+                NodeSet ns = null;
                 try {
                     ns = NodeSet.queryOneNodeSet(request, nodeSetName);
                 } catch (ModelException e) {

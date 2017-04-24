@@ -15,18 +15,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.basingwerk.sldb.mvc.model.Site;
+import com.basingwerk.sldb.mvc.model.ClusterSet;
 import com.basingwerk.sldb.mvc.model.ModelException;
 import com.basingwerk.sldb.mvc.model.ModelExceptionRollbackWorked;
 import com.basingwerk.sldb.mvc.model.AccessObject;
 
-@WebServlet("/SiteController")
+@WebServlet("/ClusterSetController")
 
-public class SiteController extends HttpServlet {
+public class ClusterSetController extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    final static Logger logger = Logger.getLogger(SiteController.class);
+    final static Logger logger = Logger.getLogger(ClusterSetController.class);
 
-    public SiteController() {
+    public ClusterSetController() {
         super();
     }
 
@@ -42,7 +42,7 @@ public class SiteController extends HttpServlet {
         }
         act = request.getParameter("New");
         if (act != null) {
-            rd = request.getRequestDispatcher("/new_site.jsp");
+            rd = request.getRequestDispatcher("/new_cluster_set.jsp");
             rd.forward(request, response);
             return;
         }
@@ -63,26 +63,26 @@ public class SiteController extends HttpServlet {
                 }
 
                 try {
-                    Site.refreshListOfSites(request, c, order);
+                    ClusterSet.refreshClusterSets(request, c, order);
                 } catch (ModelException e) {
-                    logger.error("WTF! ModelException when trying to refresh Sites, ", e);
+                    logger.error("WTF! ModelException when trying to refresh cluster set, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
                 }
-                String next = "/site.jsp";
+                String next = "/cluster_set.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
                 return;
             }
             if (key.startsWith("DEL.")) {
-                String site = key.substring(4, key.length());
+                String clusterSet = key.substring(4, key.length());
                 try {
-                    Site.deleteSite(request, site);
+                    ClusterSet.deleteClusterSet(request, clusterSet);
                 } catch (ModelException e1) {
                     if (e1 instanceof ModelExceptionRollbackWorked) {
                         logger.info("Rollback worked.");
-                        request.setAttribute("theMessage", "Could not delete that site at this time. Please try again.");
+                        request.setAttribute("theMessage", "Could not delete that cluster set at this time. Please try again.");
                         request.setAttribute("theJsp", "main_screen.jsp");
                         rd = request.getRequestDispatcher("/recoverable_message.jsp");
                         rd.forward(request, response);
@@ -96,28 +96,28 @@ public class SiteController extends HttpServlet {
                 }
                 
                 try {
-                    Site.refreshListOfSites(request, "siteName", order);
+                    ClusterSet.refreshClusterSets(request, "ClusterSetName", order);
                 } catch (ModelException e) {
-                    logger.error("WTF! ModelException when trying to refresh Sites, ", e);
+                    logger.error("WTF! ModelException when trying to refresh cluster sets, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
                 }
-                String next = "/site.jsp";
+                String next = "/cluster_set.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
                 return;
             }
             if (key.startsWith("ED.")) {
-                String site = key.substring(3, key.length());
+                String clusterSet = key.substring(3, key.length());
                 
-                Site s;
+                ClusterSet s;
                 try {
-                    s = Site.queryOneSite(request, site);
+                    s = ClusterSet.queryOneClusterSet(request, clusterSet);
                 } catch (ModelException e1) {
                     if (e1 instanceof ModelExceptionRollbackWorked) {
                         logger.info("Rollback worked.");
-                        request.setAttribute("theMessage", "Could not update that site at this time. Please try again.");
+                        request.setAttribute("theMessage", "Could not update that cluster set at this time. Please try again.");
                         request.setAttribute("theJsp", "main_screen.jsp");
                         rd = request.getRequestDispatcher("/recoverable_message.jsp");
                         rd.forward(request, response);
@@ -129,8 +129,8 @@ public class SiteController extends HttpServlet {
                         return;
                     }
                 }
-                request.setAttribute("site", s);
-                String next = "/edit_site.jsp";
+                request.setAttribute("clusterSet", s);
+                String next = "/edit_cluster_set.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
                 return;

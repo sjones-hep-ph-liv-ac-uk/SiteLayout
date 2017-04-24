@@ -18,10 +18,10 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import com.basingwerk.sldb.mvc.model.Cluster;
+import com.basingwerk.sldb.mvc.model.ClusterSet;
 import com.basingwerk.sldb.mvc.model.ModelException;
 import com.basingwerk.sldb.mvc.model.ModelExceptionRollbackWorked;
 import com.basingwerk.sldb.mvc.model.NodeType;
-import com.basingwerk.sldb.mvc.model.Site;
 import com.basingwerk.sldb.mvc.model.AccessObject;
 
 @WebServlet("/ClusterController")
@@ -49,15 +49,16 @@ public class ClusterController extends HttpServlet {
 
             ArrayList<String> s = new ArrayList<String>();
             try {
-                s = Site.listAllSites(request);
+                s = ClusterSet.listAllClusterSets(request);
+                
 
             } catch (ModelException e) {
-                logger.error("WTF! Error getting the sites , ", e);
+                logger.error("WTF! Error getting the cluster sets, ", e);
                 rd = request.getRequestDispatcher("/error.jsp");
                 rd.forward(request, response);
                 return;
             }
-            request.setAttribute("siteList", s);
+            request.setAttribute("clusterSetList", s);
             rd = request.getRequestDispatcher("/new_cluster.jsp");
             rd.forward(request, response);
             return;
@@ -135,7 +136,7 @@ public class ClusterController extends HttpServlet {
 
                     ArrayList<String> s = new ArrayList<String>();
                     try {
-                        s = Site.listAllSites(request);
+                        s = ClusterSet.listAllClusterSets(request);
 
                     } catch (ModelException e) {
                         logger.error("WTF! A ModelException occurred, ", e);
@@ -143,7 +144,7 @@ public class ClusterController extends HttpServlet {
                         rd.forward(request, response);
                         return;
                     }
-                    request.setAttribute("siteList", s);
+                    request.setAttribute("clusterSetList", s);
 
                 } catch (ModelException e) {
                     logger.error("WTF! A ModelException occurred, ", e);

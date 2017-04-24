@@ -18,7 +18,7 @@ import com.basingwerk.sldb.mvc.model.ModelException;
 import com.basingwerk.sldb.mvc.model.NodeSet;
 import com.basingwerk.sldb.mvc.model.NodeSetNodeTypeJoin;
 import com.basingwerk.sldb.mvc.model.NodeType;
-import com.basingwerk.sldb.mvc.model.Site;
+import com.basingwerk.sldb.mvc.model.ClusterSet;
 
 @WebServlet("/MainScreenController")
 
@@ -43,9 +43,9 @@ public class MainScreenController extends HttpServlet {
                 return;
             }
             String next = "";
-            if (act.equals("Edit sites")) {
-                Site.refreshListOfSites(request, "siteName", "ASC");
-                next = "/site.jsp";
+            if (act.equals("Edit cluster sets")) {
+                ClusterSet.refreshClusterSets(request, "clusterSetName", "ASC");
+                next = "/cluster_set.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
                 return;
@@ -75,8 +75,8 @@ public class MainScreenController extends HttpServlet {
 
             }
             if (act.equals("Reports")) {
-                Site.refreshListOfSites(request, "siteName", "ASC");
-                next = "/select_site.jsp";
+                ClusterSet.refreshClusterSets(request, "clusterSetName", "ASC");
+                next = "/select_cluster_set.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
                 return;

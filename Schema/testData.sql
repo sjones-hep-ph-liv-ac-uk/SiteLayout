@@ -1,4 +1,4 @@
-INSERT INTO site VALUES
+INSERT INTO clusterSet VALUES
 ('UKI-NORTHGRID-LIV-HEP','Liverpool T2','University of Liverpool',-2.964,53.4035,'gridteam@hep.ph.liv.ac.uk');
 INSERT INTO `cluster` VALUES
 ('CONDOR_BATCH_HAMMER','Condor batch nodes in Hammer server room','UKI-NORTHGRID-LIV-HEP'),

@@ -72,8 +72,8 @@
 			</c:forEach>
 		</table>
 
-		<c:set var="siteHs06" value="0.0" />
-		<c:set var="siteLogicalCpus" value="0" />
+		<c:set var="clusterSetHs06" value="0.0" />
+		<c:set var="clusterSetLogicalCpus" value="0" />
 
 		<c:forEach items="${clusterList}" var="cluster">
 			<br>
@@ -113,9 +113,9 @@
 				</c:forEach>
 			</table>
 
-			<c:set var="siteHs06" value="${siteHs06 + clusterHs06}" />
-			<c:set var="siteLogicalCpus"
-				value="${siteLogicalCpus + clusterLogicalCpus}" />
+			<c:set var="clusterSetHs06" value="${clusterSetHs06 + clusterHs06}" />
+			<c:set var="clusterSetLogicalCpus"
+				value="${clusterSetLogicalCpus + clusterLogicalCpus}" />
 
   Cluster properties:
   <table class="tg">
@@ -156,16 +156,16 @@
 				</tr>
 			</table>
 		</c:forEach>
-		<br> Site properties:
+		<br> Cluster set properties:
 		<table class="tg">
 			<tr>
-				<td>Site HS06</td>
+				<td>Cluster set HS06</td>
 				<td><c:out value="" /> <fmt:formatNumber groupingUsed="0"
-						type="number" maxFractionDigits="2" value="${siteHs06}" /></td>
+						type="number" maxFractionDigits="2" value="${clusterSetHs06}" /></td>
 			<tr>
-				<td>Site slots</td>
+				<td>Cluster set slots</td>
 				<td><c:out value="" /> <fmt:formatNumber groupingUsed="0"
-						type="number" maxFractionDigits="0" value="${siteLogicalCpus}" /></td>
+						type="number" maxFractionDigits="0" value="${clusterSetLogicalCpus}" /></td>
 		</table>
 
 		<input type="submit" value="Back" name="Back" />

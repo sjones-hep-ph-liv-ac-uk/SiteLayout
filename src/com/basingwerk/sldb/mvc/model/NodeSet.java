@@ -68,13 +68,13 @@ public class NodeSet {
                 + nodeSetName + "'";
         try {
             r = modelAo.query(sql);
-            NodeSet n = null;
+
             while (r.next()) {
-                n = new NodeSet(r.getString("nodeSetName"), r.getString("nodeTypeName"), r.getInt("nodeCount"),
+                nodeSet = new NodeSet(r.getString("nodeSetName"), r.getString("nodeTypeName"), r.getInt("nodeCount"),
                         r.getString("cluster"));
             }
         } catch (SQLException e) {
-            logger.info("Could not read the node sets, rolling back.");
+            logger.info("Could not read the node set, rolling back.");
             try {
                 modelAo.getTheConnection().rollback();
             } catch (SQLException ex) {

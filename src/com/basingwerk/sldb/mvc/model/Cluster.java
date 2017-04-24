@@ -20,7 +20,7 @@ public class Cluster {
 
     private String clusterName;
     private String descr;
-    private String siteName;
+    private String clusterSetName;
 
     public String getClusterName() {
         return clusterName;
@@ -30,19 +30,19 @@ public class Cluster {
         this.clusterName = clusterName;
     }
 
-    public String getSiteName() {
-        return siteName;
+    public String getclusterSetName() {
+        return clusterSetName;
     }
 
-    public void setSiteName(String siteName) {
-        this.siteName = siteName;
+    public void setclusterSetName(String clusterSetName) {
+        this.clusterSetName = clusterSetName;
     }
 
-    public Cluster(String clusterName, String descr, String siteName) {
+    public Cluster(String clusterName, String descr, String clusterSetName) {
         super();
         this.clusterName = clusterName;
         this.descr = descr;
-        this.siteName = siteName;
+        this.clusterSetName = clusterSetName;
     }
 
     public String getCluster() {
@@ -65,9 +65,9 @@ public class Cluster {
         AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
         ArrayList<Cluster> clusterList = new ArrayList<Cluster>();
         try {
-            ResultSet r = modelAo.query("select clusterName,descr, siteName from cluster");
+            ResultSet r = modelAo.query("select clusterName,descr, clusterSetName from cluster");
             while (r.next()) {
-                Cluster c = new Cluster(r.getString("clusterName"), r.getString("descr"), r.getString("siteName"));
+                Cluster c = new Cluster(r.getString("clusterName"), r.getString("descr"), r.getString("clusterSetName"));
                 clusterList.add(c);
             }
         } 
@@ -91,9 +91,9 @@ public class Cluster {
         try {
             ArrayList<Cluster> clusterList = new ArrayList<Cluster>();
             ResultSet r;
-            r = modelAo.query("select clusterName,descr,siteName from cluster order by " + col + " " + order);
+            r = modelAo.query("select clusterName,descr,clusterSetName from cluster order by " + col + " " + order);
             while (r.next()) {
-                Cluster c = new Cluster(r.getString("clusterName"), r.getString("descr"), r.getString("siteName"));
+                Cluster c = new Cluster(r.getString("clusterName"), r.getString("descr"), r.getString("clusterSetName"));
                 clusterList.add(c);
             }
             request.setAttribute("clusterList", clusterList);
@@ -102,7 +102,7 @@ public class Cluster {
         }
     }
     
-    public static void refreshListOfSiteClusters(HttpServletRequest request, String siteName, String col, String order)
+    public static void refreshClusterSet(HttpServletRequest request, String clusterSetName, String col, String order)
             throws ModelException {
         AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
         try {
@@ -110,9 +110,9 @@ public class Cluster {
             ResultSet r;
             
             
-            r = modelAo.query("select clusterName,descr,siteName from cluster where siteName='" + siteName + "' order by " + col + " " + order);
+            r = modelAo.query("select clusterName,descr,clusterSetName from cluster where clusterSetName='" + clusterSetName + "' order by " + col + " " + order);
             while (r.next()) {
-                Cluster c = new Cluster(r.getString("clusterName"), r.getString("descr"), r.getString("siteName"));
+                Cluster c = new Cluster(r.getString("clusterName"), r.getString("descr"), r.getString("clusterSetName"));
                 clusterList.add(c);
             }
             request.setAttribute("clusterList", clusterList);
@@ -126,10 +126,10 @@ public class Cluster {
 
         String clusterName = request.getParameter("clusterName");
         String descr = request.getParameter("descr");
-        String siteName = request.getParameter("siteList");
+        String clusterSetName = request.getParameter("clusterSetList");
 
-        String sqlCommand = "INSERT INTO cluster (clusterName, Descr, siteName) VALUES " + "('" + clusterName + "','"
-                + descr + "','" + siteName + "')";
+        String sqlCommand = "INSERT INTO cluster (clusterName, Descr, clusterSetName) VALUES " + "('" + clusterName + "','"
+                + descr + "','" + clusterSetName + "')";
         java.sql.Statement statement;
         int result = -1;
 
@@ -158,9 +158,9 @@ public class Cluster {
 
             String clusterName = cluster.getCluster();
             String descr = cluster.getDescr();
-            String siteName = cluster.getSiteName();
+            String clusterSetName = cluster.getclusterSetName();
 
-            String sqlCommand = "UPDATE cluster SET descr='" + descr + "', siteName='" + siteName
+            String sqlCommand = "UPDATE cluster SET descr='" + descr + "', clusterSetName='" + clusterSetName
                     + "' WHERE clusterName = '" + clusterName + "'";
 
             java.sql.Statement statement;
@@ -186,10 +186,10 @@ public class Cluster {
         try {
 
             ResultSet r;
-            r = modelAo.query("select clusterName,descr,siteName from cluster where clusterName = '" + cluster + "'");
+            r = modelAo.query("select clusterName,descr,clusterSetName from cluster where clusterName = '" + cluster + "'");
             Cluster c = null;
             while (r.next()) {
-                c = new Cluster(r.getString("clusterName"), r.getString("descr"), r.getString("siteName"));
+                c = new Cluster(r.getString("clusterName"), r.getString("descr"), r.getString("clusterSetName"));
             }
             request.setAttribute("cluster", c);
             modelAo.getTheConnection().commit();
@@ -234,9 +234,9 @@ public class Cluster {
 
             Cluster c = null;
             ResultSet r = modelAo
-                    .query("select clusterName,descr,siteName from cluster where clusterName = '" + clusterName + "'");
+                    .query("select clusterName,descr,clusterSetName from cluster where clusterName = '" + clusterName + "'");
             while (r.next()) {
-                c = new Cluster(r.getString("clusterName"), r.getString("descr"), r.getString("siteName"));
+                c = new Cluster(r.getString("clusterName"), r.getString("descr"), r.getString("clusterSetName"));
             }
             request.setAttribute("cluster", c);
         } catch (Exception e) {
@@ -250,9 +250,9 @@ public class Cluster {
         try {
 
             Cluster c = null;
-            ResultSet r = modelAo.query("select clusterName,descr,siteName from cluster");
+            ResultSet r = modelAo.query("select clusterName,descr,clusterSetName from cluster");
             while (r.next()) {
-                c = new Cluster(r.getString("clusterName"), r.getString("descr"), r.getString("siteName"));
+                c = new Cluster(r.getString("clusterName"), r.getString("descr"), r.getString("clusterSetName"));
                 cl.add(c);
             }
 
@@ -262,16 +262,16 @@ public class Cluster {
         return cl;
     }
     
-    public static ArrayList<String> listSiteClusterNames(HttpServletRequest request, String siteName) throws ModelException {
+    public static ArrayList<String> listClusterSetNames(HttpServletRequest request, String clusterSetName) throws ModelException {
         AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
         ArrayList<String> cl = new ArrayList<String>();
         try {
 
             Cluster c = null;
 
-            ResultSet r = modelAo.query("select clusterName,descr,siteName from cluster where siteName='" + siteName + "'");
+            ResultSet r = modelAo.query("select clusterName,descr,clusterSetName from cluster where clusterSetName='" + clusterSetName + "'");
             while (r.next()) {
-                c = new Cluster(r.getString("clusterName"), r.getString("descr"), r.getString("siteName"));
+                c = new Cluster(r.getString("clusterName"), r.getString("descr"), r.getString("clusterSetName"));
                 cl.add(c.getCluster());
             }
         } catch (Exception e) {
@@ -287,9 +287,9 @@ public class Cluster {
 
             Cluster c = null;
 
-            ResultSet r = modelAo.query("select clusterName,descr,siteName from cluster");
+            ResultSet r = modelAo.query("select clusterName,descr,clusterSetName from cluster");
             while (r.next()) {
-                c = new Cluster(r.getString("clusterName"), r.getString("descr"), r.getString("siteName"));
+                c = new Cluster(r.getString("clusterName"), r.getString("descr"), r.getString("clusterSetName"));
                 cl.add(c.getCluster());
             }
         } catch (Exception e) {
@@ -299,7 +299,7 @@ public class Cluster {
     }
 
     public String toString() {
-        return clusterName + " " + descr + " " + siteName;
+        return clusterName + " " + descr + " " + clusterSetName;
     }
 
 }

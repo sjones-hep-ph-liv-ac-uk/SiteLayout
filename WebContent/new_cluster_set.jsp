@@ -8,12 +8,12 @@
 
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>New Site</title>
+<title>New Cluster Set</title>
 </head>
 <body>
-	New Site
-	<form action="NewSiteController" method="post">
-		Site name : <input type="text" name="siteName"> <BR>
+	New Cluster Set
+	<form action="NewClusterSetController" method="post">
+		Cluster set name : <input type="text" name="clusterSetName"> <BR>
 		Description : <input type="text" name="description"> <BR>
 		Location : <input type="text" name="location"> <BR>
 		Longitude : <input type="text" name="longitude"> <BR>

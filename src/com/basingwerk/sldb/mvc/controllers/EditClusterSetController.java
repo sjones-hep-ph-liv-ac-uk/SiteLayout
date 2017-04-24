@@ -12,19 +12,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.basingwerk.sldb.mvc.model.Site;
+import com.basingwerk.sldb.mvc.model.ClusterSet;
 import com.basingwerk.sldb.mvc.model.AccessObject;
 import com.basingwerk.sldb.mvc.model.ModelException;
 import com.basingwerk.sldb.mvc.model.ModelExceptionRollbackFailed;
 import com.basingwerk.sldb.mvc.model.ModelExceptionRollbackWorked;
 
-@WebServlet("/EditSiteController")
+@WebServlet("/EditClusterSetController")
 
-public class EditSiteController extends HttpServlet {
+public class EditClusterSetController extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    final static Logger logger = Logger.getLogger(EditSiteController.class);
+    final static Logger logger = Logger.getLogger(EditClusterSetController.class);
 
-    public EditSiteController() {
+    public EditClusterSetController() {
         super();
     }
 
@@ -35,11 +35,11 @@ public class EditSiteController extends HttpServlet {
         HttpSession session = request.getSession();
 
         try {
-            Site.updateSite(request);
+            ClusterSet.updateClusterSet(request);
         } catch (ModelException e1) {
             if (e1 instanceof ModelExceptionRollbackWorked) {
                 logger.info("Rollback worked.");
-                request.setAttribute("theMessage", "Could not update that site at this time. Please try again.");
+                request.setAttribute("theMessage", "Could not update that cluster set at this time. Please try again.");
                 request.setAttribute("theJsp", "main_screen.jsp");
                 rd = request.getRequestDispatcher("/recoverable_message.jsp");
                 rd.forward(request, response);
@@ -52,13 +52,13 @@ public class EditSiteController extends HttpServlet {
             }
         }
         try {
-            Site.refreshListOfSites(request, "siteName", "ASC");
-            String next = "/site.jsp";
+            ClusterSet.refreshClusterSets(request, "clusterSetName", "ASC");
+            String next = "/cluster_set.jsp";
             rd = request.getRequestDispatcher(next);
             rd.forward(request, response);
             return;
         } catch (Exception e) {
-            logger.error("WTF! Error when trying to refreshListOfSites, ", e);
+            logger.error("WTF! Error when trying to refresh list of cluster sets, ", e);
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
             return;

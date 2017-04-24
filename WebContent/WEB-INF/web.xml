@@ -42,12 +42,12 @@ version="2.3"> -->
   </servlet-mapping>
 
   <servlet>
-    <servlet-name>SelectSiteController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.SelectSiteController </servlet-class>
+    <servlet-name>SelectClusterSetController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.SelectClusterSetController </servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>SelectSiteController</servlet-name>
-    <url-pattern>/SelectSiteController</url-pattern>
+    <servlet-name>SelectClusterSetController</servlet-name>
+    <url-pattern>/SelectClusterSetController</url-pattern>
   </servlet-mapping>
  
   <servlet>
@@ -132,29 +132,29 @@ version="2.3"> -->
   </servlet-mapping>
 
   <servlet>
-    <servlet-name>SiteController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.SiteController </servlet-class>
+    <servlet-name>ClusterSetController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.ClusterSetController </servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>SiteController</servlet-name>
-    <url-pattern>/SiteController</url-pattern>
+    <servlet-name>ClusterSetController</servlet-name>
+    <url-pattern>/ClusterSetController</url-pattern>
   </servlet-mapping>
  
   <servlet>
-    <servlet-name>NewSiteController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.NewSiteController </servlet-class>
+    <servlet-name>NewClusterSetController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.NewClusterSetController </servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>NewSiteController</servlet-name>
-    <url-pattern>/NewSiteController</url-pattern>
+    <servlet-name>NewClusterSetController</servlet-name>
+    <url-pattern>/NewClusterSetController</url-pattern>
   </servlet-mapping>
 
   <servlet>
-    <servlet-name>EditSiteController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.EditSiteController </servlet-class> </servlet>
+    <servlet-name>EditClusterSetController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.EditClusterSetController </servlet-class> </servlet>
   <servlet-mapping>
-    <servlet-name>EditSiteController</servlet-name>
-    <url-pattern>/EditSiteController</url-pattern>
+    <servlet-name>EditClusterSetController</servlet-name>
+    <url-pattern>/EditClusterSetController</url-pattern>
   </servlet-mapping>
 
   <welcome-file-list>

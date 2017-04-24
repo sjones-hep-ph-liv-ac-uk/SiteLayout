@@ -28,9 +28,10 @@
 
 <body>
 	<form action="EditNodeSetController" method="post">
-		Node set name : <input type="text" name="nodeSetName" readonly
-			value="${nodeSet.nodeSetName}"> <BR> Node count : <input
-			type="text" name="nodeCount" value="${nodeSet.nodeCount}"> <BR>
+		Node set name : 
+		   <input type="text" name="nodeSetName" readonly value="${nodeSet.nodeSetName}"> <BR> 
+		Node count : 
+		   <input type="text" name="nodeCount" value="${nodeSet.nodeCount}"> <BR>
 		Node type : <select name='nodeTypeList'>
 			<c:forEach items="${nodeTypeList}" var="nt">
 				<!-- <option  value="${nt}">${nt}</option> -->

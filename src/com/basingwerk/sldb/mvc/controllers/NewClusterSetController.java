@@ -17,15 +17,15 @@ import javax.servlet.http.HttpSession;
 import com.basingwerk.sldb.mvc.model.AccessObject;
 import com.basingwerk.sldb.mvc.model.ModelException;
 import com.basingwerk.sldb.mvc.model.ModelExceptionRollbackWorked;
-import com.basingwerk.sldb.mvc.model.Site;
+import com.basingwerk.sldb.mvc.model.ClusterSet;
 
-@WebServlet("/NewSiteController")
+@WebServlet("/NewClusterSetController")
 
-public class NewSiteController extends HttpServlet {
+public class NewClusterSetController extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    final static Logger logger = Logger.getLogger(NewSiteController.class);
+    final static Logger logger = Logger.getLogger(NewClusterSetController.class);
 
-    public NewSiteController() {
+    public NewClusterSetController() {
         super();
     }
 
@@ -35,11 +35,11 @@ public class NewSiteController extends HttpServlet {
         RequestDispatcher rd = null;
 
         try {
-            Site.addSite(request);
+            ClusterSet.addClusterSet(request);
         } catch (ModelException e) {
             if (e instanceof ModelExceptionRollbackWorked) {
                 logger.info("A rollback worked.");
-                request.setAttribute("theMessage", "The site type could not be added. Please try again.");
+                request.setAttribute("theMessage", "The cluster set could not be added. Please try again.");
                 request.setAttribute("theJsp", "main_screen.jsp");
                 rd = request.getRequestDispatcher("/recoverable_message.jsp");
                 rd.forward(request, response);
@@ -52,13 +52,13 @@ public class NewSiteController extends HttpServlet {
             }
         }
 
-        ArrayList<Site> siteList = null;
+        ArrayList<ClusterSet> clusterSetList = null;
         try {
-            siteList = Site.querySiteList(request);
+            clusterSetList = ClusterSet.queryClusterSetList(request);
         } catch (ModelException e1) {
             if (e1 instanceof ModelExceptionRollbackWorked) {
                 logger.info("Rollback worked.");
-                request.setAttribute("theMessage", "Could not update that site at this time. Please try again.");
+                request.setAttribute("theMessage", "Could not update that cluster set at this time. Please try again.");
                 request.setAttribute("theJsp", "main_screen.jsp");
                 rd = request.getRequestDispatcher("/recoverable_message.jsp");
                 rd.forward(request, response);
@@ -71,8 +71,8 @@ public class NewSiteController extends HttpServlet {
             }
         }
 
-        request.setAttribute("siteList", siteList);
-        String next = "/site.jsp";
+        request.setAttribute("clusterSetList", clusterSetList);
+        String next = "/cluster_set.jsp";
         rd = request.getRequestDispatcher(next);
         rd.forward(request, response);
         return;
