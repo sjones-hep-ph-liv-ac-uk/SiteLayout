@@ -17,8 +17,7 @@
 	<form action="LoginController" method="post">
 		Database name : <input type="text" name="database"> <BR>
 		User name : <input type="text" name="username"> <BR>
-		Password : <input type="password" name="password"> <BR> <input
-			type="submit" />
+		Password : <input type="password" name="password"> <BR> <input type="submit" value="Submit" />
 	</form>
 </body>
 </html>

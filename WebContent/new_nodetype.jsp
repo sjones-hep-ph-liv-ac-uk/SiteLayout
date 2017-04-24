@@ -18,7 +18,7 @@
                 Slots per node : <input type="text" name="slot"> <BR> 
                 HS06 per slot : <input type="text" name="hs06PerSlot"> <BR> 
                 GBs per node : <input type="text" name="memPerNode"> <BR> 
-                               <input type="submit" />
+                               <input type="submit" value="Submit" />
 	</form>
 </body>
 </html>

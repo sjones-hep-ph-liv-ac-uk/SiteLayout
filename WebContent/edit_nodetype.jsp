@@ -25,7 +25,7 @@
 		Slots per node : <input type="text" name="slot" value="${nodeType.slot}"> <BR> 
                 HS06 per slot : <input type="text" name="hs06PerSlot" value="${nodeType.hs06PerSlot}"> <BR> 
                 GBs per node : <input type="text" name="memPerNode" value="${nodeType.memPerNode}"> <BR> 
-                               <input type="submit" />
+                               <input type="submit" value="Submit" />
 	</form>
 </body>
 </html>

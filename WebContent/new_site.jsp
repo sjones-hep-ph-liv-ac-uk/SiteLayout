@@ -19,7 +19,7 @@
 		Longitude : <input type="text" name="longitude"> <BR>
 		Latitude : <input type="text" name="latitude"> <BR>
 		Admin : <input type="text" name="admin"> <BR>
-        <input type="submit" />
+        <input type="submit" value="Submit" />
  	</form>
 </body>
 </html>

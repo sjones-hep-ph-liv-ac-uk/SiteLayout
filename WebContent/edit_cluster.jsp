@@ -33,7 +33,7 @@
 			</c:forEach>
 		</select>
 		<BR>
-		<input type="submit" />
+		<input type="submit" value="Submit" />
 	</form>
 </body>
 </html>

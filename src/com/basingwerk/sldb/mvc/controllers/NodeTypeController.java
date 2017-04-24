@@ -101,8 +101,6 @@ public class NodeTypeController extends HttpServlet {
             if (key.startsWith("ED.")) {
                 String nodeType = key.substring(3, key.length());
                 NodeType n = null;
-                
-                
                 try {
                     n = NodeType.queryOneNodeType(request, nodeType);
                 } catch (ModelException e) {
@@ -121,6 +119,7 @@ public class NodeTypeController extends HttpServlet {
                         return;
                     }
                 }
+                // logger.error("SJDEBUG3: " + n.toString());
                 request.setAttribute("nodeType", n);
                 String next = "/edit_nodetype.jsp";
                 rd = request.getRequestDispatcher(next);

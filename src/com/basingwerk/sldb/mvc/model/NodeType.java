@@ -114,11 +114,14 @@ public class NodeType {
 
     public static NodeType queryOneNodeType(HttpServletRequest request, String nodeTypeName) throws ModelException {
         AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
-        NodeType n = null;
+        NodeType nt = null;
         ResultSet r;
         String sql = "select nodeTypeName,cpu,slot,hs06PerSlot,memPerNode from nodeType where" + " nodeTypeName = '"
                 + nodeTypeName + "'";
-        NodeType nt = null;
+        
+        // logger.error("SJDEBUG4: " + sql);
+        
+        
         try {
             r = modelAo.query(sql);
             while (r.next()) {
@@ -136,7 +139,7 @@ public class NodeType {
             throw new ModelExceptionRollbackFailed("Rollback worked", null);
         }
 
-        return n;
+        return nt;
     }
 
     public static ArrayList<NodeType> queryNodeTypeList(HttpServletRequest request) throws ModelException {

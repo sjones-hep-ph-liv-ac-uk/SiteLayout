@@ -36,7 +36,7 @@
 			<c:forEach items="${clusterList}" var="cn">
 				<option value="${cn}">${cn}</option>
 			</c:forEach>
-		</select><BR> <input type="submit" />
+		</select><BR> <input type="submit" value="Submit" />
 	</form>
 </body>
 </html>
