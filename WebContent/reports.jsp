@@ -144,13 +144,13 @@
 							maxFractionDigits="3" value="${clusterHs06 / clusterLogicalCpus}" /></td>
 				</tr>
 				<tr>
-					<td>CE_SI00</td>
+					<td>CE_SI00/cpu_scaling_reference_si00</td>
 					<td><fmt:formatNumber type="number" groupingUsed="0"
 							maxFractionDigits="0"
 							value="${clusterHs06 / clusterLogicalCpus * 250.0}" /></td>
 				</tr>
 				<tr>
-					<td>CPUScalingReferenceSI00</td>
+					<td>Reference/benchmark_value</td>
 					<td><fmt:formatNumber type="number" groupingUsed="0"
 							maxFractionDigits="3" value="${baseline.hs06PerSlot * 250}" /></td>
 				</tr>
