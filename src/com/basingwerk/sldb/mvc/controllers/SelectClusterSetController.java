@@ -37,8 +37,6 @@ public class SelectClusterSetController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session = request.getSession();
-
         RequestDispatcher rd = null;
 
         String clusterSetName = request.getParameter("clusterSetList");
@@ -48,7 +46,7 @@ public class SelectClusterSetController extends HttpServlet {
             DbFacade.refreshNodeTypes(request, "nodeTypeName", "ASC");
             DbFacade.refreshClusters(request, "clusterName", "ASC");
             DbFacade.setBaselineNodeType(request);
-            clusters = DbFacade.getClustersOfClusterSet(request, clusterSetName);
+            clusters = DbFacade.listClustersOfClusterSet(request, clusterSetName);
             java.util.HashMap<String, ArrayList> joinMap = new java.util.HashMap<String, ArrayList>();
 
             Iterator<String> c = clusters.iterator();

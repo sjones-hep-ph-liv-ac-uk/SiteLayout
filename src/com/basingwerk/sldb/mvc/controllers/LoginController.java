@@ -57,12 +57,14 @@ public class LoginController extends HttpServlet {
             cfg.getProperties().setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/" + database);
             cfg.getProperties().setProperty("hibernate.connection.password", username);
             cfg.getProperties().setProperty("hibernate.connection.username", password);
-            
-            SessionFactory sessionFactory = cfg.configure().buildSessionFactory();
-            Session dbsession = sessionFactory.openSession();
 
             HttpSession session = request.getSession();
-            session.setAttribute("accessObject", dbsession);
+            SessionFactory sessionFactory = cfg.configure().buildSessionFactory();
+            session.setAttribute("sessionFactory", sessionFactory);
+
+//            Session dbsession = sessionFactory.openSession();
+//            Session hibSession  = ((SessionFactory)httpSession.getAttribute("sessionFactory")).openSession();
+
             User user = new User(username, password);
             request.setAttribute("user", user);
 

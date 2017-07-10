@@ -8,7 +8,7 @@
 <%@ page import="java.util.List"%>
 <%
     List nodeTypeList = (List) request.getAttribute("nodeTypeList");
-			List clusterList = (List) request.getAttribute("clusterList");
+	List clusterList = (List) request.getAttribute("clusterList");
 %>
 <!-- <c:set var="baseline" value="BASELINE" /> -->
 
@@ -47,13 +47,13 @@
 		Node count : <input type="text" name="nodeCount"> <BR>
 		Node type : <select name='nodeTypeList'>
 			<c:forEach items="${nodeTypeList}" var="nt">
-				<c:if test="${nt != 'BASELINE'}">
-					<option value="${nt}">${nt}</option>
+				<c:if test="${nt.nodeTypeName != 'BASELINE'}">
+					<option value="${nt.nodeTypeName}">${nt.nodeTypeName}</option>
 				</c:if>
 			</c:forEach>
 		</select> </select><BR> Cluster : <select name='clusterList'>
 			<c:forEach items="${clusterList}" var="cn">
-				<option value="${cn}">${cn}</option>
+				<option value="${cn.clusterName}">${cn.clusterName}</option>
 			</c:forEach>
 		</select><BR> <input type="submit" value="Submit" />
 	</form>

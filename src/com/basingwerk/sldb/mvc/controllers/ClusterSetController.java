@@ -98,7 +98,7 @@ public class ClusterSetController extends HttpServlet {
                     return;
                 }
                 try {
-                    DbFacade.refreshClusterSets(request, "ClusterSetName", order);
+                    DbFacade.refreshClusterSets(request, "clusterSetName", order);
                 } catch (HibernateException e) {
                     logger.error("WFT! HibernateException when trying to refresh cluster sets, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");

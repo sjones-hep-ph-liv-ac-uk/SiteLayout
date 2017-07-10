@@ -23,7 +23,7 @@
 		Cluster Description : <input type="text" name="descr"> <BR>
 		Cluster set : <select name='clusterSetList'>
 			<c:forEach items="${clusterSetList}" var="s">
-			  <option value="${s}">${s}</option>
+			  <option value="${s.clusterSetName}">${s.clusterSetName}</option>
 			</c:forEach>
 		</select>
 		<BR>

@@ -41,8 +41,7 @@ public class NewClusterController extends HttpServlet {
 
         try {
             DbFacade.addCluster(request);
-            ArrayList<Cluster> clusterList = DbFacade.queryCluster(request);
-            request.setAttribute("clusterList", clusterList);
+            DbFacade.refreshClusters(request, "clusterName", "ASC");
             String next = "/cluster.jsp";
             rd = request.getRequestDispatcher(next);
             rd.forward(request, response);

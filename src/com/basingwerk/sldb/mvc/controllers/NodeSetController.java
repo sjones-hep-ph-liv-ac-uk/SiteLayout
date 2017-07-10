@@ -67,8 +67,10 @@ public class NodeSetController extends HttpServlet {
             ArrayList<String> cl = new ArrayList<String>();
             ArrayList<String> nt = new ArrayList<String>();
             try {
-                cl = DbFacade.listClusterNames(request);
-                nt = DbFacade.listNodeTypeNames(request);
+//                cl = DbFacade.listClusterNames(request);
+//                nt = DbFacade.listNodeTypeNames(request);
+                DbFacade.refreshClusters(request, "clusterName", "ASC");
+                DbFacade.refreshNodeTypes(request, "nodeTypeName", "ASC");
 
             } catch (HibernateException e) {
                 logger.error("WTF! Error preparing data, ", e);
@@ -76,8 +78,8 @@ public class NodeSetController extends HttpServlet {
                 rd.forward(request, response);
                 return;
             }
-            request.setAttribute("clusterList", cl);
-            request.setAttribute("nodeTypeList", nt);
+//            request.setAttribute("clusterList", cl);
+//            request.setAttribute("nodeTypeList", nt);
             rd = request.getRequestDispatcher("/new_nodeset.jsp");
             rd.forward(request, response);
             return;
@@ -156,16 +158,18 @@ public class NodeSetController extends HttpServlet {
                 ArrayList<String> cl = new ArrayList<String>();
                 ArrayList<String> nt = new ArrayList<String>();
                 try {
-                    cl = DbFacade.listClusterNames(request);
-                    nt = DbFacade.listNodeTypeNames(request);
+//                    cl = DbFacade.listClusterNames(request);
+//                    nt = DbFacade.listNodeTypeNames(request);
+                    DbFacade.refreshClusters(request, "clusterName", "ASC");
+                    DbFacade.refreshNodeTypes(request, "nodeTypeName", "ASC");
                 } catch (HibernateException e) {
                     logger.error("WTF! ModelException when preparing data, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
                 }
-                request.setAttribute("clusterList", cl);
-                request.setAttribute("nodeTypeList", nt);
+//                request.setAttribute("clusterList", cl);
+//                request.setAttribute("nodeTypeList", nt);
 
                 String next = "/edit_nodeset.jsp";
                 rd = request.getRequestDispatcher(next);

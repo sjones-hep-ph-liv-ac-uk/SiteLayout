@@ -28,8 +28,8 @@
 		Cluster Description : <input type="text" name="descr" value="${cluster.descr}"> <BR>
 		Cluster set : <select name='clusterSetList'>
 			<c:forEach items="${clusterSetList}" var="s">
-				<option value="${s}"
-					${s == cluster.clusterSet.clusterSetName ? 'selected="selected"' : ''}>${s}</option>
+				<option value="${s.clusterSetName}"
+					${s.clusterSetName == cluster.clusterSet.clusterSetName ? 'selected="selected"' : ''}>${s.clusterSetName}</option>
 			</c:forEach>
 		</select>
 		<BR>

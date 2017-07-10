@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,10 +28,12 @@ public class DbFacade {
     public DbFacade() {
     }
 
-    public static void refreshClusterSets(HttpServletRequest request, String col, String order) throws HibernateException {
+    public static void refreshClusterSets(HttpServletRequest request, String col, String order)
+            throws HibernateException {
 
         HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+
         Order ord = org.hibernate.criterion.Order.desc(col);
         if (order.equalsIgnoreCase("ASC")) {
             ord = org.hibernate.criterion.Order.asc(col);
@@ -46,14 +49,17 @@ public class DbFacade {
             hibSession.getTransaction().rollback();
             logger.error("Had a problem when using refreshClusterSets, ", ex);
             throw ex;
+        } finally {
+            hibSession.close();
         }
         request.setAttribute("clusterSetList", list);
     }
 
-    public static void refreshNodeTypes(HttpServletRequest request, String col, String order) throws HibernateException {
+    public static void refreshNodeTypes(HttpServletRequest request, String col, String order)
+            throws HibernateException {
 
         HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
 
         Order ord = org.hibernate.criterion.Order.desc(col);
         if (order.equalsIgnoreCase("ASC")) {
@@ -70,13 +76,16 @@ public class DbFacade {
             hibSession.getTransaction().rollback();
             logger.error("Had an error when using refreshNodeTypes, ", ex);
             throw ex;
+        } finally {
+            hibSession.close();
         }
+
         request.setAttribute("nodeTypeList", list);
     }
 
     public static void refreshClusters(HttpServletRequest request, String col, String order) throws HibernateException {
         HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
 
         Order ord = org.hibernate.criterion.Order.desc(col);
         if (order.equalsIgnoreCase("ASC")) {
@@ -94,13 +103,16 @@ public class DbFacade {
             hibSession.getTransaction().rollback();
             logger.error("Hibernate error using refreshListOfAllClusters, ", ex);
             throw ex;
+        } finally {
+            hibSession.close();
         }
+
         request.setAttribute("clusterList", list);
     }
 
     public static void setBaselineNodeType(HttpServletRequest request) throws HibernateException {
         HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
 
         ArrayList<NodeType> list = null;
         try {
@@ -113,6 +125,8 @@ public class DbFacade {
             hibSession.getTransaction().rollback();
             logger.error("Had an error using setBaselineNodeType, ", ex);
             throw ex;
+        } finally {
+            hibSession.close();
         }
 
         request.setAttribute("baseline", null);
@@ -123,9 +137,10 @@ public class DbFacade {
         }
     }
 
-    public static ArrayList<String> getClustersOfClusterSet(HttpServletRequest request, String clusterSetName) throws HibernateException {
+    public static ArrayList<String> listClustersOfClusterSet(HttpServletRequest request, String clusterSetName)
+            throws HibernateException {
         HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
 
         ArrayList<String> cl = new ArrayList<String>();
         try {
@@ -138,33 +153,39 @@ public class DbFacade {
             hibSession.getTransaction().rollback();
             logger.error("Error using getClustersOfClusterSet, ", ex);
             throw ex;
+        } finally {
+            hibSession.close();
         }
+
         return cl;
     }
 
     public static ClusterSet queryOneClusterSet(HttpServletRequest request, String clusterSetName)
-            throws HibernateException  {
+            throws HibernateException {
         HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
 
         try {
             hibSession.beginTransaction();
             ClusterSet ns = (ClusterSet) hibSession.createCriteria(ClusterSet.class)
                     .add(Restrictions.eq("clusterSetName", clusterSetName)).uniqueResult();
             hibSession.getTransaction().commit();
-                return ns;
+            return ns;
 
         } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
             logger.error("Hibernate error using queryOneClusterSet, ", ex);
             throw ex;
+        } finally {
+            hibSession.close();
         }
+
     }
 
-    public static void updateClusterSet(HttpServletRequest request) throws HibernateException , DbFacadeException {
+    public static void updateClusterSet(HttpServletRequest request) throws HibernateException, DbFacadeException {
 
         HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
 
         String clusterSetName = request.getParameter("clusterSetName");
         String description = request.getParameter("description");
@@ -201,12 +222,15 @@ public class DbFacade {
             hibSession.getTransaction().rollback();
             logger.error("Hibernate error using updateClusterSet, ", e);
             throw e;
+        } finally {
+            hibSession.close();
         }
+
     }
 
-    public static void addClusterSet(HttpServletRequest request) throws HibernateException , DbFacadeException {
+    public static void addClusterSet(HttpServletRequest request) throws HibernateException, DbFacadeException {
         HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
 
         String clusterSetName = request.getParameter("clusterSetName");
         String description = request.getParameter("description");
@@ -234,13 +258,15 @@ public class DbFacade {
             hibSession.getTransaction().rollback();
             logger.error("Hibernate error using addClusterSet, ", e);
             throw e;
+        } finally {
+            hibSession.close();
         }
 
     }
 
     public static ArrayList<ClusterSet> queryClusterSetList(HttpServletRequest request) throws HibernateException {
         HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
 
         ArrayList<ClusterSet> csl = null;
 
@@ -254,37 +280,18 @@ public class DbFacade {
             hibSession.getTransaction().rollback();
             logger.error("Hibernate error using queryClusterSetList, ", e);
             throw e;
+        } finally {
+            hibSession.close();
         }
+
         return csl;
     }
 
-    public static ArrayList<String> listAllClusterSets(HttpServletRequest request) throws HibernateException {
+
+    public static void deleteClusterSet(HttpServletRequest request, String clusterSetName)
+            throws HibernateException, DbFacadeException {
         HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
-
-        ArrayList<ClusterSet> csl = null;
-
-        try {
-            hibSession.beginTransaction();
-
-            csl = (ArrayList<ClusterSet>) hibSession.createCriteria(ClusterSet.class).list();
-            hibSession.getTransaction().commit();
-
-        } catch (HibernateException e) {
-            hibSession.getTransaction().rollback();
-            logger.error("Hibernate error using queryClusterSetList, ", e);
-            throw e;
-        }
-        ArrayList<String> s = new ArrayList<String>();
-        for (ClusterSet c : csl) {
-            s.add(c.getClusterSetName());
-        }
-        return s;
-    }
-
-    public static void deleteClusterSet(HttpServletRequest request, String clusterSetName) throws HibernateException , DbFacadeException {
-        HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
         try {
             hibSession.beginTransaction();
             ClusterSet ns = (ClusterSet) hibSession.createCriteria(ClusterSet.class)
@@ -295,12 +302,16 @@ public class DbFacade {
             hibSession.getTransaction().rollback();
             logger.error("Hibernate error using deleteClusterSet, ", ex);
             throw ex;
+        } finally {
+            hibSession.close();
         }
+
     }
 
-    public static void deleteCluster(HttpServletRequest request, String clusterName) throws HibernateException, DbFacadeException {
+    public static void deleteCluster(HttpServletRequest request, String clusterName)
+            throws HibernateException, DbFacadeException {
         HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
         try {
             hibSession.beginTransaction();
             Cluster c = (Cluster) hibSession.createCriteria(Cluster.class)
@@ -311,13 +322,16 @@ public class DbFacade {
             hibSession.getTransaction().rollback();
             logger.error("Hibernate error using deleteCluster, ", ex);
             throw ex;
+        } finally {
+            hibSession.close();
         }
+
     }
 
-    public static void addCluster(HttpServletRequest request) throws HibernateException , DbFacadeException {
+    public static void addCluster(HttpServletRequest request) throws HibernateException, DbFacadeException {
 
         HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
 
         String clusterName = request.getParameter("clusterName");
         String descr = request.getParameter("descr");
@@ -348,46 +362,16 @@ public class DbFacade {
             hibSession.getTransaction().rollback();
             logger.error("Hibernate error using addCluster, ", e);
             throw e;
+        } finally {
+            hibSession.close();
         }
 
     }
 
-    public static ArrayList<Cluster> queryCluster(HttpServletRequest request) throws HibernateException {
-        HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
-        ArrayList<Cluster> clusterList = new ArrayList<Cluster>();
-        try {
-            hibSession.beginTransaction();
-            clusterList = (ArrayList<Cluster>) hibSession.createCriteria(Cluster.class).list();
-            hibSession.getTransaction().commit();
-        } catch (HibernateException ex) {
-            hibSession.getTransaction().rollback();
-            logger.error("Error using queryCluster, ", ex);
-            throw ex;
-        }
-        return clusterList;
-    }
-
-//    public static void updateSingleCluster(HttpServletRequest request, Cluster cluster) throws HibernateException {
-//
-//        HttpSession httpSession = request.getSession();
-//        Session hibSession = (Session) httpSession.getAttribute("accessObject");
-//
-//        try {
-//            hibSession.beginTransaction();
-//            hibSession.update(cluster);
-//            hibSession.getTransaction().commit();
-//
-//        } catch (HibernateException e) {
-//            hibSession.getTransaction().rollback();
-//            logger.error("Hibernate error using updateSingleCluster, ", e);
-//            throw e;
-//        }
-//    }
 
     public static void setSingleCluster(HttpServletRequest request, String cluster) throws HibernateException {
         HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
         Cluster c = null;
         try {
             hibSession.beginTransaction();
@@ -399,39 +383,45 @@ public class DbFacade {
             hibSession.getTransaction().rollback();
             logger.error("Hibernate error using setSingleCluster, ", e);
             throw e;
+        } finally {
+            hibSession.close();
         }
+
         request.setAttribute("cluster", c);
         return;
     }
 
-    public static ArrayList<String> listClusterNames(HttpServletRequest request) throws HibernateException {
+//    public s t atic ArrayList<String> l i stClusterNames(HttpServletRequest request) throws HibernateException {
+//        HttpSession httpSession = request.getSession();
+//        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+//        Order ord = org.hibernate.criterion.Order.desc("clusterName");
+//
+//        ArrayList<Cluster> clusters = null;
+//        try {
+//
+//            hibSession.beginTransaction();
+//            clusters = (ArrayList<Cluster>) hibSession.createCriteria(Cluster.class).addOrder(ord).list();
+//            hibSession.getTransaction().commit();
+//
+//        } catch (HibernateException ex) {
+//            hibSession.getTransaction().rollback();
+//            logger.error("Hibernate error using listAllClusterNames, ", ex);
+//            throw ex;
+//        } finally {
+//            hibSession.close();
+//        }
+//
+//        ArrayList<String> s = new ArrayList<String>();
+//        for (Cluster c : clusters) {
+//            s.add(c.getClusterName());
+//        }
+//        return s;
+//    }
+
+    public static void updateCluster(HttpServletRequest request) throws HibernateException, DbFacadeException {
+
         HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
-        Order ord = org.hibernate.criterion.Order.desc("clusterName");
-
-        ArrayList<Cluster> clusters = null;
-        try {
-
-            hibSession.beginTransaction();
-            clusters = (ArrayList<Cluster>) hibSession.createCriteria(Cluster.class).addOrder(ord).list();
-            hibSession.getTransaction().commit();
-
-        } catch (HibernateException ex) {
-            hibSession.getTransaction().rollback();
-            logger.error("Hibernate error using listAllClusterNames, ", ex);
-            throw ex;
-        }
-        ArrayList<String> s = new ArrayList<String>();
-        for (Cluster c : clusters) {
-            s.add(c.getClusterName());
-        }
-        return s;
-    }
-
-    public static void updateCluster(HttpServletRequest request) throws HibernateException , DbFacadeException {
-
-        HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
 
         String clusterName = request.getParameter("clusterName");
         String descr = request.getParameter("descr");
@@ -469,12 +459,15 @@ public class DbFacade {
             hibSession.getTransaction().rollback();
             logger.error("Hibernate error using updateClusterSet, ", e);
             throw e;
+        } finally {
+            hibSession.close();
         }
+
     }
 
-    public static void addNodeType(HttpServletRequest request) throws HibernateException , DbFacadeException {
+    public static void addNodeType(HttpServletRequest request) throws HibernateException, DbFacadeException {
         HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
 
         String nodeTypeName = request.getParameter("nodeTypeName");
         String cpu = request.getParameter("cpu");
@@ -499,12 +492,16 @@ public class DbFacade {
             hibSession.getTransaction().rollback();
             logger.error("Hibernate error using addNodeType, ", e);
             throw e;
+        } finally {
+            hibSession.close();
         }
+
     }
 
-    public static void deleteNodeType(HttpServletRequest request, String nodeTypeName) throws HibernateException , DbFacadeException {
+    public static void deleteNodeType(HttpServletRequest request, String nodeTypeName)
+            throws HibernateException, DbFacadeException {
         HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
         try {
             hibSession.beginTransaction();
             NodeType ns = (NodeType) hibSession.createCriteria(NodeType.class)
@@ -515,13 +512,16 @@ public class DbFacade {
             hibSession.getTransaction().rollback();
             logger.error("Hibernate error using deleteNodeType, ", ex);
             throw ex;
+        } finally {
+            hibSession.close();
         }
+
     }
 
-    public static NodeType queryOneNodeType(HttpServletRequest request, String nodeTypeName) throws HibernateException  {
+    public static NodeType queryOneNodeType(HttpServletRequest request, String nodeTypeName) throws HibernateException {
 
         HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
 
         try {
             hibSession.beginTransaction();
@@ -533,12 +533,15 @@ public class DbFacade {
             hibSession.getTransaction().rollback();
             logger.error("Hibernate error using queryOneNodeType, ", ex);
             throw ex;
+        } finally {
+            hibSession.close();
         }
+
     }
 
-    public static void updateNodeType(HttpServletRequest request) throws HibernateException , DbFacadeException {
+    public static void updateNodeType(HttpServletRequest request) throws HibernateException, DbFacadeException {
         HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
 
         String nodeTypeName = request.getParameter("nodeTypeName");
         String cpu = request.getParameter("cpu");
@@ -550,16 +553,16 @@ public class DbFacade {
 
         try {
             hibSession.beginTransaction();
-
-            List<NodeType> csl = hibSession.createCriteria(NodeType.class)
-                    .add(Restrictions.eq("nodeTypeName", nodeTypeName)).list();
-            if (csl.size() != 1) {
+            NodeType nt = (NodeType) hibSession.createCriteria(NodeType.class)
+                    .add(Restrictions.eq("nodeTypeName", nodeTypeName)).uniqueResult();
+            if (nt == null) {
                 hibSession.getTransaction().rollback();
                 logger.error("Had a WTF error using updateNodeType");
                 throw new DbFacadeException("Had a WTF error using updateNodeType");
             } else {
-                existing = csl.get(0);
+                existing = nt;
             }
+
             existing.setCpu(Integer.parseInt(cpu));
             existing.setSlot(Integer.parseInt(slot));
             existing.setHs06PerSlot(Double.parseDouble(hs06PerSlot));
@@ -571,13 +574,16 @@ public class DbFacade {
             hibSession.getTransaction().rollback();
             logger.error("Hibernate error using updateClusterSet, ", e);
             throw e;
+        } finally {
+            hibSession.close();
         }
+
     }
 
     public static void refreshNodeSets(HttpServletRequest request, String col, String order) throws HibernateException {
 
         HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
 
         Order ord = org.hibernate.criterion.Order.desc(col);
         if (order.equalsIgnoreCase("ASC")) {
@@ -594,38 +600,44 @@ public class DbFacade {
             hibSession.getTransaction().rollback();
             logger.error("Had an error when trying to refresh node sets, ", ex);
             throw ex;
+        } finally {
+            hibSession.close();
         }
+
         request.setAttribute("nodeSetList", list);
     }
 
-    public static ArrayList<String> listNodeTypeNames(HttpServletRequest request) throws HibernateException {
+//    public st a tic ArrayList<String> li stNodeTypeNames(HttpServletRequest request) throws HibernateException {
+//        HttpSession httpSession = request.getSession();
+//        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+//        Order ord = org.hibernate.criterion.Order.desc("nodeTypeName");
+//
+//        ArrayList<NodeType> nodeTypes = null;
+//        try {
+//
+//            hibSession.beginTransaction();
+//            nodeTypes = (ArrayList<NodeType>) hibSession.createCriteria(NodeType.class).addOrder(ord).list();
+//            hibSession.getTransaction().commit();
+//
+//        } catch (HibernateException ex) {
+//            hibSession.getTransaction().rollback();
+//            logger.error("Hibernate error using listNodeTypes, ", ex);
+//            throw ex;
+//        } finally {
+//            hibSession.close();
+//        }
+//
+//        ArrayList<String> s = new ArrayList<String>();
+//        for (NodeType n : nodeTypes) {
+//            s.add(n.getNodeTypeName());
+//        }
+//        return s;
+//    }
+
+    public static void updateNodeSet(HttpServletRequest request) throws HibernateException, DbFacadeException {
+
         HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
-        Order ord = org.hibernate.criterion.Order.desc("nodeTypeName");
-
-        ArrayList<NodeType> nodeTypes = null;
-        try {
-
-            hibSession.beginTransaction();
-            nodeTypes = (ArrayList<NodeType>) hibSession.createCriteria(NodeType.class).addOrder(ord).list();
-            hibSession.getTransaction().commit();
-
-        } catch (HibernateException ex) {
-            hibSession.getTransaction().rollback();
-            logger.error("Hibernate error using listNodeTypes, ", ex);
-            throw ex;
-        }
-        ArrayList<String> s = new ArrayList<String>();
-        for (NodeType n : nodeTypes) {
-            s.add(n.getNodeTypeName());
-        }
-        return s;
-    }
-
-    public static void updateNodeSet(HttpServletRequest request) throws HibernateException , DbFacadeException {
-
-        HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
 
         String nodeSetName = request.getParameter("nodeSetName");
         String nodeCount = request.getParameter("nodeCount");
@@ -676,12 +688,16 @@ public class DbFacade {
             hibSession.getTransaction().rollback();
             logger.error("Hibernate error using updateNodeSet, ", e);
             throw e;
+        } finally {
+            hibSession.close();
         }
+
     }
 
-    public static void deleteNodeSet(HttpServletRequest request, String nodeSetName) throws HibernateException, DbFacadeException {
+    public static void deleteNodeSet(HttpServletRequest request, String nodeSetName)
+            throws HibernateException, DbFacadeException {
         HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
         try {
             hibSession.beginTransaction();
             NodeSet ns = (NodeSet) hibSession.createCriteria(NodeSet.class)
@@ -692,30 +708,38 @@ public class DbFacade {
             hibSession.getTransaction().rollback();
             logger.error("Hibernate error using deleteNodeSet, ", ex);
             throw ex;
+        } finally {
+            hibSession.close();
         }
+
     }
-    public static NodeSet queryOneNodeSet (HttpServletRequest request, String nodeSetName) throws HibernateException  {
+
+    public static NodeSet queryOneNodeSet(HttpServletRequest request, String nodeSetName) throws HibernateException {
 
         HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
 
         try {
             hibSession.beginTransaction();
             NodeSet ns = (NodeSet) hibSession.createCriteria(NodeSet.class)
                     .add(Restrictions.eq("nodeSetName", nodeSetName)).uniqueResult();
-                hibSession.getTransaction().commit();
-                return ns;
+            hibSession.getTransaction().commit();
+            return ns;
 
         } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
             logger.error("Hibernate error using queryOneNodeSet, ", ex);
             throw ex;
+        } finally {
+            hibSession.close();
         }
+
     }
-    public static void addNodeSet(HttpServletRequest request) throws HibernateException , DbFacadeException {
+
+    public static void addNodeSet(HttpServletRequest request) throws HibernateException, DbFacadeException {
 
         HttpSession httpSession = request.getSession();
-        Session hibSession = (Session) httpSession.getAttribute("accessObject");
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
 
         String nodeSetName = request.getParameter("nodeSetName");
         String nodeCount = request.getParameter("nodeCount");
@@ -754,31 +778,37 @@ public class DbFacade {
             hibSession.getTransaction().rollback();
             logger.error("Hibernate error using addNodeSet, ", e);
             throw e;
+        } finally {
+            hibSession.close();
         }
 
     }
 
     public static ArrayList<NodeSetNodeTypeJoin> getJoinForCluster(HttpServletRequest request, String clusterName)
             throws HibernateException {
-        HttpSession session = request.getSession();
-        Session s = (Session) session.getAttribute("accessObject");
+        HttpSession httpSession = request.getSession();
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
         ArrayList<NodeSetNodeTypeJoin> nsntj = new ArrayList<NodeSetNodeTypeJoin>();
+        try {
+            hibSession.beginTransaction();
 
-        List<NodeSet> ns = s.createCriteria(NodeSet.class).add(Restrictions.eq("cluster.clusterName", clusterName)).list();
-        for (NodeSet n: ns) {
-            Float nodeSetHs06 = (float) (n.getNodeType().getHs06PerSlot() * n.getNodeCount()); 
-            NodeSetNodeTypeJoin j = new NodeSetNodeTypeJoin(
-                    n.getNodeSetName(), 
-                    n.getNodeType().getNodeTypeName(), 
-                    n.getNodeCount(), 
-                    new Integer(n.getNodeType().getCpu()), 
-                    new Integer(n.getNodeType().getSlot()), 
-                    new Float(n.getNodeType().getHs06PerSlot()),
-                    nodeSetHs06 );
-            nsntj.add(j);
+            List<NodeSet> ns = hibSession.createCriteria(NodeSet.class)
+                    .add(Restrictions.eq("cluster.clusterName", clusterName)).list();
+            for (NodeSet n : ns) {
+                Float nodeSetHs06 = (float) (n.getNodeType().getHs06PerSlot() * n.getNodeCount());
+                NodeSetNodeTypeJoin j = new NodeSetNodeTypeJoin(n.getNodeSetName(), n.getNodeType().getNodeTypeName(),
+                        n.getNodeCount(), new Integer(n.getNodeType().getCpu()), new Integer(n.getNodeType().getSlot()),
+                        new Float(n.getNodeType().getHs06PerSlot()), nodeSetHs06);
+                nsntj.add(j);
+            }
+        } catch (HibernateException e) {
+            hibSession.getTransaction().rollback();
+            logger.error("Hibernate error using addNodeSet, ", e);
+            throw e;
+        } finally {
+            hibSession.close();
         }
         return nsntj;
     }
-    
-    
+
 }

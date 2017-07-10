@@ -48,14 +48,15 @@ public class ClusterController extends HttpServlet {
 
             ArrayList<String> s = new ArrayList<String>();
             try {
-                s = DbFacade.listAllClusterSets(request);
+//                s = DbFacade.listCl u s t erSetNames(request);
+              DbFacade.refreshClusterSets(request, "clusterSetName", "ASC");
             } catch (HibernateException e) {
                 logger.error("WTF! Error getting the cluster sets, ", e);
                 rd = request.getRequestDispatcher("/error.jsp");
                 rd.forward(request, response);
                 return;
             }
-            request.setAttribute("clusterSetList", s);
+//            request.setAttribute("clusterSetList", s);
             rd = request.getRequestDispatcher("/new_cluster.jsp");
             rd.forward(request, response);
             return;
@@ -130,8 +131,9 @@ public class ClusterController extends HttpServlet {
 
                     ArrayList<String> s = new ArrayList<String>();
                     DbFacade.setSingleCluster(request, cluster);
-                    s = DbFacade.listAllClusterSets(request);
-                    request.setAttribute("clusterSetList", s);
+                    DbFacade.refreshClusterSets(request, "clusterSetName", "ASC");
+//                    s = DbFacade.li s t C l u sterSetNames(request);
+//                    request.setAttribute("cl u s t e r S etList", s);
                 } catch (HibernateException e) {
                     logger.error("WTF! A HibernateException occurred, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");

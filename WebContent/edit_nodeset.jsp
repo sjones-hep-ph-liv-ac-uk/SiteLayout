@@ -34,15 +34,14 @@
 		   <input type="text" name="nodeCount" value="${nodeSet.nodeCount}"> <BR>
 		Node type : <select name='nodeTypeList'>
 			<c:forEach items="${nodeTypeList}" var="nt">
-				<!-- <option  value="${nt}">${nt}</option> -->
-				<option value="${nt}"
-					${nt == nodeSet.nodeType.nodeTypeName ? 'selected="selected"' : ''}>${nt}</option>
+				
+				<option value="${nt.nodeTypeName}"
+					${nt.nodeTypeName == nodeSet.nodeType.nodeTypeName ? 'selected="selected"' : ''}>${nt.nodeTypeName}</option>
 			</c:forEach>
 		</select><BR> Cluster : <select name='clusterList'>
 			<c:forEach items="${clusterList}" var="cn">
-				<!--  <option value="${cn}">${cn}</option> -->
-				<option value="${cn}"
-					${cn == nodeSet.cluster.clusterName ? 'selected="selected"' : ''}>${cn}</option>
+				<option value="${cn.clusterName}"
+					${cn.clusterName == nodeSet.cluster.clusterName ? 'selected="selected"' : ''}>${cn.clusterName}</option>
 			</c:forEach>
 		</select><BR> <input type="submit" value="Submit" />
 	</form>
