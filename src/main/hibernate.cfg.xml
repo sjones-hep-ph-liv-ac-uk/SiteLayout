@@ -1,0 +1,60 @@
+<!--
+  ~ Hibernate, Relational Persistence for Idiomatic Java
+  ~
+  ~ License: GNU Lesser General Public License (LGPL), version 2.1 or later.
+  ~ See the lgpl.txt file in the root directory or <http://www.gnu.org/licenses/lgpl-2.1.html>.
+  -->
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+
+<!-- Merge properties for updates -->
+
+<property name="event.merge.entity_copy_observer">allow</property>
+ 
+<!-- Database Connection Settings -->
+ 
+<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+ 
+<!-- <property name="connection.url">jdbc:mysql://localhost:3306/hibtest</property> -->
+ 
+<!-- <property name="connection.username">hibtest</property>
+
+
+ 
+<property name="connection.password">hibtest</property> -->
+ 
+<!-- Connection Pool Size (built-in) -->
+ 
+<property name="connection.pool.size">1</property>
+ 
+<!-- SQL Dialect -->
+ 
+<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+ 
+ 
+<!-- Disable the second-level cache -->
+ 
+<property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+ 
+<!-- Echo all executed SQL to stdout -->
+ 
+<property name="hibernate.show_sql">true</property>
+ 
+<!-- Drop the existing tables and create new one -->
+ 
+<!--  <property name="hbm2ddl.auto">create</property>  -->
+ 
+<!-- Mention here all the model classes along with their package name -->
+ 
+<mapping class="com.basingwerk.sldb.mvc.model.NodeSet"/>
+<mapping class="com.basingwerk.sldb.mvc.model.Cluster"/>
+<mapping class="com.basingwerk.sldb.mvc.model.ClusterSet"/>
+<mapping class="com.basingwerk.sldb.mvc.model.NodeType"/>
+ 
+    </session-factory>
+</hibernate-configuration>
+
