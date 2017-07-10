@@ -1,7 +1,17 @@
 package com.basingwerk.sldb.mvc.controllers;
+import org.hibernate.HibernateException;
+import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
 
+import org.hibernate.Session;
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+import com.basingwerk.sldb.mvc.model.User;
+
 import java.io.IOException;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,10 +19,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import com.basingwerk.sldb.mvc.model.AccessObject;
-import com.basingwerk.sldb.mvc.model.AccessObjectException;
-import com.basingwerk.sldb.mvc.model.User;
 
 @WebServlet("/LoginController")
 
@@ -26,31 +32,55 @@ public class LoginController extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        String msg;
         RequestDispatcher rd = null;
-
-        String database = request.getParameter("database");
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        AccessObject ao;
         try {
-            ao = new AccessObject(database, username, password);
-            if (ao != null) {
-                HttpSession session = request.getSession();
-                session.setAttribute("accessObject", ao);
-                User user = new User(username, password);
-                request.setAttribute("user", user);
-                rd = request.getRequestDispatcher("/main_screen.jsp");
-                rd.forward(request, response);
-                return;
-            }
-        } catch (AccessObjectException e) {
-            logger.error("Error when trying to connect to database.");
-            request.setAttribute("theMessage", "Error when trying to connect to database. You can try to login again.");
-            request.setAttribute("theJsp", "login.jsp");
-            rd = request.getRequestDispatcher("/recoverable_message.jsp");
+
+            String database = request.getParameter("database");
+            String username = request.getParameter("username");
+            String password = request.getParameter("password");
+//            database = "hibtest";
+//            username = "hibtest";
+//            password = "hibtest";
+
+            Configuration cfg = new Configuration();
+            
+            cfg.getProperties().setProperty("event.merge.entity_copy_observer", "allow");
+            
+            cfg.addAnnotatedClass(com.basingwerk.sldb.mvc.model.NodeType.class);
+            cfg.addAnnotatedClass(com.basingwerk.sldb.mvc.model.NodeSet.class);
+            cfg.addAnnotatedClass(com.basingwerk.sldb.mvc.model.Cluster.class);
+            cfg.addAnnotatedClass(com.basingwerk.sldb.mvc.model.ClusterSet.class);
+
+            // cfg.configure("hibernate.cfg.xml"); //hibernate config xml file name
+            
+            cfg.getProperties().setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/" + database);
+            cfg.getProperties().setProperty("hibernate.connection.password", username);
+            cfg.getProperties().setProperty("hibernate.connection.username", password);
+            
+            SessionFactory sessionFactory = cfg.configure().buildSessionFactory();
+            Session dbsession = sessionFactory.openSession();
+
+            HttpSession session = request.getSession();
+            session.setAttribute("accessObject", dbsession);
+            User user = new User(username, password);
+            request.setAttribute("user", user);
+
+            rd = request.getRequestDispatcher("/main_screen.jsp");
             rd.forward(request, response);
+            return;
         }
+        catch (HibernateException e) {
+            e.printStackTrace();
+            msg = "HibernateException when trying to connect to database" + e.getStackTrace();
+        }
+        logger.error(msg);
+
+        request.setAttribute("theMessage",
+                "Error when trying to connect to connect to the database. You can try to login again.");
+        request.setAttribute("theJsp", "login.jsp");
+        rd = request.getRequestDispatcher("/recoverable_message.jsp");
+        rd.forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

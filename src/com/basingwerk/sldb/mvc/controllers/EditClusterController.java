@@ -1,6 +1,10 @@
 package com.basingwerk.sldb.mvc.controllers;
+import org.hibernate.HibernateException;
+import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
 
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
+
 import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
@@ -11,9 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.basingwerk.sldb.mvc.model.AccessObject;
+import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
+import com.basingwerk.sldb.mvc.exceptions.ModelException;
+import com.basingwerk.sldb.mvc.exceptions.DbFacadeException;
 import com.basingwerk.sldb.mvc.model.Cluster;
-import com.basingwerk.sldb.mvc.model.ModelException;
 
 @WebServlet("/EditClusterController")
 
@@ -28,42 +33,37 @@ public class EditClusterController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        AccessObject ao = null;
         RequestDispatcher rd = null;
         HttpSession session = request.getSession();
-        ao = (AccessObject) session.getAttribute("accessObject");
-        if (ao == null) {
-            request.setAttribute("theMessage", "No access to database. You can try to login again.");
-            request.setAttribute("theJsp", "login.jsp");
+
+        try {
+            DbFacade.updateCluster(request);
+        } catch (DbFacadeException e1) {
+            logger.error("WTF! Cannot update that cluster, ", e1);
+            rd = request.getRequestDispatcher("/error.jsp");
+            rd.forward(request, response);
+            return;
+
+        } catch (HibernateException e1) {
+            request.setAttribute("theMessage", "Could not update that cluster at this time. Please try again.");
+            request.setAttribute("theJsp", "main_screen.jsp");
             rd = request.getRequestDispatcher("/recoverable_message.jsp");
             rd.forward(request, response);
             return;
         }
-
-        String clusterName = request.getParameter("clusterName");
-        String descr = request.getParameter("descr");
-        String clusterSetName = request.getParameter("clusterSetList");
-
         try {
-            Cluster.updateSingleCluster(request, new Cluster(clusterName, descr, clusterSetName));
-        } catch (ModelException e) {
-            logger.error("WTF! A ModelException occurred, ", e);
+            DbFacade.refreshClusters(request, "clusterName", "ASC");
+            String next = "/cluster.jsp";
+            rd = request.getRequestDispatcher(next);
+            rd.forward(request, response);
+            return;
+        } catch (Exception e) {
+            logger.error("WTF! Error when trying to refresh list of clusters, ", e);
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
             return;
         }
-        try {
-            Cluster.refreshListOfAllClusters(request, "clusterName", "ASC");
-        } catch (ModelException e) {
-            logger.error("WTF! A ModelException occurred, ", e);
-            rd = request.getRequestDispatcher("/error.jsp");
-            rd.forward(request, response);
-            return;
-        }
-        String next = "/cluster.jsp";
-        rd = request.getRequestDispatcher(next);
-        rd.forward(request, response);
-        return;
+
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

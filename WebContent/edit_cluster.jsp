@@ -24,12 +24,12 @@
 	Edit Cluster
 	<form action="EditClusterController" method="post">
 		Cluster Name : <input type="text" name="clusterName" readonly
-			value="${cluster.cluster}"> <BR> 
+			value="${cluster.clusterName}"> <BR> 
 		Cluster Description : <input type="text" name="descr" value="${cluster.descr}"> <BR>
 		Cluster set : <select name='clusterSetList'>
 			<c:forEach items="${clusterSetList}" var="s">
 				<option value="${s}"
-					${s == cluster.clusterSetName ? 'selected="selected"' : ''}>${s}</option>
+					${s == cluster.clusterSet.clusterSetName ? 'selected="selected"' : ''}>${s}</option>
 			</c:forEach>
 		</select>
 		<BR>

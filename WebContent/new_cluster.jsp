@@ -8,10 +8,6 @@
 
 <% 	List clusterSetList = (List) request.getAttribute("clusterSetList"); %>
 
-
-
-
-
 <html>
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/SiteLayout.css">

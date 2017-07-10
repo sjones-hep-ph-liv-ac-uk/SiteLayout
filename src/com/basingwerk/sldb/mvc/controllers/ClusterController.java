@@ -16,13 +16,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-
+import org.hibernate.HibernateException;
+import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
+import com.basingwerk.sldb.mvc.exceptions.DbFacadeException;
 import com.basingwerk.sldb.mvc.model.Cluster;
 import com.basingwerk.sldb.mvc.model.ClusterSet;
-import com.basingwerk.sldb.mvc.model.ModelException;
-import com.basingwerk.sldb.mvc.model.ModelExceptionRollbackWorked;
 import com.basingwerk.sldb.mvc.model.NodeType;
-import com.basingwerk.sldb.mvc.model.AccessObject;
 
 @WebServlet("/ClusterController")
 
@@ -49,10 +48,8 @@ public class ClusterController extends HttpServlet {
 
             ArrayList<String> s = new ArrayList<String>();
             try {
-                s = ClusterSet.listAllClusterSets(request);
-                
-
-            } catch (ModelException e) {
+                s = DbFacade.listAllClusterSets(request);
+            } catch (HibernateException e) {
                 logger.error("WTF! Error getting the cluster sets, ", e);
                 rd = request.getRequestDispatcher("/error.jsp");
                 rd.forward(request, response);
@@ -82,9 +79,9 @@ public class ClusterController extends HttpServlet {
                 }
 
                 try {
-                    Cluster.refreshListOfAllClusters(request, c, order);
-                } catch (ModelException e) {
-                    logger.error("WTF! A ModelException occurred, ", e);
+                    DbFacade.refreshClusters(request, c, order);
+                } catch (HibernateException e) {
+                    logger.error("WTF! A HibernateException occurred, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
@@ -99,27 +96,25 @@ public class ClusterController extends HttpServlet {
                 String cluster = key.substring(4, key.length());
                 logger.error("cluster:" + cluster + ":");
                 try {
-                    Cluster.deleteCluster(request, cluster);
-                } catch (ModelException e1) {
-                    if (e1 instanceof ModelExceptionRollbackWorked) {
-                        logger.info("Rollback worked.");
-                        request.setAttribute("theMessage", "Could not delete that cluster at this time. Please try again.");
-                        request.setAttribute("theJsp", "main_screen.jsp");
-                        rd = request.getRequestDispatcher("/recoverable_message.jsp");
-                        rd.forward(request, response);
-                        return;
-                    } else {
-                        logger.error("WTF! failed to roll back, ", e1);
-                        rd = request.getRequestDispatcher("/error.jsp");
-                        rd.forward(request, response);
-                        return;
-                    }
+
+                    DbFacade.deleteCluster(request, cluster);
+                } catch (HibernateException e1) {
+                    request.setAttribute("theMessage", "Could not delete that cluster at this time. Please try again.");
+                    request.setAttribute("theJsp", "main_screen.jsp");
+                    rd = request.getRequestDispatcher("/recoverable_message.jsp");
+                    rd.forward(request, response);
+                    return;
+                } catch (DbFacadeException e) {
+                    logger.error("WTF! Error using deleteCluster, ", e);
+                    rd = request.getRequestDispatcher("/error.jsp");
+                    rd.forward(request, response);
+                    return;
                 }
-                    
+
                 try {
-                    Cluster.refreshListOfAllClusters(request, "clusterName", "ASC");
-                } catch (ModelException e) {
-                    logger.error("WTF! Had a ModelException when trying to setListOfClusters, ", e);
+                    DbFacade.refreshClusters(request, "clusterName", "ASC");
+                } catch (HibernateException e) {
+                    logger.error("WTF! Had a HibernateException when trying to setListOfClusters, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
@@ -132,22 +127,13 @@ public class ClusterController extends HttpServlet {
             if (key.startsWith("ED.")) {
                 String cluster = key.substring(3, key.length());
                 try {
-                    Cluster.setSingleCluster(request, cluster);
 
                     ArrayList<String> s = new ArrayList<String>();
-                    try {
-                        s = ClusterSet.listAllClusterSets(request);
-
-                    } catch (ModelException e) {
-                        logger.error("WTF! A ModelException occurred, ", e);
-                        rd = request.getRequestDispatcher("/error.jsp");
-                        rd.forward(request, response);
-                        return;
-                    }
+                    DbFacade.setSingleCluster(request, cluster);
+                    s = DbFacade.listAllClusterSets(request);
                     request.setAttribute("clusterSetList", s);
-
-                } catch (ModelException e) {
-                    logger.error("WTF! A ModelException occurred, ", e);
+                } catch (HibernateException e) {
+                    logger.error("WTF! A HibernateException occurred, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
@@ -164,5 +150,4 @@ public class ClusterController extends HttpServlet {
             throws ServletException, IOException {
         doGet(request, response);
     }
-
 }

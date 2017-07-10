@@ -1,5 +1,8 @@
 package com.basingwerk.sldb.mvc.controllers;
 
+import org.hibernate.HibernateException;
+import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
+
 import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -16,12 +19,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
+import com.basingwerk.sldb.mvc.exceptions.DbFacadeException;
+import com.basingwerk.sldb.mvc.exceptions.ModelException;
+import com.basingwerk.sldb.mvc.model.Cluster;
 import com.basingwerk.sldb.mvc.model.NodeSet;
 import com.basingwerk.sldb.mvc.model.NodeType;
-import com.basingwerk.sldb.mvc.model.Cluster;
-import com.basingwerk.sldb.mvc.model.ModelException;
-import com.basingwerk.sldb.mvc.model.ModelExceptionRollbackWorked;
-import com.basingwerk.sldb.mvc.model.AccessObject;
 
 @WebServlet("/NodeSetController")
 
@@ -46,9 +49,9 @@ public class NodeSetController extends HttpServlet {
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
-                NodeSet.refreshListOfNodeSets(request, "nodeSetName", "ASC");
-            } catch (ModelException e) {
-                logger.error("WTF! ModelException while refreshing the list of node sets, ", e);
+                DbFacade.refreshNodeSets(request, "nodeSetName", "ASC");
+            } catch (HibernateException e) {
+                logger.error("WTF! Error while using refreshNodeSets");
                 rd = request.getRequestDispatcher("/error.jsp");
                 rd.forward(request, response);
                 return;
@@ -64,11 +67,11 @@ public class NodeSetController extends HttpServlet {
             ArrayList<String> cl = new ArrayList<String>();
             ArrayList<String> nt = new ArrayList<String>();
             try {
-                cl = Cluster.listAllClusterNames(request);
-                nt = NodeType.listAllNodeTypes(request);
+                cl = DbFacade.listClusterNames(request);
+                nt = DbFacade.listNodeTypeNames(request);
 
-            } catch (ModelException e) {
-                logger.error("WTF! ModelException when preparing data, ", e);
+            } catch (HibernateException e) {
+                logger.error("WTF! Error preparing data, ", e);
                 rd = request.getRequestDispatcher("/error.jsp");
                 rd.forward(request, response);
                 return;
@@ -98,9 +101,9 @@ public class NodeSetController extends HttpServlet {
                 }
 
                 try {
-                    NodeSet.refreshListOfNodeSets(request, c, order);
-                } catch (ModelException e) {
-                    logger.error("WTF! ModelException when trying to refresh node sets, ", e);
+                    DbFacade.refreshNodeSets(request, c, order);
+                } catch (HibernateException e) {
+                    logger.error("WTF! Error using refreshNodeSets, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
@@ -112,20 +115,22 @@ public class NodeSetController extends HttpServlet {
             }
 
             if (key.startsWith("DEL.")) {
-                String nodeSet = key.substring(4, key.length());
+                String nodeSetName = key.substring(4, key.length());
                 try {
-                    NodeSet.deleteNodeSet(request, nodeSet);
-                } catch (ModelException e) {
-                    logger.error("Error deleting a node set, ", e);
+                    DbFacade.deleteNodeSet(request, nodeSetName);
+                } catch (HibernateException e) {
                     logger.error("WTF! ModelException when deleteing a node set, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
+                } catch (DbFacadeException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
                 }
                 try {
-                    NodeSet.refreshListOfNodeSets(request, "nodeSetName", "ASC");
-                } catch (ModelException e) {
-                    logger.error("WTF! Model error when trying refreshListOfNodeSets, ", e);
+                    DbFacade.refreshNodeSets(request, "nodeSetName", "ASC");
+                } catch (HibernateException e) {
+                    logger.error("WTF! Error using refreshNodeSets.");
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
@@ -139,31 +144,21 @@ public class NodeSetController extends HttpServlet {
                 String nodeSetName = key.substring(3, key.length());
                 NodeSet ns = null;
                 try {
-                    ns = NodeSet.queryOneNodeSet(request, nodeSetName);
-                } catch (ModelException e) {
-                    if (e instanceof ModelExceptionRollbackWorked) {
-                        logger.info("A rollback worked.");
-                        request.setAttribute("theMessage",
-                                "Could not read one node set at this time. Please try again.");
-                        request.setAttribute("theJsp", "main_screen.jsp");
-                        rd = request.getRequestDispatcher("/recoverable_message.jsp");
-                        rd.forward(request, response);
-                        return;
-                    } else {
-                        logger.error("WTF! Rollback failed.");
-                        rd = request.getRequestDispatcher("/error.jsp");
-                        rd.forward(request, response);
-                        return;
-                    }
-                }
+                    ns = DbFacade.queryOneNodeSet(request, nodeSetName);
+                } catch (HibernateException e) {
+                    logger.error("WTF! Error using queryOneNodeSet");
+                    rd = request.getRequestDispatcher("/error.jsp");
+                    rd.forward(request, response);
+                    return;
+                } 
+
                 request.setAttribute("nodeSet", ns);
                 ArrayList<String> cl = new ArrayList<String>();
                 ArrayList<String> nt = new ArrayList<String>();
                 try {
-                    cl = Cluster.listAllClusterNames(request);
-                    nt = NodeType.listAllNodeTypes(request);
-
-                } catch (ModelException e) {
+                    cl = DbFacade.listClusterNames(request);
+                    nt = DbFacade.listNodeTypeNames(request);
+                } catch (HibernateException e) {
                     logger.error("WTF! ModelException when preparing data, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
@@ -178,6 +173,7 @@ public class NodeSetController extends HttpServlet {
                 return;
             }
         }
+
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

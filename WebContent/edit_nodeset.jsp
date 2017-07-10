@@ -36,13 +36,13 @@
 			<c:forEach items="${nodeTypeList}" var="nt">
 				<!-- <option  value="${nt}">${nt}</option> -->
 				<option value="${nt}"
-					${nt == nodeSet.nodeTypeName ? 'selected="selected"' : ''}>${nt}</option>
+					${nt == nodeSet.nodeType.nodeTypeName ? 'selected="selected"' : ''}>${nt}</option>
 			</c:forEach>
 		</select><BR> Cluster : <select name='clusterList'>
 			<c:forEach items="${clusterList}" var="cn">
 				<!--  <option value="${cn}">${cn}</option> -->
 				<option value="${cn}"
-					${cn == nodeSet.cluster ? 'selected="selected"' : ''}>${cn}</option>
+					${cn == nodeSet.cluster.clusterName ? 'selected="selected"' : ''}>${cn}</option>
 			</c:forEach>
 		</select><BR> <input type="submit" value="Submit" />
 	</form>

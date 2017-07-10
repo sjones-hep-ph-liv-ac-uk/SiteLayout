@@ -1,4 +1,4 @@
-package com.basingwerk.sldb.mvc.model;
+package com.basingwerk.sldb.mvc.exceptions;
 
 import org.apache.log4j.Logger;
 

@@ -1,6 +1,10 @@
 package com.basingwerk.sldb.mvc.controllers;
+import org.hibernate.HibernateException;
+import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,9 +17,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.basingwerk.sldb.mvc.model.AccessObject;
+
+import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
+import com.basingwerk.sldb.mvc.exceptions.ModelException;
 import com.basingwerk.sldb.mvc.model.Cluster;
-import com.basingwerk.sldb.mvc.model.ModelException;
 import com.basingwerk.sldb.mvc.model.NodeSetNodeTypeJoin;
 import com.basingwerk.sldb.mvc.model.NodeType;
 
@@ -32,43 +37,33 @@ public class SelectClusterSetController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        AccessObject ao = null;
-        RequestDispatcher rd = null;
         HttpSession session = request.getSession();
-        ao = (AccessObject) session.getAttribute("accessObject");
-        if (ao == null) {
-            request.setAttribute("theMessage", "No access to database. You can try to login again.");
-            request.setAttribute("theJsp", "login.jsp");
-            rd = request.getRequestDispatcher("/recoverable_message.jsp");
-            rd.forward(request, response);
-            return;
-        }
 
-        // String clusterName = request.getParameter("clusterName");
-        // String descr = request.getParameter("descr");
+        RequestDispatcher rd = null;
+
         String clusterSetName = request.getParameter("clusterSetList");
 
         ArrayList<String> clusters = null;
         try {
-            NodeType.refreshListOfNodeTypes(request, "nodeTypeName", "ASC");
-
-            Cluster.refreshClusterSet(request, clusterSetName, "clusterName", "ASC");
-            NodeType.setBaselineNodeType(request);
-
-            clusters = Cluster.listClusterSetNames(request, clusterSetName);
+            DbFacade.refreshNodeTypes(request, "nodeTypeName", "ASC");
+            DbFacade.refreshClusters(request, "clusterName", "ASC");
+            DbFacade.setBaselineNodeType(request);
+            clusters = DbFacade.getClustersOfClusterSet(request, clusterSetName);
             java.util.HashMap<String, ArrayList> joinMap = new java.util.HashMap<String, ArrayList>();
+
             Iterator<String> c = clusters.iterator();
             while (c.hasNext()) {
                 String cluster = c.next();
-                ArrayList<NodeSetNodeTypeJoin> nsntj = NodeSetNodeTypeJoin.getJoinForCluster(request, cluster);
+                ArrayList<NodeSetNodeTypeJoin> nsntj =
+                DbFacade.getJoinForCluster(request, cluster);
                 joinMap.put(cluster, nsntj);
             }
             request.setAttribute("joinMap", joinMap);
             rd = request.getRequestDispatcher("/reports.jsp");
             rd.forward(request, response);
             return;
-        } catch (ModelException e) {
-            logger.error("WTF! Had a ModelException in SelectClusterSetController, ", e);
+        } catch (HibernateException e) {
+            logger.error("WTF! Error using SelectClusterSetController, ", e);
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
             return;

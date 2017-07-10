@@ -77,7 +77,7 @@
 
 		<c:forEach items="${clusterList}" var="cluster">
 			<br>
-  Cluster:  ${cluster.cluster}<br>
+  Cluster:  ${cluster.clusterName}<br> 
 			<c:set var="clusterHs06" value="0.0" />
 			<c:set var="clusterPhysicalCpus" value="0" />
 			<c:set var="clusterLogicalCpus" value="0" />
@@ -91,7 +91,7 @@
 					<td>HS06 per Slot</td>
 					<td>HS06</td>
 				</tr>
-				<c:forEach items="${joinMap[cluster.cluster]}" var="joinrecord">
+				<c:forEach items="${joinMap[cluster.clusterName]}" var="joinrecord">
 					<tr>
 						<td><c:out value="${joinrecord.nodeSetName}" /></td>
 						<td><c:out value="${joinrecord.nodeTypeName}" /></td>

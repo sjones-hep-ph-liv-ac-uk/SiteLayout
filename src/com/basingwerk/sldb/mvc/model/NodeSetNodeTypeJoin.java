@@ -1,8 +1,16 @@
 package com.basingwerk.sldb.mvc.model;
 
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
+
+import com.basingwerk.sldb.mvc.exceptions.ModelException;
+
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -94,34 +102,4 @@ public class NodeSetNodeTypeJoin {
 
     private Float nodeSetHs06;
 
-    public static ArrayList<NodeSetNodeTypeJoin> getJoinForCluster(HttpServletRequest request, String cluster)
-            throws ModelException {
-        AccessObject modelAo = (AccessObject) request.getSession().getAttribute("accessObject");
-        ArrayList<NodeSetNodeTypeJoin> nsntj = new ArrayList<NodeSetNodeTypeJoin>();
-        try {
-
-            String theSql = "select nodeSetName,nodeSet.nodeTypeName,nodeType.cpu,nodeCount,slot,hs06PerSlot  from nodeSet,nodeType "
-                    + "where nodeSet.cluster='" + cluster + "' and nodeSet.nodeTypeName = nodeType.nodeTypeName;";
-
-            ResultSet r = modelAo.query(theSql);
-            while (r.next()) {
-                String nodeSetName = r.getString("nodeSetName");
-                String nodeTypeName = r.getString("nodeTypeName");
-                Integer nodeCount = r.getInt("nodeCount");
-                Integer nodeCpus = new Integer(r.getInt("cpu"));
-                Integer nodeSlots = r.getInt("slot");
-                Float hs06PerSlot = r.getFloat("hs06PerSlot");
-                Float nodeSetHs06 = nodeCount * nodeSlots * hs06PerSlot;
-
-                NodeSetNodeTypeJoin j = new NodeSetNodeTypeJoin(nodeSetName, nodeTypeName, nodeCount, nodeCpus,
-                        nodeSlots, hs06PerSlot, nodeSetHs06);
-                nsntj.add(j);
-
-            }
-        } catch (Exception e) {
-            logger.error("Could not get the joined set of node sets and types, ", e);
-            throw new ModelException("Cannot join");
-        }
-        return nsntj;
-    }
 }

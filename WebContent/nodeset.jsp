@@ -31,10 +31,10 @@
 				</td>
 				<td>
 					<input type="image" src="Down-48.png" alt="Submit" width="15px"
-					height="15px" value="SORTDOWN.nodeTypeName" name="SORTDOWN.nodeTypeName">
+					height="15px" value="SORTDOWN.nodeType" name="SORTDOWN.nodeType">
 				Node type
 					<input type="image" src="Up-48.png" alt="Submit" width="15px"
-					height="15px" value="SORTUP.nodeTypeName" name="SORTUP.nodeTypeName">
+					height="15px" value="SORTUP.nodeType" name="SORTUP.nodeType">
 				</td>
 				<td>
 					<input type="image" src="Down-48.png" alt="Submit" width="15px"
@@ -56,9 +56,9 @@
 			<c:forEach items="${nodeSetList}" var="nodeSet">
 				<tr>
 					<td><c:out value="${nodeSet.nodeSetName}" /></td>
-					<td><c:out value="${nodeSet.nodeTypeName}" /></td>
+					<td><c:out value="${nodeSet.nodeType.nodeTypeName}" /></td>
 					<td><c:out value="${nodeSet.nodeCount}" /></td>
-					<td><c:out value="${nodeSet.cluster}" /></td>
+					<td><c:out value="${nodeSet.cluster.clusterName}" /></td>
 					<td class="tg-yw4l"><input type="submit" value="Del"
 						name=DEL.${nodeSet.nodeSetName}></td>
 					<td class="tg-yw4l"><input type="submit" value="Edit"

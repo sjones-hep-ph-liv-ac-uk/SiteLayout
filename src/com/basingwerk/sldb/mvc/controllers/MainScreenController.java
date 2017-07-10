@@ -1,4 +1,6 @@
 package com.basingwerk.sldb.mvc.controllers;
+import org.hibernate.HibernateException;
+import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
 
 import org.apache.log4j.Logger;
 import java.io.IOException;
@@ -12,13 +14,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
+import com.basingwerk.sldb.mvc.exceptions.ModelException;
 import com.basingwerk.sldb.mvc.model.Cluster;
-
-import com.basingwerk.sldb.mvc.model.ModelException;
+import com.basingwerk.sldb.mvc.model.ClusterSet;
 import com.basingwerk.sldb.mvc.model.NodeSet;
 import com.basingwerk.sldb.mvc.model.NodeSetNodeTypeJoin;
 import com.basingwerk.sldb.mvc.model.NodeType;
-import com.basingwerk.sldb.mvc.model.ClusterSet;
 
 @WebServlet("/MainScreenController")
 
@@ -44,7 +46,7 @@ public class MainScreenController extends HttpServlet {
             }
             String next = "";
             if (act.equals("Edit cluster sets")) {
-                ClusterSet.refreshClusterSets(request, "clusterSetName", "ASC");
+                DbFacade.refreshClusterSets(request, "clusterSetName", "ASC");
                 next = "/cluster_set.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -52,7 +54,7 @@ public class MainScreenController extends HttpServlet {
             }
 
             if (act.equals("Edit node types")) {
-                NodeType.refreshListOfNodeTypes(request, "nodeTypeName", "ASC");
+                DbFacade.refreshNodeTypes(request, "nodeTypeName", "ASC");
                 next = "/nodetype.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -60,14 +62,14 @@ public class MainScreenController extends HttpServlet {
             }
 
             if (act.equals("Edit clusters")) {
-                Cluster.refreshListOfAllClusters(request, "clusterName", "ASC");
+                DbFacade.refreshClusters(request, "clusterName", "ASC");
                 next = "/cluster.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
                 return;
             }
             if (act.equals("Edit node sets")) {
-                NodeSet.refreshListOfNodeSets(request, "nodeSetName", "ASC");
+                DbFacade.refreshNodeSets(request, "nodeSetName", "ASC");
                 next = "/nodeset.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -75,36 +77,20 @@ public class MainScreenController extends HttpServlet {
 
             }
             if (act.equals("Reports")) {
-                ClusterSet.refreshClusterSets(request, "clusterSetName", "ASC");
+                DbFacade.refreshClusterSets(request, "clusterSetName", "ASC");
                 next = "/select_cluster_set.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
                 return;
                 
-//                NodeType.refreshListOfNodeTypes(request, "nodeTypeName", "ASC");
-//                Cluster.refreshListOfClusters(request, "clusterName", "ASC");
-//                NodeType.setBaselineNodeType(request);
-//                ArrayList<String> clusters = Cluster.listAllClusterNames(request);
-//                java.util.HashMap<String, ArrayList> joinMap = new java.util.HashMap<String, ArrayList>();
-//                Iterator<String> c = clusters.iterator();
-//                while (c.hasNext()) {
-//                    String cluster = c.next();
-//                    ArrayList<NodeSetNodeTypeJoin> nsntj = NodeSetNodeTypeJoin.getJoinForCluster(request, cluster);
-//                    joinMap.put(cluster, nsntj);
-//                }
-//                request.setAttribute("joinMap", joinMap);
-//                next = "/reports.jsp";
-//                rd = request.getRequestDispatcher(next);
-//                rd.forward(request, response);
-//                return;
             }
             logger.error("WTF! Never seen that button before.");
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
             return;
 
-        } catch (ModelException e) {
-            logger.error("WTF! Had a ModelException in the MainScreen, ", e);
+        } catch (HibernateException e) {
+            logger.error("WTF! Error using MainScreenController, ", e);
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
             return;
