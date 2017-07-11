@@ -15,7 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.basingwerk.sldb.mvc.exceptions.DbFacadeException;
+import com.basingwerk.sldb.mvc.exceptions.WTFException;
+import com.basingwerk.sldb.mvc.exceptions.ConflictException;
 import com.basingwerk.sldb.mvc.exceptions.ModelException;
 import com.basingwerk.sldb.mvc.model.NodeSet;
 import com.basingwerk.sldb.mvc.model.NodeType;
@@ -37,21 +38,21 @@ public class EditNodeTypeController extends HttpServlet {
 
         try {
             DbFacade.updateNodeType(request);
-        } catch (HibernateException e) {
+        } catch (ConflictException e) {
             request.setAttribute("theMessage", "The task could not be done. Please try again.");
             request.setAttribute("theJsp", "main_screen.jsp");
             rd = request.getRequestDispatcher("/recoverable_message.jsp");
             rd.forward(request, response);
             return;
-        } catch (DbFacadeException e) {
+        } catch (WTFException e) {
             logger.error("WTF! Error using updateNodeType");
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
             return;
         }
         try {
-            DbFacade.refreshNodeTypes(request, "nodeTypeName", "ASC");
-        } catch (HibernateException e) {
+            DbFacade.loadNodeTypes(request, "nodeTypeName", "ASC");
+        } catch (WTFException e) {
             logger.error("WTF! Error when using updateNodeType, ", e);
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);

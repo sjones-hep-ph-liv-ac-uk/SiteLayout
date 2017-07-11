@@ -18,7 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
-import com.basingwerk.sldb.mvc.exceptions.DbFacadeException;
+import com.basingwerk.sldb.mvc.exceptions.WTFException;
+import com.basingwerk.sldb.mvc.exceptions.ConflictException;
 import com.basingwerk.sldb.mvc.exceptions.ModelException;
 import com.basingwerk.sldb.mvc.model.NodeType;
 
@@ -39,13 +40,13 @@ public class NewNodeTypeController extends HttpServlet {
 
         try {
             DbFacade.addNodeType(request);
-        } catch (HibernateException e) {
+        } catch (ConflictException e) {
             request.setAttribute("theMessage", "The node type could not be added. Please try again.");
             request.setAttribute("theJsp", "main_screen.jsp");
             rd = request.getRequestDispatcher("/recoverable_message.jsp");
             rd.forward(request, response);
             return;
-        } catch (DbFacadeException e) {
+        } catch (WTFException e) {
             logger.error("WTF! Error using addNodeType.");
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
@@ -54,8 +55,8 @@ public class NewNodeTypeController extends HttpServlet {
 
         ArrayList<NodeType> nodeTypeList = new ArrayList<NodeType>();
         try {
-            DbFacade.refreshNodeTypes(request, "nodeTypeName", "ASC");
-        } catch (HibernateException e1) {
+            DbFacade.loadNodeTypes(request, "nodeTypeName", "ASC");
+        } catch (WTFException e1) {
             logger.error("WTF! Error using refreshNodeTypes.");
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);

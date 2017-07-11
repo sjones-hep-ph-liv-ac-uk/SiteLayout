@@ -15,7 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
-import com.basingwerk.sldb.mvc.exceptions.DbFacadeException;
+import com.basingwerk.sldb.mvc.exceptions.WTFException;
+import com.basingwerk.sldb.mvc.exceptions.ConflictException;
 import com.basingwerk.sldb.mvc.exceptions.ModelException;
 import com.basingwerk.sldb.mvc.model.NodeSet;
 
@@ -35,12 +36,12 @@ public class EditNodeSetController extends HttpServlet {
         HttpSession session = request.getSession();
         try {
             DbFacade.updateNodeSet(request);
-        } catch (DbFacadeException e) {
+        } catch (WTFException e) {
             logger.error("WTF! Cannot update node set.");
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
             return;
-        } catch (HibernateException e) {
+        } catch (ConflictException e) {
             request.setAttribute("theMessage", "The task could not be done. Please try again later.");
             request.setAttribute("theJsp", "main_screen.jsp");
             rd = request.getRequestDispatcher("/recoverable_message.jsp");
@@ -48,8 +49,8 @@ public class EditNodeSetController extends HttpServlet {
             return;
         }            
         try {
-            DbFacade.refreshNodeSets(request, "nodeSetName", "ASC");
-        } catch (HibernateException e) {
+            DbFacade.loadNodeSets(request, "nodeSetName", "ASC");
+        } catch (WTFException e) {
             logger.error("WTF! Error using refreshNodeSets");
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);

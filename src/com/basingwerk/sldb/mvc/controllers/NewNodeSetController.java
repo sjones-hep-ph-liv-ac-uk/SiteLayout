@@ -17,7 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
-import com.basingwerk.sldb.mvc.exceptions.DbFacadeException;
+import com.basingwerk.sldb.mvc.exceptions.WTFException;
+import com.basingwerk.sldb.mvc.exceptions.ConflictException;
 import com.basingwerk.sldb.mvc.exceptions.ModelException;
 import com.basingwerk.sldb.mvc.model.NodeSet;
 
@@ -40,13 +41,13 @@ public class NewNodeSetController extends HttpServlet {
 
         try {
             DbFacade.addNodeSet(request);
-        } catch (HibernateException e1) {
+        } catch (ConflictException e1) {
                 request.setAttribute("theMessage", "Could not add that data at this time. Please try again.");
                 request.setAttribute("theJsp", "main_screen.jsp");
                 rd = request.getRequestDispatcher("/recoverable_message.jsp");
                 rd.forward(request, response);
                 return;
-        } catch (DbFacadeException e) {
+        } catch (WTFException e) {
                 logger.error("WTF! Error using addNodeSet, ", e);
                 rd = request.getRequestDispatcher("/error.jsp");
                 rd.forward(request, response);
@@ -54,8 +55,8 @@ public class NewNodeSetController extends HttpServlet {
         }
         
         try {
-            DbFacade.refreshNodeSets(request, "nodeSetName", "ASC");
-        } catch (HibernateException e) {
+            DbFacade.loadNodeSets(request, "nodeSetName", "ASC");
+        } catch (WTFException e) {
             logger.error("WTF! Error using refreshNodeSets, ", e);
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);

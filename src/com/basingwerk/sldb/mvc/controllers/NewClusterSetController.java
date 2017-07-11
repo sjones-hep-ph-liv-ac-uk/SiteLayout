@@ -17,7 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
-import com.basingwerk.sldb.mvc.exceptions.DbFacadeException;
+import com.basingwerk.sldb.mvc.exceptions.WTFException;
+import com.basingwerk.sldb.mvc.exceptions.ConflictException;
 import com.basingwerk.sldb.mvc.exceptions.ModelException;
 import com.basingwerk.sldb.mvc.model.ClusterSet;
 
@@ -38,13 +39,13 @@ public class NewClusterSetController extends HttpServlet {
 
         try {
             DbFacade.addClusterSet(request);
-        } catch (HibernateException e) {
+        } catch (ConflictException e) {
                 request.setAttribute("theMessage", "The cluster set could not be added. Please try again.");
                 request.setAttribute("theJsp", "main_screen.jsp");
                 rd = request.getRequestDispatcher("/recoverable_message.jsp");
                 rd.forward(request, response);
                 return;
-        } catch (DbFacadeException e) {
+        } catch (WTFException e) {
             logger.error("WTF! Error when using addClusterSet");
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
@@ -53,15 +54,16 @@ public class NewClusterSetController extends HttpServlet {
 
         ArrayList<ClusterSet> clusterSetList = null;
         try {
-            clusterSetList = DbFacade.queryClusterSetList(request);
-        } catch (HibernateException e1) {
+            // cluster SetList = DbFacade. q u e r y C l usterSetList(request);
+            DbFacade.loadClusterSets(request, "clusterSetName", "ASC");
+        } catch (WTFException e1) {
             logger.error("WTF! Error when using queryClusterSetList");
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
             return;
         }
 
-        request.setAttribute("clusterSetList", clusterSetList);
+        // request.setAttribute("cluster SetList", cluster SetList);
         String next = "/cluster_set.jsp";
         rd = request.getRequestDispatcher(next);
         rd.forward(request, response);

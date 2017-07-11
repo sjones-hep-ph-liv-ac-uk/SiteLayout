@@ -18,7 +18,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
-import com.basingwerk.sldb.mvc.exceptions.DbFacadeException;
+import com.basingwerk.sldb.mvc.exceptions.ConflictException;
+import com.basingwerk.sldb.mvc.exceptions.WTFException;
 import com.basingwerk.sldb.mvc.model.Cluster;
 import com.basingwerk.sldb.mvc.model.ClusterSet;
 import com.basingwerk.sldb.mvc.model.NodeType;
@@ -49,8 +50,8 @@ public class ClusterController extends HttpServlet {
             ArrayList<String> s = new ArrayList<String>();
             try {
 //                s = DbFacade.listCl u s t erSetNames(request);
-              DbFacade.refreshClusterSets(request, "clusterSetName", "ASC");
-            } catch (HibernateException e) {
+              DbFacade.loadClusterSets(request, "clusterSetName", "ASC");
+            } catch (WTFException e) {
                 logger.error("WTF! Error getting the cluster sets, ", e);
                 rd = request.getRequestDispatcher("/error.jsp");
                 rd.forward(request, response);
@@ -80,8 +81,8 @@ public class ClusterController extends HttpServlet {
                 }
 
                 try {
-                    DbFacade.refreshClusters(request, c, order);
-                } catch (HibernateException e) {
+                    DbFacade.loadClusters(request, c, order);
+                } catch (WTFException e) {
                     logger.error("WTF! A HibernateException occurred, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
@@ -99,13 +100,13 @@ public class ClusterController extends HttpServlet {
                 try {
 
                     DbFacade.deleteCluster(request, cluster);
-                } catch (HibernateException e1) {
+                } catch (ConflictException e1) {
                     request.setAttribute("theMessage", "Could not delete that cluster at this time. Please try again.");
                     request.setAttribute("theJsp", "main_screen.jsp");
                     rd = request.getRequestDispatcher("/recoverable_message.jsp");
                     rd.forward(request, response);
                     return;
-                } catch (DbFacadeException e) {
+                } catch (WTFException e) {
                     logger.error("WTF! Error using deleteCluster, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
@@ -113,8 +114,8 @@ public class ClusterController extends HttpServlet {
                 }
 
                 try {
-                    DbFacade.refreshClusters(request, "clusterName", "ASC");
-                } catch (HibernateException e) {
+                    DbFacade.loadClusters(request, "clusterName", "ASC");
+                } catch (WTFException e) {
                     logger.error("WTF! Had a HibernateException when trying to setListOfClusters, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
@@ -130,11 +131,15 @@ public class ClusterController extends HttpServlet {
                 try {
 
                     ArrayList<String> s = new ArrayList<String>();
-                    DbFacade.setSingleCluster(request, cluster);
-                    DbFacade.refreshClusterSets(request, "clusterSetName", "ASC");
-//                    s = DbFacade.li s t C l u sterSetNames(request);
-//                    request.setAttribute("cl u s t e r S etList", s);
-                } catch (HibernateException e) {
+                    DbFacade.loadNamedCluster(request, cluster);
+                    DbFacade.loadClusterSets(request, "clusterSetName", "ASC");
+                } catch (ConflictException e1) {
+                    request.setAttribute("theMessage", "Could not edit that cluster at this time. Please try again.");
+                    request.setAttribute("theJsp", "main_screen.jsp");
+                    rd = request.getRequestDispatcher("/recoverable_message.jsp");
+                    rd.forward(request, response);
+                    return;
+                } catch (WTFException e) {
                     logger.error("WTF! A HibernateException occurred, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);

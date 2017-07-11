@@ -11,11 +11,13 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.exception.ConstraintViolationException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import com.basingwerk.sldb.mvc.exceptions.DbFacadeException;
+import com.basingwerk.sldb.mvc.exceptions.ConflictException;
+import com.basingwerk.sldb.mvc.exceptions.WTFException;
 import com.basingwerk.sldb.mvc.model.Cluster;
 import com.basingwerk.sldb.mvc.model.ClusterSet;
 import com.basingwerk.sldb.mvc.model.NodeSet;
@@ -28,207 +30,52 @@ public class DbFacade {
     public DbFacade() {
     }
 
-    public static void refreshClusterSets(HttpServletRequest request, String col, String order)
-            throws HibernateException {
+    public static void addCluster(HttpServletRequest request) throws ConflictException, WTFException {
 
         HttpSession httpSession = request.getSession();
         Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
 
-        Order ord = org.hibernate.criterion.Order.desc(col);
-        if (order.equalsIgnoreCase("ASC")) {
-            ord = org.hibernate.criterion.Order.asc(col);
-        }
-        ArrayList<ClusterSet> list = null;
-        try {
+        String clusterName = request.getParameter("clusterName");
+        String descr = request.getParameter("descr");
+        String clusterSetName = request.getParameter("clusterSetList");
 
-            hibSession.beginTransaction();
-            list = (ArrayList<ClusterSet>) hibSession.createCriteria(ClusterSet.class).addOrder(ord).list();
-            hibSession.getTransaction().commit();
-
-        } catch (HibernateException ex) {
-            hibSession.getTransaction().rollback();
-            logger.error("Had a problem when using refreshClusterSets, ", ex);
-            throw ex;
-        } finally {
-            hibSession.close();
-        }
-        request.setAttribute("clusterSetList", list);
-    }
-
-    public static void refreshNodeTypes(HttpServletRequest request, String col, String order)
-            throws HibernateException {
-
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
-
-        Order ord = org.hibernate.criterion.Order.desc(col);
-        if (order.equalsIgnoreCase("ASC")) {
-            ord = org.hibernate.criterion.Order.asc(col);
-        }
-
-        ArrayList<NodeType> list = null;
-        try {
-
-            hibSession.beginTransaction();
-            list = (ArrayList<NodeType>) hibSession.createCriteria(NodeType.class).addOrder(ord).list();
-            hibSession.getTransaction().commit();
-        } catch (HibernateException ex) {
-            hibSession.getTransaction().rollback();
-            logger.error("Had an error when using refreshNodeTypes, ", ex);
-            throw ex;
-        } finally {
-            hibSession.close();
-        }
-
-        request.setAttribute("nodeTypeList", list);
-    }
-
-    public static void refreshClusters(HttpServletRequest request, String col, String order) throws HibernateException {
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
-
-        Order ord = org.hibernate.criterion.Order.desc(col);
-        if (order.equalsIgnoreCase("ASC")) {
-            ord = org.hibernate.criterion.Order.asc(col);
-        }
-
-        ArrayList<Cluster> list = null;
-        try {
-
-            hibSession.beginTransaction();
-            list = (ArrayList<Cluster>) hibSession.createCriteria(Cluster.class).addOrder(ord).list();
-            hibSession.getTransaction().commit();
-
-        } catch (HibernateException ex) {
-            hibSession.getTransaction().rollback();
-            logger.error("Hibernate error using refreshListOfAllClusters, ", ex);
-            throw ex;
-        } finally {
-            hibSession.close();
-        }
-
-        request.setAttribute("clusterList", list);
-    }
-
-    public static void setBaselineNodeType(HttpServletRequest request) throws HibernateException {
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
-
-        ArrayList<NodeType> list = null;
-        try {
-
-            hibSession.beginTransaction();
-            list = (ArrayList<NodeType>) hibSession.createCriteria(NodeType.class).list();
-            hibSession.getTransaction().commit();
-
-        } catch (HibernateException ex) {
-            hibSession.getTransaction().rollback();
-            logger.error("Had an error using setBaselineNodeType, ", ex);
-            throw ex;
-        } finally {
-            hibSession.close();
-        }
-
-        request.setAttribute("baseline", null);
-        for (NodeType n : list) {
-            if (n.getNodeTypeName().toUpperCase().startsWith("BASELINE")) {
-                request.setAttribute("baseline", n);
-            }
-        }
-    }
-
-    public static ArrayList<String> listClustersOfClusterSet(HttpServletRequest request, String clusterSetName)
-            throws HibernateException {
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
-
-        ArrayList<String> cl = new ArrayList<String>();
-        try {
-            hibSession.beginTransaction();
-            Query query = hibSession
-                    .createQuery("select clusterName from Cluster where clusterSetName ='" + clusterSetName + "'");
-            cl = (ArrayList) query.list();
-            hibSession.getTransaction().commit();
-        } catch (HibernateException ex) {
-            hibSession.getTransaction().rollback();
-            logger.error("Error using getClustersOfClusterSet, ", ex);
-            throw ex;
-        } finally {
-            hibSession.close();
-        }
-
-        return cl;
-    }
-
-    public static ClusterSet queryOneClusterSet(HttpServletRequest request, String clusterSetName)
-            throws HibernateException {
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        Cluster newCluster = new Cluster();
+        ClusterSet newClusterSet = null;
 
         try {
             hibSession.beginTransaction();
-            ClusterSet ns = (ClusterSet) hibSession.createCriteria(ClusterSet.class)
+
+            newClusterSet = (ClusterSet) hibSession.createCriteria(ClusterSet.class)
                     .add(Restrictions.eq("clusterSetName", clusterSetName)).uniqueResult();
-            hibSession.getTransaction().commit();
-            return ns;
 
-        } catch (HibernateException ex) {
-            hibSession.getTransaction().rollback();
-            logger.error("Hibernate error using queryOneClusterSet, ", ex);
-            throw ex;
-        } finally {
-            hibSession.close();
-        }
-
-    }
-
-    public static void updateClusterSet(HttpServletRequest request) throws HibernateException, DbFacadeException {
-
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
-
-        String clusterSetName = request.getParameter("clusterSetName");
-        String description = request.getParameter("description");
-        String location = request.getParameter("location");
-        String longitude = request.getParameter("longitude");
-        String latitude = request.getParameter("latitude");
-        String admin = request.getParameter("admin");
-
-        ClusterSet existing = null;
-
-        try {
-            hibSession.beginTransaction();
-
-            List<ClusterSet> csl = hibSession.createCriteria(ClusterSet.class)
-                    .add(Restrictions.eq("clusterSetName", clusterSetName)).list();
-            if (csl.size() != 1) {
+            if (newClusterSet == null) {
+                // Possibly deleted during long conversation
                 hibSession.getTransaction().rollback();
-                logger.error("Had a WTF error using updateClusterSet");
-                throw new DbFacadeException("Had a WTF error using updateClusterSet");
-            } else {
-                existing = csl.get(0);
+                logger.error("While using addCluster, desired ClusterSet not found");
+                throw new ConflictException("While using addCluster, desired ClusterSet not found");
             }
 
-            existing.setDescription(description);
-            existing.setLocation(location);
-            existing.setLongitude(Double.parseDouble(longitude));
-            existing.setLatitude(Double.parseDouble(latitude));
-            existing.setAdmin(admin);
+            newCluster.setClusterName(clusterName);
+            newCluster.setDescr(descr);
+            newCluster.setClusterSet(newClusterSet);
 
-            hibSession.update(existing);
+            hibSession.save(newCluster);
             hibSession.getTransaction().commit();
 
+        } catch (ConstraintViolationException e) {
+            hibSession.getTransaction().rollback();
+            logger.error("While using addCluster, the clusterName conflicted with an existing cluster");
+            throw new ConflictException("While using addCluster, the clusterName conflicted with an existing cluster");
         } catch (HibernateException e) {
             hibSession.getTransaction().rollback();
-            logger.error("Hibernate error using updateClusterSet, ", e);
-            throw e;
+            logger.error("WTF while using addCluster", e);
+            throw new WTFException("WTF while using addCluster");
         } finally {
             hibSession.close();
         }
-
     }
 
-    public static void addClusterSet(HttpServletRequest request) throws HibernateException, DbFacadeException {
+    public static void addClusterSet(HttpServletRequest request) throws WTFException, ConflictException {
         HttpSession httpSession = request.getSession();
         Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
 
@@ -254,218 +101,77 @@ public class DbFacade {
             hibSession.save(existing);
             hibSession.getTransaction().commit();
 
+        } catch (ConstraintViolationException e) {
+            hibSession.getTransaction().rollback();
+            logger.error("While using addClusterSet, the clusterSetName conflicted with an existing clusterSet");
+            throw new ConflictException(
+                    "While using addClusterSet, the clusterSetName conflicted with an existing clusterSet");
         } catch (HibernateException e) {
             hibSession.getTransaction().rollback();
             logger.error("Hibernate error using addClusterSet, ", e);
-            throw e;
+            throw new WTFException("Hibernate error using addClusterSet");
         } finally {
             hibSession.close();
         }
 
     }
 
-    public static ArrayList<ClusterSet> queryClusterSetList(HttpServletRequest request) throws HibernateException {
+    public static void addNodeSet(HttpServletRequest request) throws WTFException, ConflictException {
+
         HttpSession httpSession = request.getSession();
         Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
 
-        ArrayList<ClusterSet> csl = null;
+        String nodeSetName = request.getParameter("nodeSetName");
+        String nodeCount = request.getParameter("nodeCount");
+        String nodeTypeName = request.getParameter("nodeTypeList");
+        String clusterName = request.getParameter("clusterList");
+
+        NodeSet newNodeSet = new NodeSet();
 
         try {
             hibSession.beginTransaction();
 
-            csl = (ArrayList<ClusterSet>) hibSession.createCriteria(ClusterSet.class).list();
-            hibSession.getTransaction().commit();
-
-        } catch (HibernateException e) {
-            hibSession.getTransaction().rollback();
-            logger.error("Hibernate error using queryClusterSetList, ", e);
-            throw e;
-        } finally {
-            hibSession.close();
-        }
-
-        return csl;
-    }
-
-
-    public static void deleteClusterSet(HttpServletRequest request, String clusterSetName)
-            throws HibernateException, DbFacadeException {
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
-        try {
-            hibSession.beginTransaction();
-            ClusterSet ns = (ClusterSet) hibSession.createCriteria(ClusterSet.class)
-                    .add(Restrictions.eq("clusterSetName", clusterSetName)).uniqueResult();
-            hibSession.delete(ns);
-            hibSession.getTransaction().commit();
-        } catch (HibernateException ex) {
-            hibSession.getTransaction().rollback();
-            logger.error("Hibernate error using deleteClusterSet, ", ex);
-            throw ex;
-        } finally {
-            hibSession.close();
-        }
-
-    }
-
-    public static void deleteCluster(HttpServletRequest request, String clusterName)
-            throws HibernateException, DbFacadeException {
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
-        try {
-            hibSession.beginTransaction();
             Cluster c = (Cluster) hibSession.createCriteria(Cluster.class)
                     .add(Restrictions.eq("clusterName", clusterName)).uniqueResult();
-            hibSession.delete(c);
-            hibSession.getTransaction().commit();
-        } catch (HibernateException ex) {
-            hibSession.getTransaction().rollback();
-            logger.error("Hibernate error using deleteCluster, ", ex);
-            throw ex;
-        } finally {
-            hibSession.close();
-        }
 
-    }
-
-    public static void addCluster(HttpServletRequest request) throws HibernateException, DbFacadeException {
-
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
-
-        String clusterName = request.getParameter("clusterName");
-        String descr = request.getParameter("descr");
-        String clusterSetName = request.getParameter("clusterSetList");
-
-        Cluster newCluster = new Cluster();
-
-        try {
-            hibSession.beginTransaction();
-
-            ClusterSet cs = (ClusterSet) hibSession.createCriteria(ClusterSet.class)
-                    .add(Restrictions.eq("clusterSetName", clusterSetName)).uniqueResult();
-
-            if (cs == null) {
+            if (c == null) {
+                // Possibly deleted during long conversation
                 hibSession.getTransaction().rollback();
-                logger.error("Had a WTF error using addCluster");
-                throw new DbFacadeException("Had a WTF error using addCluster");
+                logger.error("While using addNodeSet, desired Cluster not found");
+                throw new ConflictException("While using addNodeSet, desired Cluster not found");
             }
 
-            newCluster.setClusterName(clusterName);
-            newCluster.setDescr(descr);
-            newCluster.setClusterSet(cs);
-
-            hibSession.save(newCluster);
-            hibSession.getTransaction().commit();
-
-        } catch (HibernateException e) {
-            hibSession.getTransaction().rollback();
-            logger.error("Hibernate error using addCluster, ", e);
-            throw e;
-        } finally {
-            hibSession.close();
-        }
-
-    }
-
-
-    public static void setSingleCluster(HttpServletRequest request, String cluster) throws HibernateException {
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
-        Cluster c = null;
-        try {
-            hibSession.beginTransaction();
-            c = (Cluster) hibSession.createCriteria(Cluster.class).add(Restrictions.eq("clusterName", cluster))
-                    .uniqueResult();
-
-            hibSession.getTransaction().commit();
-        } catch (HibernateException e) {
-            hibSession.getTransaction().rollback();
-            logger.error("Hibernate error using setSingleCluster, ", e);
-            throw e;
-        } finally {
-            hibSession.close();
-        }
-
-        request.setAttribute("cluster", c);
-        return;
-    }
-
-//    public s t atic ArrayList<String> l i stClusterNames(HttpServletRequest request) throws HibernateException {
-//        HttpSession httpSession = request.getSession();
-//        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
-//        Order ord = org.hibernate.criterion.Order.desc("clusterName");
-//
-//        ArrayList<Cluster> clusters = null;
-//        try {
-//
-//            hibSession.beginTransaction();
-//            clusters = (ArrayList<Cluster>) hibSession.createCriteria(Cluster.class).addOrder(ord).list();
-//            hibSession.getTransaction().commit();
-//
-//        } catch (HibernateException ex) {
-//            hibSession.getTransaction().rollback();
-//            logger.error("Hibernate error using listAllClusterNames, ", ex);
-//            throw ex;
-//        } finally {
-//            hibSession.close();
-//        }
-//
-//        ArrayList<String> s = new ArrayList<String>();
-//        for (Cluster c : clusters) {
-//            s.add(c.getClusterName());
-//        }
-//        return s;
-//    }
-
-    public static void updateCluster(HttpServletRequest request) throws HibernateException, DbFacadeException {
-
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
-
-        String clusterName = request.getParameter("clusterName");
-        String descr = request.getParameter("descr");
-        String clusterSetName = request.getParameter("clusterSetList");
-
-        Cluster asSaved = null;
-
-        try {
-            hibSession.beginTransaction();
-
-            asSaved = (Cluster) hibSession.createCriteria(Cluster.class)
-                    .add(Restrictions.eq("clusterName", clusterName)).uniqueResult();
-            if (asSaved == null) {
+            NodeType n = (NodeType) hibSession.createCriteria(NodeType.class)
+                    .add(Restrictions.eq("nodeTypeName", nodeTypeName)).uniqueResult();
+            if (n == null) {
+                // Possibly deleted during long conversation
                 hibSession.getTransaction().rollback();
-                logger.error("Had a WTF error using addCluster");
-                throw new DbFacadeException("Had a WTF error using updateCluster");
+                logger.error("While using addNodeSet, desired ClusterType not found");
+                throw new ConflictException("While using addNodeSet, desired ClusterType not found");
             }
+            newNodeSet.setCluster(c);
+            newNodeSet.setNodeType(n);
+            newNodeSet.setNodeCount(Integer.parseInt(nodeCount));
+            newNodeSet.setNodeSetName(nodeSetName);
 
-            asSaved.setClusterName(clusterName);
-            asSaved.setDescr(descr);
-            if (!asSaved.getClusterSet().getClusterSetName().equals(clusterSetName)) {
-                ClusterSet newClusterSet = (ClusterSet) hibSession.createCriteria(ClusterSet.class)
-                        .add(Restrictions.eq("clusterSetName", clusterSetName)).uniqueResult();
-                if (newClusterSet == null) {
-                    hibSession.getTransaction().rollback();
-                    logger.error("Had a WTF error using updateNodeSet, involving newClusterSet");
-                    throw new DbFacadeException("Had a WTF error using updateNodeSet, involving newClusterSet");
-                }
-                asSaved.setClusterSet(newClusterSet);
-            }
-            hibSession.update(asSaved);
+            hibSession.save(newNodeSet);
             hibSession.getTransaction().commit();
-
+        } catch (ConstraintViolationException e) {
+            hibSession.getTransaction().rollback();
+            logger.error("While using addNodeSet, the nodeSetName conflicted with an existing nodeSet");
+            throw new ConflictException("While using addNodeSet, the nodeSetName conflicted with an existing nodeSet");
         } catch (HibernateException e) {
             hibSession.getTransaction().rollback();
-            logger.error("Hibernate error using updateClusterSet, ", e);
-            throw e;
+
+            logger.error("Hibernate error using addNodeSet, ", e);
+            throw new WTFException("Hibernate error using addNodeSet");
         } finally {
             hibSession.close();
         }
 
     }
 
-    public static void addNodeType(HttpServletRequest request) throws HibernateException, DbFacadeException {
+    public static void addNodeType(HttpServletRequest request) throws WTFException, ConflictException {
         HttpSession httpSession = request.getSession();
         Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
 
@@ -488,10 +194,77 @@ public class DbFacade {
             hibSession.save(nt);
             hibSession.getTransaction().commit();
 
+        } catch (ConstraintViolationException e) {
+            hibSession.getTransaction().rollback();
+            logger.error("While using addNodeType, the nodeTypeName conflicted with an existing nodeType");
+            throw new ConflictException(
+                    "While using addNodeType, the nodeTypeName conflicted with an existing nodeType");
         } catch (HibernateException e) {
             hibSession.getTransaction().rollback();
             logger.error("Hibernate error using addNodeType, ", e);
-            throw e;
+            throw new WTFException("Hibernate error using addNodeType");
+        } finally {
+            hibSession.close();
+        }
+    }
+
+    public static void deleteCluster(HttpServletRequest request, String clusterName)
+            throws WTFException, ConflictException {
+        HttpSession httpSession = request.getSession();
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        try {
+            hibSession.beginTransaction();
+            Cluster c = (Cluster) hibSession.createCriteria(Cluster.class)
+                    .add(Restrictions.eq("clusterName", clusterName)).uniqueResult();
+            hibSession.delete(c);
+            hibSession.getTransaction().commit();
+        } catch (HibernateException ex) {
+            // Possibly deleted during long conversation
+            hibSession.getTransaction().rollback();
+            logger.error("While using deleteCluster, desired Cluster not found");
+            throw new ConflictException("While using deleteCluster, desired Cluster not found");
+        } finally {
+            hibSession.close();
+        }
+
+    }
+
+    public static void deleteClusterSet(HttpServletRequest request, String clusterSetName)
+            throws WTFException, ConflictException {
+        HttpSession httpSession = request.getSession();
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        try {
+            hibSession.beginTransaction();
+            ClusterSet ns = (ClusterSet) hibSession.createCriteria(ClusterSet.class)
+                    .add(Restrictions.eq("clusterSetName", clusterSetName)).uniqueResult();
+            hibSession.delete(ns);
+            hibSession.getTransaction().commit();
+        } catch (HibernateException ex) {
+            // Possibly deleted during long conversation
+            hibSession.getTransaction().rollback();
+            logger.error("While using deleteClusterSet, desired ClusterSet not found");
+            throw new ConflictException("While using deleteClusterSet, desired ClusterSet not found");
+        } finally {
+            hibSession.close();
+        }
+
+    }
+
+    public static void deleteNodeSet(HttpServletRequest request, String nodeSetName)
+            throws WTFException, ConflictException {
+        HttpSession httpSession = request.getSession();
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        try {
+            hibSession.beginTransaction();
+            NodeSet ns = (NodeSet) hibSession.createCriteria(NodeSet.class)
+                    .add(Restrictions.eq("nodeSetName", nodeSetName)).uniqueResult();
+            hibSession.delete(ns);
+            hibSession.getTransaction().commit();
+        } catch (HibernateException ex) {
+            // Possibly deleted during long conversation
+            hibSession.getTransaction().rollback();
+            logger.error("While using deleteClusterSet, desired NodeSet not found");
+            throw new ConflictException("While using deleteClusterSet, desired NodeSet not found");
         } finally {
             hibSession.close();
         }
@@ -499,7 +272,7 @@ public class DbFacade {
     }
 
     public static void deleteNodeType(HttpServletRequest request, String nodeTypeName)
-            throws HibernateException, DbFacadeException {
+            throws WTFException, ConflictException {
         HttpSession httpSession = request.getSession();
         Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
         try {
@@ -509,78 +282,71 @@ public class DbFacade {
             hibSession.delete(ns);
             hibSession.getTransaction().commit();
         } catch (HibernateException ex) {
+            // Possibly deleted during long conversation
             hibSession.getTransaction().rollback();
-            logger.error("Hibernate error using deleteNodeType, ", ex);
-            throw ex;
+            logger.error("While using deleteNodeSet, desired NodeType not found");
+            throw new ConflictException("While using deleteNodeSet, desired NodeType not found");
         } finally {
             hibSession.close();
         }
 
     }
 
-    public static NodeType queryOneNodeType(HttpServletRequest request, String nodeTypeName) throws HibernateException {
+    public static void loadClusters(HttpServletRequest request, String col, String order) throws WTFException {
 
         HttpSession httpSession = request.getSession();
         Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
 
+        Order ord = org.hibernate.criterion.Order.desc(col);
+        if (order.equalsIgnoreCase("ASC")) {
+            ord = org.hibernate.criterion.Order.asc(col);
+        }
+
+        ArrayList<Cluster> list = null;
         try {
+
             hibSession.beginTransaction();
-            NodeType ns = (NodeType) hibSession.createCriteria(NodeType.class)
-                    .add(Restrictions.eq("nodeTypeName", nodeTypeName)).uniqueResult();
+            list = (ArrayList<Cluster>) hibSession.createCriteria(Cluster.class).addOrder(ord).list();
             hibSession.getTransaction().commit();
-            return ns;
+
         } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
-            logger.error("Hibernate error using queryOneNodeType, ", ex);
-            throw ex;
+            logger.error("Hibernate error using refreshListOfAllClusters, ", ex);
+            throw new WTFException("Hibernate error using refreshListOfAllClusters");
         } finally {
             hibSession.close();
         }
 
+        request.setAttribute("clusterList", list);
     }
 
-    public static void updateNodeType(HttpServletRequest request) throws HibernateException, DbFacadeException {
+    public static void loadClusterSets(HttpServletRequest request, String col, String order) throws WTFException {
+
         HttpSession httpSession = request.getSession();
         Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
 
-        String nodeTypeName = request.getParameter("nodeTypeName");
-        String cpu = request.getParameter("cpu");
-        String slot = request.getParameter("slot");
-        String hs06PerSlot = request.getParameter("hs06PerSlot");
-        String memPerNode = request.getParameter("memPerNode");
-
-        NodeType existing = null;
-
+        Order ord = org.hibernate.criterion.Order.desc(col);
+        if (order.equalsIgnoreCase("ASC")) {
+            ord = org.hibernate.criterion.Order.asc(col);
+        }
+        ArrayList<ClusterSet> list = null;
         try {
-            hibSession.beginTransaction();
-            NodeType nt = (NodeType) hibSession.createCriteria(NodeType.class)
-                    .add(Restrictions.eq("nodeTypeName", nodeTypeName)).uniqueResult();
-            if (nt == null) {
-                hibSession.getTransaction().rollback();
-                logger.error("Had a WTF error using updateNodeType");
-                throw new DbFacadeException("Had a WTF error using updateNodeType");
-            } else {
-                existing = nt;
-            }
 
-            existing.setCpu(Integer.parseInt(cpu));
-            existing.setSlot(Integer.parseInt(slot));
-            existing.setHs06PerSlot(Double.parseDouble(hs06PerSlot));
-            existing.setMemPerNode(Double.parseDouble(memPerNode));
-            hibSession.update(existing);
+            hibSession.beginTransaction();
+            list = (ArrayList<ClusterSet>) hibSession.createCriteria(ClusterSet.class).addOrder(ord).list();
             hibSession.getTransaction().commit();
 
-        } catch (HibernateException e) {
+        } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
-            logger.error("Hibernate error using updateClusterSet, ", e);
-            throw e;
+            logger.error("Had a problem when using refreshClusterSets, ", ex);
+            throw new WTFException("Had a problem when using refreshClusterSets");
         } finally {
             hibSession.close();
         }
-
+        request.setAttribute("clusterSetList", list);
     }
 
-    public static void refreshNodeSets(HttpServletRequest request, String col, String order) throws HibernateException {
+    public static void loadNodeSets(HttpServletRequest request, String col, String order) throws WTFException {
 
         HttpSession httpSession = request.getSession();
         Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
@@ -599,7 +365,7 @@ public class DbFacade {
         } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
             logger.error("Had an error when trying to refresh node sets, ", ex);
-            throw ex;
+            throw new WTFException("Had an error when trying to refresh node sets");
         } finally {
             hibSession.close();
         }
@@ -607,34 +373,245 @@ public class DbFacade {
         request.setAttribute("nodeSetList", list);
     }
 
-//    public st a tic ArrayList<String> li stNodeTypeNames(HttpServletRequest request) throws HibernateException {
-//        HttpSession httpSession = request.getSession();
-//        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
-//        Order ord = org.hibernate.criterion.Order.desc("nodeTypeName");
-//
-//        ArrayList<NodeType> nodeTypes = null;
-//        try {
-//
-//            hibSession.beginTransaction();
-//            nodeTypes = (ArrayList<NodeType>) hibSession.createCriteria(NodeType.class).addOrder(ord).list();
-//            hibSession.getTransaction().commit();
-//
-//        } catch (HibernateException ex) {
-//            hibSession.getTransaction().rollback();
-//            logger.error("Hibernate error using listNodeTypes, ", ex);
-//            throw ex;
-//        } finally {
-//            hibSession.close();
-//        }
-//
-//        ArrayList<String> s = new ArrayList<String>();
-//        for (NodeType n : nodeTypes) {
-//            s.add(n.getNodeTypeName());
-//        }
-//        return s;
-//    }
+    public static void loadNodeTypes(HttpServletRequest request, String col, String order) throws WTFException {
 
-    public static void updateNodeSet(HttpServletRequest request) throws HibernateException, DbFacadeException {
+        HttpSession httpSession = request.getSession();
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+
+        Order ord = org.hibernate.criterion.Order.desc(col);
+        if (order.equalsIgnoreCase("ASC")) {
+            ord = org.hibernate.criterion.Order.asc(col);
+        }
+
+        ArrayList<NodeType> list = null;
+        try {
+
+            hibSession.beginTransaction();
+            list = (ArrayList<NodeType>) hibSession.createCriteria(NodeType.class).addOrder(ord).list();
+            hibSession.getTransaction().commit();
+        } catch (HibernateException ex) {
+            hibSession.getTransaction().rollback();
+            logger.error("Had an error when using refreshNodeTypes, ", ex);
+            throw new WTFException("Had an error when using refreshNodeTypes");
+        } finally {
+            hibSession.close();
+        }
+
+        request.setAttribute("nodeTypeList", list);
+    }
+
+    public static void loadNamedCluster(HttpServletRequest request, String cluster)
+            throws WTFException, ConflictException {
+        HttpSession httpSession = request.getSession();
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        Cluster c = null;
+        try {
+            hibSession.beginTransaction();
+            c = (Cluster) hibSession.createCriteria(Cluster.class).add(Restrictions.eq("clusterName", cluster))
+                    .uniqueResult();
+            if (c == null) {
+                // Possibly deleted during long conversation
+                hibSession.getTransaction().rollback();
+                logger.error("While using loadNamedCluster, desired Cluster not found");
+                throw new ConflictException("While using loadNamedCluster, desired Cluster not found");
+            }
+            hibSession.getTransaction().commit();
+
+        } catch (HibernateException e) {
+            hibSession.getTransaction().rollback();
+            logger.error("Hibernate error using setSingleCluster, ", e);
+            throw new WTFException("Hibernate error using setSingleCluster");
+        } finally {
+            hibSession.close();
+        }
+
+        request.setAttribute("cluster", c);
+        return;
+    }
+
+    public static void loadNamedClusterSet(HttpServletRequest request, String clusterSetName)
+            throws WTFException, ConflictException {
+        HttpSession httpSession = request.getSession();
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        ClusterSet cs = null;
+        try {
+            hibSession.beginTransaction();
+            cs = (ClusterSet) hibSession.createCriteria(ClusterSet.class)
+                    .add(Restrictions.eq("clusterSetName", clusterSetName)).uniqueResult();
+            if (cs == null) {
+                // Possibly deleted during long conversation
+                hibSession.getTransaction().rollback();
+                logger.error("While using loadNamedClusterSet, desired ClusterSet not found");
+                throw new ConflictException("While using loadNamedClusterSet, desired ClusterSet not found");
+            }
+            hibSession.getTransaction().commit();
+
+        } catch (HibernateException ex) {
+            hibSession.getTransaction().rollback();
+            logger.error("Hibernate error using loadNamedClusterSet, ", ex);
+            throw new WTFException("Hibernate error using loadNamedClusterSet");
+        } finally {
+            hibSession.close();
+        }
+        request.setAttribute("clusterSet", cs);
+
+        return;
+
+    }
+
+    public static void loadNamedNodeSet(HttpServletRequest request, String nodeSetName)
+            throws WTFException, ConflictException {
+
+        HttpSession httpSession = request.getSession();
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        NodeSet ns = null;
+        try {
+            hibSession.beginTransaction();
+            ns = (NodeSet) hibSession.createCriteria(NodeSet.class).add(Restrictions.eq("nodeSetName", nodeSetName))
+                    .uniqueResult();
+            if (ns == null) {
+                // Possibly deleted during long conversation
+                hibSession.getTransaction().rollback();
+                logger.error("While using loadNamedNodeSet, desired NodeSet not found");
+                throw new ConflictException("While using loadNamedNodeSet, desired NodeSet not found");
+            }
+            hibSession.getTransaction().commit();
+
+        } catch (HibernateException ex) {
+            hibSession.getTransaction().rollback();
+            logger.error("Hibernate error using loadNamedNodeSet, ", ex);
+            throw new WTFException("Hibernate error using loadNamedNodeSet");
+        } finally {
+            hibSession.close();
+        }
+        request.setAttribute("nodeSet", ns);
+        return;
+
+    }
+
+    public static void loadNamedNodeType(HttpServletRequest request, String nodeTypeName)
+            throws WTFException, ConflictException {
+
+        HttpSession httpSession = request.getSession();
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        NodeType nt = null;
+        try {
+            hibSession.beginTransaction();
+            nt = (NodeType) hibSession.createCriteria(NodeType.class).add(Restrictions.eq("nodeTypeName", nodeTypeName))
+                    .uniqueResult();
+            if (nt == null) {
+                // Possibly deleted during long conversation
+                hibSession.getTransaction().rollback();
+                logger.error("While using loadNamedNodeType, desired NodeType not found");
+                throw new ConflictException("While using loadNamedNodeType, desired NodeType not found");
+            }
+
+            hibSession.getTransaction().commit();
+        } catch (HibernateException ex) {
+            hibSession.getTransaction().rollback();
+            logger.error("Hibernate error using loadNamedNodeType, ", ex);
+            throw new WTFException("Hibernate error using loadNamedNodeType");
+        } finally {
+            hibSession.close();
+        }
+        request.setAttribute("nodeType", nt);
+        return;
+    }
+
+    public static void updateCluster(HttpServletRequest request) throws WTFException, ConflictException {
+
+        HttpSession httpSession = request.getSession();
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+
+        String clusterName = request.getParameter("clusterName");
+        String descr = request.getParameter("descr");
+        String clusterSetName = request.getParameter("clusterSetList");
+
+        Cluster asSaved = null;
+
+        try {
+            hibSession.beginTransaction();
+
+            asSaved = (Cluster) hibSession.createCriteria(Cluster.class)
+                    .add(Restrictions.eq("clusterName", clusterName)).uniqueResult();
+            if (asSaved == null) {
+                // Possibly deleted during long conversation
+                hibSession.getTransaction().rollback();
+                logger.error("While using updateCluster, desired Cluster  not found");
+                throw new ConflictException("While using updateCluster, desired Cluster  not found");
+            }
+
+            asSaved.setClusterName(clusterName);
+            asSaved.setDescr(descr);
+            if (!asSaved.getClusterSet().getClusterSetName().equals(clusterSetName)) {
+                ClusterSet newClusterSet = (ClusterSet) hibSession.createCriteria(ClusterSet.class)
+                        .add(Restrictions.eq("clusterSetName", clusterSetName)).uniqueResult();
+                if (newClusterSet == null) {
+                    hibSession.getTransaction().rollback();
+                    logger.error("While using updateCluster, desired ClusterSet  not found");
+                    throw new ConflictException("While using updateCluster, desired ClusterSet not found");
+                }
+                asSaved.setClusterSet(newClusterSet);
+            }
+            hibSession.update(asSaved);
+            hibSession.getTransaction().commit();
+
+        } catch (HibernateException e) {
+            hibSession.getTransaction().rollback();
+            logger.error("Hibernate error using updateClusterSet, ", e);
+            throw new WTFException("Hibernate error using updateClusterSet");
+        } finally {
+            hibSession.close();
+        }
+
+    }
+
+    public static void updateClusterSet(HttpServletRequest request) throws WTFException, ConflictException {
+
+        HttpSession httpSession = request.getSession();
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+
+        String clusterSetName = request.getParameter("clusterSetName");
+        String description = request.getParameter("description");
+        String location = request.getParameter("location");
+        String longitude = request.getParameter("longitude");
+        String latitude = request.getParameter("latitude");
+        String admin = request.getParameter("admin");
+
+        ClusterSet existing = null;
+
+        try {
+            hibSession.beginTransaction();
+
+            existing = (ClusterSet) hibSession.createCriteria(ClusterSet.class)
+                    .add(Restrictions.eq("clusterSetName", clusterSetName)).uniqueResult();
+            if (existing == null) {
+                // Possibly deleted during long conversation
+                hibSession.getTransaction().rollback();
+                logger.error("While using updateClusterSet, desired ClusterSet  not found");
+                throw new ConflictException("While using updateClusterSet, desired ClusterSet  not found");
+            }
+
+            existing.setDescription(description);
+            existing.setLocation(location);
+            existing.setLongitude(Double.parseDouble(longitude));
+            existing.setLatitude(Double.parseDouble(latitude));
+            existing.setAdmin(admin);
+
+            hibSession.update(existing);
+            hibSession.getTransaction().commit();
+
+        } catch (HibernateException e) {
+            hibSession.getTransaction().rollback();
+            logger.error("Hibernate error using updateClusterSet, ", e);
+            throw new WTFException("Hibernate error using updateClusterSet");
+        } finally {
+            hibSession.close();
+        }
+
+    }
+
+    public static void updateNodeSet(HttpServletRequest request) throws WTFException, ConflictException {
 
         HttpSession httpSession = request.getSession();
         Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
@@ -653,8 +630,9 @@ public class DbFacade {
                     .add(Restrictions.eq("nodeSetName", nodeSetName)).uniqueResult();
             if (ns == null) {
                 hibSession.getTransaction().rollback();
-                logger.error("Had a WTF error using updateNodeSet");
-                throw new DbFacadeException("Had a WTF error using updateNodeSet");
+                hibSession.getTransaction().rollback();
+                logger.error("While using updateNodeSet, desired NodeSet  not found");
+                throw new ConflictException("While using updateNodeSet, desired NodeSet  not found");
             } else {
                 asSaved = ns;
             }
@@ -665,8 +643,8 @@ public class DbFacade {
                         .add(Restrictions.eq("nodeTypeName", nodeTypeName)).uniqueResult();
                 if (newNodeType == null) {
                     hibSession.getTransaction().rollback();
-                    logger.error("Had a WTF error using updateNodeSet, involving newNodeType");
-                    throw new DbFacadeException("Had a WTF error using updateNodeSet, involving newNodeType");
+                    logger.error("While using updateNodeSet, desired NodeType  not found");
+                    throw new ConflictException("While using updateNodeSet, desired NodeType  not found");
                 }
                 asSaved.setNodeType(newNodeType);
             }
@@ -675,8 +653,8 @@ public class DbFacade {
                         .add(Restrictions.eq("clusterName", clusterName)).uniqueResult();
                 if (newCluster == null) {
                     hibSession.getTransaction().rollback();
-                    logger.error("Had a WTF error using updateNodeSet, involving newCluster");
-                    throw new DbFacadeException("Had a WTF error using updateNodeSet, involving newCluster");
+                    logger.error("While using updateNodeSet, desired Cluster  not found");
+                    throw new ConflictException("While using updateNodeSet, desired Cluster  not found");
                 }
                 asSaved.setCluster(newCluster);
             }
@@ -687,97 +665,48 @@ public class DbFacade {
         } catch (HibernateException e) {
             hibSession.getTransaction().rollback();
             logger.error("Hibernate error using updateNodeSet, ", e);
-            throw e;
+            throw new WTFException("Hibernate error using updateNodeSet");
         } finally {
             hibSession.close();
         }
 
     }
 
-    public static void deleteNodeSet(HttpServletRequest request, String nodeSetName)
-            throws HibernateException, DbFacadeException {
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
-        try {
-            hibSession.beginTransaction();
-            NodeSet ns = (NodeSet) hibSession.createCriteria(NodeSet.class)
-                    .add(Restrictions.eq("nodeSetName", nodeSetName)).uniqueResult();
-            hibSession.delete(ns);
-            hibSession.getTransaction().commit();
-        } catch (HibernateException ex) {
-            hibSession.getTransaction().rollback();
-            logger.error("Hibernate error using deleteNodeSet, ", ex);
-            throw ex;
-        } finally {
-            hibSession.close();
-        }
-
-    }
-
-    public static NodeSet queryOneNodeSet(HttpServletRequest request, String nodeSetName) throws HibernateException {
-
+    public static void updateNodeType(HttpServletRequest request) throws WTFException, ConflictException {
         HttpSession httpSession = request.getSession();
         Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
 
-        try {
-            hibSession.beginTransaction();
-            NodeSet ns = (NodeSet) hibSession.createCriteria(NodeSet.class)
-                    .add(Restrictions.eq("nodeSetName", nodeSetName)).uniqueResult();
-            hibSession.getTransaction().commit();
-            return ns;
+        String nodeTypeName = request.getParameter("nodeTypeName");
+        String cpu = request.getParameter("cpu");
+        String slot = request.getParameter("slot");
+        String hs06PerSlot = request.getParameter("hs06PerSlot");
+        String memPerNode = request.getParameter("memPerNode");
 
-        } catch (HibernateException ex) {
-            hibSession.getTransaction().rollback();
-            logger.error("Hibernate error using queryOneNodeSet, ", ex);
-            throw ex;
-        } finally {
-            hibSession.close();
-        }
-
-    }
-
-    public static void addNodeSet(HttpServletRequest request) throws HibernateException, DbFacadeException {
-
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
-
-        String nodeSetName = request.getParameter("nodeSetName");
-        String nodeCount = request.getParameter("nodeCount");
-        String nodeTypeName = request.getParameter("nodeTypeList");
-        String clusterName = request.getParameter("clusterList");
-
-        NodeSet newNodeSet = new NodeSet();
+        NodeType existing = null;
 
         try {
             hibSession.beginTransaction();
-
-            Cluster c = (Cluster) hibSession.createCriteria(Cluster.class)
-                    .add(Restrictions.eq("clusterName", clusterName)).uniqueResult();
-
-            if (c == null) {
-                hibSession.getTransaction().rollback();
-                logger.error("Had a WTF error using addNodeSet");
-                throw new DbFacadeException("Had a WTF error using addNodeSet");
-            }
-
-            NodeType n = (NodeType) hibSession.createCriteria(NodeType.class)
+            NodeType nt = (NodeType) hibSession.createCriteria(NodeType.class)
                     .add(Restrictions.eq("nodeTypeName", nodeTypeName)).uniqueResult();
-            if (n == null) {
+            if (nt == null) {
                 hibSession.getTransaction().rollback();
-                logger.error("Had a WTF error using addNodeSet, involving nodeType");
-                throw new DbFacadeException("Had a WTF error using addNodeSet, involving nodeType");
+                logger.error("While using updateNodeType, desired NodeType  not found");
+                throw new ConflictException("While using updateNodeType, desired NodeType  not found");
+            } else {
+                existing = nt;
             }
-            newNodeSet.setCluster(c);
-            newNodeSet.setNodeType(n);
-            newNodeSet.setNodeCount(Integer.parseInt(nodeCount));
-            newNodeSet.setNodeSetName(nodeSetName);
 
-            hibSession.save(newNodeSet);
+            existing.setCpu(Integer.parseInt(cpu));
+            existing.setSlot(Integer.parseInt(slot));
+            existing.setHs06PerSlot(Double.parseDouble(hs06PerSlot));
+            existing.setMemPerNode(Double.parseDouble(memPerNode));
+            hibSession.update(existing);
             hibSession.getTransaction().commit();
+
         } catch (HibernateException e) {
             hibSession.getTransaction().rollback();
-            logger.error("Hibernate error using addNodeSet, ", e);
-            throw e;
+            logger.error("Hibernate error using updateNodeType, ", e);
+            throw new WTFException("Hibernate error using updateNodeType");
         } finally {
             hibSession.close();
         }
@@ -785,7 +714,7 @@ public class DbFacade {
     }
 
     public static ArrayList<NodeSetNodeTypeJoin> getJoinForCluster(HttpServletRequest request, String clusterName)
-            throws HibernateException {
+            throws WTFException {
         HttpSession httpSession = request.getSession();
         Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
         ArrayList<NodeSetNodeTypeJoin> nsntj = new ArrayList<NodeSetNodeTypeJoin>();
@@ -804,11 +733,61 @@ public class DbFacade {
         } catch (HibernateException e) {
             hibSession.getTransaction().rollback();
             logger.error("Hibernate error using addNodeSet, ", e);
-            throw e;
+            throw new WTFException("Hibernate error using addNodeSet");
         } finally {
             hibSession.close();
         }
         return nsntj;
     }
 
+    public static ArrayList<String> listClustersOfClusterSet(HttpServletRequest request, String clusterSetName)
+            throws WTFException {
+        HttpSession httpSession = request.getSession();
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+
+        ArrayList<String> cl = new ArrayList<String>();
+        try {
+            hibSession.beginTransaction();
+            Query query = hibSession
+                    .createQuery("select clusterName from Cluster where clusterSetName ='" + clusterSetName + "'");
+            cl = (ArrayList) query.list();
+            hibSession.getTransaction().commit();
+        } catch (HibernateException ex) {
+            hibSession.getTransaction().rollback();
+            logger.error("Error using getClustersOfClusterSet, ", ex);
+            throw new WTFException("Error using getClustersOfClusterSet");
+        } finally {
+            hibSession.close();
+        }
+
+        return cl;
+    }
+
+    public static void setBaselineNodeType(HttpServletRequest request) throws WTFException {
+
+        HttpSession httpSession = request.getSession();
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+
+        ArrayList<NodeType> list = null;
+        try {
+
+            hibSession.beginTransaction();
+            list = (ArrayList<NodeType>) hibSession.createCriteria(NodeType.class).list();
+            hibSession.getTransaction().commit();
+
+        } catch (HibernateException ex) {
+            hibSession.getTransaction().rollback();
+            logger.error("Had an error using setBaselineNodeType, ", ex);
+            throw new WTFException("Had an error using setBaselineNodeType");
+        } finally {
+            hibSession.close();
+        }
+
+        request.setAttribute("baseline", null);
+        for (NodeType n : list) {
+            if (n.getNodeTypeName().toUpperCase().startsWith("BASELINE")) {
+                request.setAttribute("baseline", n);
+            }
+        }
+    }
 }

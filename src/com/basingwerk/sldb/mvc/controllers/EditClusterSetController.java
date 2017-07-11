@@ -17,7 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
-import com.basingwerk.sldb.mvc.exceptions.DbFacadeException;
+import com.basingwerk.sldb.mvc.exceptions.ConflictException;
+import com.basingwerk.sldb.mvc.exceptions.WTFException;
 
 @WebServlet("/EditClusterSetController")
 
@@ -37,11 +38,11 @@ public class EditClusterSetController extends HttpServlet {
 
         try {
             DbFacade.updateClusterSet(request);
-        } catch (DbFacadeException e1) {
+        } catch (WTFException e1) {
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
             return;
-        } catch (HibernateException e1) {
+        } catch (ConflictException e1) {
             request.setAttribute("theMessage", "Could not update that cluster set at this time. Please try again.");
             request.setAttribute("theJsp", "main_screen.jsp");
             rd = request.getRequestDispatcher("/recoverable_message.jsp");
@@ -49,12 +50,12 @@ public class EditClusterSetController extends HttpServlet {
             return;
         }            
         try {
-            DbFacade.refreshClusterSets(request, "clusterSetName", "ASC");
+            DbFacade.loadClusterSets(request, "clusterSetName", "ASC");
             String next = "/cluster_set.jsp";
             rd = request.getRequestDispatcher(next);
             rd.forward(request, response);
             return;
-        } catch (HibernateException e) {
+        } catch (WTFException e) {
             logger.error("WTF! Error when trying to refresh list of cluster sets, ", e);
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);

@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
 import com.basingwerk.sldb.mvc.exceptions.ModelException;
+import com.basingwerk.sldb.mvc.exceptions.WTFException;
 import com.basingwerk.sldb.mvc.model.Cluster;
 import com.basingwerk.sldb.mvc.model.ClusterSet;
 import com.basingwerk.sldb.mvc.model.NodeSet;
@@ -46,7 +47,7 @@ public class MainScreenController extends HttpServlet {
             }
             String next = "";
             if (act.equals("Edit cluster sets")) {
-                DbFacade.refreshClusterSets(request, "clusterSetName", "ASC");
+                DbFacade.loadClusterSets(request, "clusterSetName", "ASC");
                 next = "/cluster_set.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -54,7 +55,7 @@ public class MainScreenController extends HttpServlet {
             }
 
             if (act.equals("Edit node types")) {
-                DbFacade.refreshNodeTypes(request, "nodeTypeName", "ASC");
+                DbFacade.loadNodeTypes(request, "nodeTypeName", "ASC");
                 next = "/nodetype.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -62,14 +63,14 @@ public class MainScreenController extends HttpServlet {
             }
 
             if (act.equals("Edit clusters")) {
-                DbFacade.refreshClusters(request, "clusterName", "ASC");
+                DbFacade.loadClusters(request, "clusterName", "ASC");
                 next = "/cluster.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
                 return;
             }
             if (act.equals("Edit node sets")) {
-                DbFacade.refreshNodeSets(request, "nodeSetName", "ASC");
+                DbFacade.loadNodeSets(request, "nodeSetName", "ASC");
                 next = "/nodeset.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -77,7 +78,7 @@ public class MainScreenController extends HttpServlet {
 
             }
             if (act.equals("Reports")) {
-                DbFacade.refreshClusterSets(request, "clusterSetName", "ASC");
+                DbFacade.loadClusterSets(request, "clusterSetName", "ASC");
                 next = "/select_cluster_set.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -89,7 +90,7 @@ public class MainScreenController extends HttpServlet {
             rd.forward(request, response);
             return;
 
-        } catch (HibernateException e) {
+        } catch (WTFException e) {
             logger.error("WTF! Error using MainScreenController, ", e);
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);

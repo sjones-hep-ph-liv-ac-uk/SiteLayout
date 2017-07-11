@@ -18,7 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
-import com.basingwerk.sldb.mvc.exceptions.DbFacadeException;
+import com.basingwerk.sldb.mvc.exceptions.WTFException;
+import com.basingwerk.sldb.mvc.exceptions.ConflictException;
 import com.basingwerk.sldb.mvc.exceptions.ModelException;
 import com.basingwerk.sldb.mvc.model.ClusterSet;
 import com.basingwerk.sldb.mvc.model.NodeType;
@@ -66,8 +67,8 @@ public class NodeTypeController extends HttpServlet {
                     c = sortCmd.substring(5, sortCmd.length()).trim();
                 }
                 try {
-                    DbFacade.refreshNodeTypes(request, c, order);
-                } catch (HibernateException e) {
+                    DbFacade.loadNodeTypes(request, c, order);
+                } catch (WTFException e) {
                     logger.error("WTF! ModelException when refreshing node types, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
@@ -82,22 +83,22 @@ public class NodeTypeController extends HttpServlet {
                 String nodeType = key.substring(4, key.length());
                 try {
                     DbFacade.deleteNodeType(request, nodeType);
-                } catch (HibernateException e) {
+                } catch (ConflictException e) {
                     request.setAttribute("theMessage", "The node type could not be delete. Please try again.");
                     request.setAttribute("theJsp", "main_screen.jsp");
                     rd = request.getRequestDispatcher("/recoverable_message.jsp");
                     rd.forward(request, response);
                     return;
                     
-                } catch (DbFacadeException e) {
+                } catch (WTFException e) {
                     logger.error("WTF! Error using deleteNodeType, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
                 }
                 try {
-                    DbFacade.refreshNodeTypes(request, "nodeTypeName", "ASC");
-                } catch (HibernateException e) {
+                    DbFacade.loadNodeTypes(request, "nodeTypeName", "ASC");
+                } catch (WTFException e) {
                     logger.error("WTF! Error when using refreshNodeTypes, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
@@ -111,16 +112,21 @@ public class NodeTypeController extends HttpServlet {
 
             if (key.startsWith("ED.")) {
                 String nodeType = key.substring(3, key.length());
-                NodeType nt = null;
                 try {
-                    nt = DbFacade.queryOneNodeType(request, nodeType);
-                } catch (HibernateException e1) {
+                    DbFacade.loadNamedNodeType(request, nodeType);
+                } catch (ConflictException e1) {
+                    request.setAttribute("theMessage", "Could not edit that nodeType at this time. Please try again.");
+                    request.setAttribute("theJsp", "main_screen.jsp");
+                    rd = request.getRequestDispatcher("/recoverable_message.jsp");
+                    rd.forward(request, response);
+                    return;
+                } catch (WTFException e1) {
                         logger.error("WTF! weird data, ", e1);
                         rd = request.getRequestDispatcher("/error.jsp");
                         rd.forward(request, response);
                         return;
                 }
-                request.setAttribute("nodeType", nt);
+                //request.setAttribute("nodeType", nt);
                 String next = "/edit_nodetype.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);

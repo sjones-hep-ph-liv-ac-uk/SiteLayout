@@ -20,6 +20,7 @@ import javax.servlet.http.HttpSession;
 
 import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
 import com.basingwerk.sldb.mvc.exceptions.ModelException;
+import com.basingwerk.sldb.mvc.exceptions.WTFException;
 import com.basingwerk.sldb.mvc.model.Cluster;
 import com.basingwerk.sldb.mvc.model.NodeSetNodeTypeJoin;
 import com.basingwerk.sldb.mvc.model.NodeType;
@@ -43,8 +44,8 @@ public class SelectClusterSetController extends HttpServlet {
 
         ArrayList<String> clusters = null;
         try {
-            DbFacade.refreshNodeTypes(request, "nodeTypeName", "ASC");
-            DbFacade.refreshClusters(request, "clusterName", "ASC");
+            DbFacade.loadNodeTypes(request, "nodeTypeName", "ASC");
+            DbFacade.loadClusters(request, "clusterName", "ASC");
             DbFacade.setBaselineNodeType(request);
             clusters = DbFacade.listClustersOfClusterSet(request, clusterSetName);
             java.util.HashMap<String, ArrayList> joinMap = new java.util.HashMap<String, ArrayList>();
@@ -60,7 +61,7 @@ public class SelectClusterSetController extends HttpServlet {
             rd = request.getRequestDispatcher("/reports.jsp");
             rd.forward(request, response);
             return;
-        } catch (HibernateException e) {
+        } catch (WTFException e) {
             logger.error("WTF! Error using SelectClusterSetController, ", e);
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
