@@ -15,10 +15,35 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>New Cluster</title>
+
+<script>
+
+function isNumber(value) {
+  return !isNaN(value) ;
+}
+
+function isInt(value) {
+  return !isNaN(value) && parseInt(Number(value)) == value
+    && !isNaN(parseInt(value, 10));
+}
+function validateForm() {
+  var clusterName = document.forms["NewClusterForm"]["clusterName"].value;
+  if (clusterName == "") {
+    alert("Name must be filled out");
+    return false;
+  }
+  var descr = document.forms["NewClusterForm"]["descr"].value;
+  if (descr == "") {
+    alert("Description must be filled out");
+    return false;
+  }
+}
+</script>
+
 </head>
 <body>
 	New Cluster
-	<form action="NewClusterController" method="post">
+	<form name="NewClusterForm" action="NewClusterController" method="post" onsubmit="return validateForm()">
 		Cluster Name : <input type="text" name="clusterName"> <BR>
 		Cluster Description : <input type="text" name="descr"> <BR>
 		Cluster set : <select name='clusterSetList'>

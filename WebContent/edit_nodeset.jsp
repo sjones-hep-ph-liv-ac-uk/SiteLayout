@@ -24,10 +24,34 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Edit Nodeset</title>
+<script>
+
+function isNumber(value) {
+  return !isNaN(value) ;
+}
+
+function isInt(value) {
+  return !isNaN(value) && parseInt(Number(value)) == value
+    && !isNaN(parseInt(value, 10));
+}
+function validateForm() {
+  var nodeSetName = document.forms["EditNodeSetForm"]["nodeSetName"].value;
+  if (nodeSetName == "") {
+    alert("Node set name must be filled out");
+    return false;
+  }
+  var nodeCount = document.forms["EditNodeSetForm"]["nodeCount"].value;
+  if (! isInt(nodeCount)) {
+    alert("Node count must be an integer value");
+    return false;
+  }
+}
+</script>
+
 </head>
 
 <body>
-	<form action="EditNodeSetController" method="post">
+	<form name="EditNodeSetForm" action="EditNodeSetController" method="post" onsubmit="return validateForm()">
 		Node set name : 
 		   <input type="text" name="nodeSetName" readonly value="${nodeSet.nodeSetName}"> <BR> 
 		Node count : 

@@ -20,27 +20,32 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>New Node Set</title>
 <script>
-	function isInt(value) {
-		return !isNaN(value) && parseInt(Number(value)) == value
-				&& !isNaN(parseInt(value, 10));
-	}
-	function validateForm() {
-		var nodeSetName = document.forms["NodeSetController"]["nodeSetName"].value;
-		if (nodeSetName == "") {
-			alert("Node set name must be filled out");
-			return false;
-		}
-		var nodeCount = document.forms["NodeSetController"]["nodeCount"].value;
-		if (! isInt(nodeCount)) {
-			alert("Node count must be an integer value");
-			return false;
-		}
-	}
+
+function isNumber(value) {
+  return !isNaN(value) ;
+}
+
+function isInt(value) {
+  return !isNaN(value) && parseInt(Number(value)) == value
+    && !isNaN(parseInt(value, 10));
+}
+function validateForm() {
+  var nodeSetName = document.forms["NewNodeSetForm"]["nodeSetName"].value;
+  if (nodeSetName == "") {
+    alert("Node set name must be filled out");
+    return false;
+  }
+  var nodeCount = document.forms["NewNodeSetForm"]["nodeCount"].value;
+  if (! isInt(nodeCount)) {
+    alert("Node count must be an integer value");
+    return false;
+  }
+}
 </script>
 </head>
 <body>
 	New Node Set
-	<form name="NodeSetController" action="NewNodeSetController"
+	<form name="NewNodeSetForm" action="NewNodeSetController"
 		method="post" onsubmit="return validateForm()">
 
 		Node set name : <input type="text" name="nodeSetName"> <BR>

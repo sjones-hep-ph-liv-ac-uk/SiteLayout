@@ -49,7 +49,6 @@ public class ClusterController extends HttpServlet {
 
             ArrayList<String> s = new ArrayList<String>();
             try {
-//                s = DbFacade.listCl u s t erSetNames(request);
               DbFacade.loadClusterSets(request, "clusterSetName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error getting the cluster sets, ", e);
@@ -57,7 +56,6 @@ public class ClusterController extends HttpServlet {
                 rd.forward(request, response);
                 return;
             }
-//            request.setAttribute("clusterSetList", s);
             rd = request.getRequestDispatcher("/new_cluster.jsp");
             rd.forward(request, response);
             return;
@@ -96,9 +94,7 @@ public class ClusterController extends HttpServlet {
 
             if (key.startsWith("DEL.")) {
                 String cluster = key.substring(4, key.length());
-                logger.error("cluster:" + cluster + ":");
                 try {
-
                     DbFacade.deleteCluster(request, cluster);
                 } catch (ConflictException e1) {
                     request.setAttribute("theMessage", "Could not delete that cluster at this time. Please try again.");

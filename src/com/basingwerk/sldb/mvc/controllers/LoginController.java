@@ -45,7 +45,7 @@ public class LoginController extends HttpServlet {
 
             Configuration cfg = new Configuration();
             
-            cfg.getProperties().setProperty("event.merge.entity_copy_observer", "allow");
+            // cfg.getProperties().setProperty("event.merge.entity_copy_observer", "allow");
             
             cfg.addAnnotatedClass(com.basingwerk.sldb.mvc.model.NodeType.class);
             cfg.addAnnotatedClass(com.basingwerk.sldb.mvc.model.NodeSet.class);
@@ -58,13 +58,22 @@ public class LoginController extends HttpServlet {
             cfg.getProperties().setProperty("hibernate.connection.password", username);
             cfg.getProperties().setProperty("hibernate.connection.username", password);
 
-            HttpSession session = request.getSession();
             SessionFactory sessionFactory = cfg.configure().buildSessionFactory();
+            HttpSession session = request.getSession();
+            
             session.setAttribute("sessionFactory", sessionFactory);
+            Session hibSession = sessionFactory.openSession();
+            if (!hibSession.isConnected()) {
+                hibSession.close();
+                logger.error("Could not connect");
 
-//            Session dbsession = sessionFactory.openSession();
-//            Session hibSession  = ((SessionFactory)httpSession.getAttribute("sessionFactory")).openSession();
-
+                request.setAttribute("theMessage",
+                        "Error when trying to connect to connect to the database. You can try to login again.");
+                request.setAttribute("theJsp", "login.jsp");
+                rd = request.getRequestDispatcher("/recoverable_message.jsp");
+                rd.forward(request, response);
+            }
+            hibSession.close();
             User user = new User(username, password);
             request.setAttribute("user", user);
 

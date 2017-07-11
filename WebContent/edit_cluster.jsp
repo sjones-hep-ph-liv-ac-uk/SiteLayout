@@ -19,10 +19,34 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Edit Cluster</title>
+<script>
+
+function isNumber(value) {
+  return !isNaN(value) ;
+}
+
+function isInt(value) {
+  return !isNaN(value) && parseInt(Number(value)) == value
+    && !isNaN(parseInt(value, 10));
+}
+function validateForm() {
+  var clusterName = document.forms["EditClusterForm"]["clusterName"].value;
+  if (clusterName == "") {
+    alert("Name must be filled out");
+    return false;
+  }
+  var descr = document.forms["EditClusterForm"]["descr"].value;
+  if (descr == "") {
+    alert("Description must be filled out");
+    return false;
+  }
+}
+</script>
+
 </head>
 <body>
 	Edit Cluster
-	<form action="EditClusterController" method="post">
+	<form name="EditClusterForm" action="EditClusterController" method="post" onsubmit="return validateForm()">
 		Cluster Name : <input type="text" name="clusterName" readonly
 			value="${cluster.clusterName}"> <BR> 
 		Cluster Description : <input type="text" name="descr" value="${cluster.descr}"> <BR>
