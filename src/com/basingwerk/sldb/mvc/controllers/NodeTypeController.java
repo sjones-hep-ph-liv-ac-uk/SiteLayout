@@ -36,6 +36,21 @@ public class NodeTypeController extends HttpServlet {
             rd.forward(request, response);
             return;
         }
+        act = request.getParameter("Refresh");
+        if (act != null) {
+            try {
+                DbFacade.loadNodeTypes(request, "nodeTypeName", "ASC");
+            } catch (WTFException e) {
+                logger.error("WTF! Error while using loadNodeTypes");
+                rd = request.getRequestDispatcher("/error.jsp");
+                rd.forward(request, response);
+                return;
+            }
+            rd = request.getRequestDispatcher("/nodetype.jsp");
+            rd.forward(request, response);
+            return;
+        }
+        
         act = request.getParameter("New");
         if (act != null) {
             rd = request.getRequestDispatcher("/new_nodetype.jsp");

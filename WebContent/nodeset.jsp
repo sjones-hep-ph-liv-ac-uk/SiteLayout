@@ -70,6 +70,7 @@
 				<td><input type="submit" value="New" name="New" /></td>
 				<td><input type="submit" value="Refresh" name="Refresh" /></td>
 				<td></td>
+				<td></td>
 			</tr>
 		</table>
 	</form>

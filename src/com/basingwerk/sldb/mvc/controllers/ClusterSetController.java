@@ -36,6 +36,21 @@ public class ClusterSetController extends HttpServlet {
             rd.forward(request, response);
             return;
         }
+        act = request.getParameter("Refresh");
+        if (act != null) {
+            try {
+                DbFacade.loadClusterSets(request, "clusterSetName", "ASC");
+            } catch (WTFException e) {
+                logger.error("WTF! Error while using loadClusterSets");
+                rd = request.getRequestDispatcher("/error.jsp");
+                rd.forward(request, response);
+                return;
+            }
+            rd = request.getRequestDispatcher("/cluster_set.jsp");
+            rd.forward(request, response);
+            return;
+        }
+        
         act = request.getParameter("New");
         if (act != null) {
             rd = request.getRequestDispatcher("/new_cluster_set.jsp");
