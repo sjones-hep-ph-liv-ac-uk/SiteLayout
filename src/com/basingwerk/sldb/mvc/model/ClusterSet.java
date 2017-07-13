@@ -1,30 +1,29 @@
 package com.basingwerk.sldb.mvc.model;
 
-import org.apache.log4j.Logger;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.ElementCollection;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
+import javax.persistence.Version;
 
 @Entity
-@Table(name="ClusterSet")
+@Table(name = "ClusterSet")
 public class ClusterSet {
+
+    @Version
+    @Column(name="version")
+    private long version;
+
+    public long getVersion() {
+        return version;
+    }
+
     @Id
     private String clusterSetName;
     private String description;
@@ -32,9 +31,9 @@ public class ClusterSet {
     private double longitude;
     private double latitude;
     private String admin;
-    
-    @OneToMany(mappedBy="clusterSet", cascade = CascadeType.ALL, fetch=FetchType.LAZY)
-    private Set<Cluster> clusters = new HashSet();
+
+    @OneToMany(mappedBy = "clusterSet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Cluster> clusters = new HashSet<Cluster>();
 
     public Set<Cluster> getClusters() {
         return clusters;
@@ -43,7 +42,6 @@ public class ClusterSet {
     public void setClusters(Set<Cluster> clusters) {
         this.clusters = clusters;
     }
-
 
     public String getClusterSetName() {
         return clusterSetName;
@@ -92,7 +90,7 @@ public class ClusterSet {
     public void setAdmin(String admin) {
         this.admin = admin;
     }
-    
+
     public ClusterSet() {
     }
 
@@ -100,6 +98,4 @@ public class ClusterSet {
         return "ClusterSet [clusterSetName=" + clusterSetName + ", description=" + description + ", location="
                 + location + ", longitude=" + longitude + ", latitude=" + latitude + ", admin=" + admin + "]";
     }
-
-
 }

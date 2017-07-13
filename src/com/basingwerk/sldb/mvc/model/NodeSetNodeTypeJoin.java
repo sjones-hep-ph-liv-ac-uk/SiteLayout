@@ -1,19 +1,6 @@
 package com.basingwerk.sldb.mvc.model;
 
 import org.apache.log4j.Logger;
-import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
-
-import com.basingwerk.sldb.mvc.exceptions.ModelException;
-
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 public class NodeSetNodeTypeJoin {
     final static Logger logger = Logger.getLogger(NodeSetNodeTypeJoin.class);
@@ -24,6 +11,7 @@ public class NodeSetNodeTypeJoin {
     private Integer cpu;
     private Integer slot;
     private Float hs06PerSlot;
+    private Float nodeSetHs06;
 
     public NodeSetNodeTypeJoin(String nodeSetName, String nodeTypeName, Integer nodeCount, Integer cpu, Integer slot,
             Float hs06PerSlot, Float nodeSetHs06) {
@@ -99,7 +87,5 @@ public class NodeSetNodeTypeJoin {
     public void setNodeSetHs06(Float nodeSetHs06) {
         this.nodeSetHs06 = nodeSetHs06;
     }
-
-    private Float nodeSetHs06;
 
 }

@@ -1,14 +1,10 @@
 package com.basingwerk.sldb.mvc.model;
 
-import org.apache.log4j.Logger;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -16,22 +12,28 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import javax.persistence.Version;
 
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 @Entity
-@Table(name="Cluster")
+@Table(name = "Cluster")
+
 public class Cluster {
-    
+
+    @Version
+    @Column(name = "version")
+    private long version;
+
+    public long getVersion() {
+        return version;
+    }
+
     @Id
     private String clusterName;
 
     private String descr;
 
-    @OneToMany(mappedBy="cluster", cascade = CascadeType.ALL, fetch=FetchType.LAZY)
-    private Set<NodeSet> nodeSets= new HashSet();
+    @OneToMany(mappedBy = "cluster", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<NodeSet> nodeSets = new HashSet<NodeSet>();
 
     public Set<NodeSet> getNodeSets() {
         return nodeSets;
@@ -40,11 +42,11 @@ public class Cluster {
     public void setNodeSets(Set<NodeSet> nodeSets) {
         this.nodeSets = nodeSets;
     }
-    
+
     @ManyToOne
-    @JoinColumn(name="clusterSetName")
+    @JoinColumn(name = "clusterSetName")
     private ClusterSet clusterSet;
-    
+
     public ClusterSet getClusterSet() {
         return clusterSet;
     }
@@ -69,12 +71,11 @@ public class Cluster {
         this.descr = descr;
     }
 
-    
     public Cluster() {
     }
 
     public String toString() {
         return "Cluster [clusterName=" + clusterName + ", descr=" + descr + ", clusterSetName=" + clusterSet + "]";
     }
-    
+
 }

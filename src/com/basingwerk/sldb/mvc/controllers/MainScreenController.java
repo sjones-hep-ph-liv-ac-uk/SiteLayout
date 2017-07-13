@@ -1,12 +1,9 @@
 package com.basingwerk.sldb.mvc.controllers;
-import org.hibernate.HibernateException;
+
 import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
 
 import org.apache.log4j.Logger;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,14 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
-import com.basingwerk.sldb.mvc.exceptions.ModelException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
-import com.basingwerk.sldb.mvc.model.Cluster;
-import com.basingwerk.sldb.mvc.model.ClusterSet;
-import com.basingwerk.sldb.mvc.model.NodeSet;
-import com.basingwerk.sldb.mvc.model.NodeSetNodeTypeJoin;
-import com.basingwerk.sldb.mvc.model.NodeType;
 
 @WebServlet("/MainScreenController")
 
@@ -83,7 +73,7 @@ public class MainScreenController extends HttpServlet {
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
                 return;
-                
+
             }
             logger.error("WTF! Never seen that button before.");
             rd = request.getRequestDispatcher("/error.jsp");

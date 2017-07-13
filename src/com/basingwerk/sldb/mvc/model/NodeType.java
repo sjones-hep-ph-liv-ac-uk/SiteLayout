@@ -1,28 +1,37 @@
 package com.basingwerk.sldb.mvc.model;
 
-
-
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Version;
 
 @Entity
 public class NodeType {
+
+    @Version
+    @Column(name = "version")
+    private long version;
+
+    public long getVersion() {
+        return version;
+    }
+
     @Id
     private String nodeTypeName;
-    
+
     private int cpu;
     private int slot;
     private double hs06PerSlot;
     private double memPerNode;
-    
-    @OneToMany(mappedBy="nodeType", cascade = CascadeType.ALL, fetch=FetchType.LAZY)
-    private Set<NodeSet> nodeSets= new HashSet();
+
+    @OneToMany(mappedBy = "nodeType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<NodeSet> nodeSets = new HashSet<NodeSet>();
 
     public Set<NodeSet> getNodeSets() {
         return nodeSets;
@@ -31,7 +40,7 @@ public class NodeType {
     public void setNodeSets(Set<NodeSet> nodeSets) {
         this.nodeSets = nodeSets;
     }
-    
+
     public String getNodeTypeName() {
         return nodeTypeName;
     }
@@ -74,7 +83,6 @@ public class NodeType {
 
     public NodeType() {
     }
-
 
     public String toString() {
         String result;

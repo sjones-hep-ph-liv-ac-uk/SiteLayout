@@ -1,13 +1,9 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-import org.hibernate.HibernateException;
 import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
 
 import org.apache.log4j.Logger;
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -17,15 +13,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
 import com.basingwerk.sldb.mvc.exceptions.ConflictException;
-import com.basingwerk.sldb.mvc.exceptions.ModelException;
-import com.basingwerk.sldb.mvc.model.Cluster;
-import com.basingwerk.sldb.mvc.model.NodeSet;
-import com.basingwerk.sldb.mvc.model.NodeType;
 
 @WebServlet("/NodeSetController")
 
@@ -65,8 +54,6 @@ public class NodeSetController extends HttpServlet {
         act = request.getParameter("New");
         if (act != null) {
 
-            ArrayList<String> cl = new ArrayList<String>();
-            ArrayList<String> nt = new ArrayList<String>();
             try {
                 DbFacade.loadClusters(request, "clusterName", "ASC");
                 DbFacade.loadNodeTypes(request, "nodeTypeName", "ASC");
@@ -118,7 +105,7 @@ public class NodeSetController extends HttpServlet {
                 try {
                     DbFacade.deleteNodeSet(request, nodeSetName);
                 } catch (ConflictException e) {
-                    logger.error("WTF! ModelException when deleteing a node set, ", e);
+                    logger.error("WTF! Error deleteing a node set, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
@@ -141,11 +128,11 @@ public class NodeSetController extends HttpServlet {
             }
             if (key.startsWith("ED.")) {
                 String nodeSetName = key.substring(3, key.length());
-                //NodeSet ns = null;
                 try {
                     DbFacade.loadNamedNodeSet(request, nodeSetName);
-                } catch (ConflictException e1) {
-                    request.setAttribute("theMessage", "Could not edit that nodeSet at this time. Please try again.");
+                } catch (ConflictException e) {
+                    request.setAttribute("theMessage",
+                            "Could not edit that nodeSet at this time. Please try again. " + e.getMessage());
                     request.setAttribute("theJsp", "main_screen.jsp");
                     rd = request.getRequestDispatcher("/recoverable_message.jsp");
                     rd.forward(request, response);
@@ -155,13 +142,13 @@ public class NodeSetController extends HttpServlet {
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
-                } 
+                }
 
                 try {
                     DbFacade.loadClusters(request, "clusterName", "ASC");
                     DbFacade.loadNodeTypes(request, "nodeTypeName", "ASC");
                 } catch (WTFException e) {
-                    logger.error("WTF! ModelException when preparing data, ", e);
+                    logger.error("WTF! Error preparing data, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;

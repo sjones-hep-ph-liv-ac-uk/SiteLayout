@@ -1,4 +1,6 @@
 package com.basingwerk.sldb.mvc.controllers;
+
+import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
 import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
 
@@ -39,30 +41,26 @@ public class LoginController extends HttpServlet {
             String database = request.getParameter("database");
             String username = request.getParameter("username");
             String password = request.getParameter("password");
-//            database = "hibtest";
-//            username = "hibtest";
-//            password = "hibtest";
 
             Configuration cfg = new Configuration();
-            
-            // cfg.getProperties().setProperty("event.merge.entity_copy_observer", "allow");
-            
+
             cfg.addAnnotatedClass(com.basingwerk.sldb.mvc.model.NodeType.class);
             cfg.addAnnotatedClass(com.basingwerk.sldb.mvc.model.NodeSet.class);
             cfg.addAnnotatedClass(com.basingwerk.sldb.mvc.model.Cluster.class);
             cfg.addAnnotatedClass(com.basingwerk.sldb.mvc.model.ClusterSet.class);
 
-            // cfg.configure("hibernate.cfg.xml"); //hibernate config xml file name
-            
             cfg.getProperties().setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/" + database);
             cfg.getProperties().setProperty("hibernate.connection.password", username);
             cfg.getProperties().setProperty("hibernate.connection.username", password);
 
             SessionFactory sessionFactory = cfg.configure().buildSessionFactory();
             HttpSession session = request.getSession();
-            
+
             session.setAttribute("sessionFactory", sessionFactory);
             Session hibSession = sessionFactory.openSession();
+            hibSession.setFlushMode(FlushMode.COMMIT);
+            System.out.println("Underlying Hibernate session flushmode is " + hibSession.getFlushMode());
+
             if (!hibSession.isConnected()) {
                 hibSession.close();
                 logger.error("Could not connect");
@@ -80,8 +78,7 @@ public class LoginController extends HttpServlet {
             rd = request.getRequestDispatcher("/main_screen.jsp");
             rd.forward(request, response);
             return;
-        }
-        catch (HibernateException e) {
+        } catch (HibernateException e) {
             e.printStackTrace();
             msg = "HibernateException when trying to connect to database" + e.getStackTrace();
         }

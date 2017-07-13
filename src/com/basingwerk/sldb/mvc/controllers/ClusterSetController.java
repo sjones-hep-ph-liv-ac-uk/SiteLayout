@@ -1,13 +1,9 @@
 package com.basingwerk.sldb.mvc.controllers;
-import org.hibernate.HibernateException;
+
 import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
 
 import org.apache.log4j.Logger;
-import org.hibernate.HibernateException;
-
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -17,13 +13,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
 import com.basingwerk.sldb.mvc.exceptions.ConflictException;
-import com.basingwerk.sldb.mvc.exceptions.ModelException;
-import com.basingwerk.sldb.mvc.model.ClusterSet;
 
 @WebServlet("/ClusterSetController")
 
@@ -71,7 +62,7 @@ public class ClusterSetController extends HttpServlet {
 
                     DbFacade.loadClusterSets(request, c, order);
                 } catch (WTFException e) {
-                    logger.error("WFT! ModelException when trying to refresh cluster set, ", e);
+                    logger.error("WFT! Error trying to refresh cluster set, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
@@ -85,9 +76,9 @@ public class ClusterSetController extends HttpServlet {
                 String clusterSet = key.substring(4, key.length());
                 try {
                     DbFacade.deleteClusterSet(request, clusterSet);
-                } catch (ConflictException e1) {
+                } catch (ConflictException e) {
                     request.setAttribute("theMessage",
-                            "Could not update that cluster set at this time. Please try again.");
+                            "Could not update that cluster set at this time. Please try again. " + e.getMessage());
                     request.setAttribute("theJsp", "main_screen.jsp");
                     rd = request.getRequestDispatcher("/recoverable_message.jsp");
                     rd.forward(request, response);
@@ -116,19 +107,20 @@ public class ClusterSetController extends HttpServlet {
 
                 try {
                     DbFacade.loadNamedClusterSet(request, clusterSet);
-                } catch (ConflictException e1) {
-                    request.setAttribute("theMessage", "Could not edit that clusterSet at this time. Please try again.");
+                } catch (ConflictException e) {
+                    request.setAttribute("theMessage",
+                            "Could not edit that clusterSet at this time. Please try again. " + e.getMessage());
                     request.setAttribute("theJsp", "main_screen.jsp");
                     rd = request.getRequestDispatcher("/recoverable_message.jsp");
                     rd.forward(request, response);
                     return;
-                } catch (WTFException e1) {
-                    logger.error("WTF! Error using queryOneClusterSet, ", e1);
+                } catch (WTFException e) {
+                    logger.error("WTF! Error using queryOneClusterSet, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
                 }
-                //request.setAttribute("clusterSet", cs);
+                // request.setAttribute("clusterSet", cs);
                 String next = "/edit_cluster_set.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
