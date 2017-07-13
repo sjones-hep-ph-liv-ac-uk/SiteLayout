@@ -22,6 +22,7 @@ CREATE TABLE nodeType(
   slot integer,
   hs06PerSlot float,
   memPerNode float,
+  version   bigint(20),
   PRIMARY KEY( nodeTypeName)
 ) TYPE = INNODB;
 
@@ -33,6 +34,7 @@ CREATE TABLE clusterSet (
   longitude float,
   latitude float,
   admin varchar(50),
+  version   bigint(20),
   PRIMARY KEY( clusterSetName )
 ) TYPE = INNODB;
 
@@ -41,6 +43,7 @@ CREATE TABLE cluster (
   clusterName  varchar(20),
   descr        varchar(50),
   clusterSetName varchar(50) NOT NULL,
+  version   bigint(20),
   PRIMARY KEY( clusterName ),
   FOREIGN KEY (clusterSetName) REFERENCES clusterSet(clusterSetName) 
 ) TYPE = INNODB;
@@ -51,6 +54,7 @@ CREATE TABLE nodeSet (
   nodeTypeName varchar(10),
   nodeCount integer,
   cluster varchar(20),
+  version   bigint(20),
   PRIMARY KEY( nodeSetName ),
   FOREIGN KEY (cluster) REFERENCES cluster(clusterName) ,
   FOREIGN KEY (nodeTypeName) REFERENCES nodeType(nodeTypeName)

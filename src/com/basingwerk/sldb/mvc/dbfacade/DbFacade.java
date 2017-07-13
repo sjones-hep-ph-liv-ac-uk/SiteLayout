@@ -309,8 +309,8 @@ public class DbFacade {
             clusterList = (ArrayList<Cluster>) hibSession.createCriteria(Cluster.class).addOrder(ord).list();
         } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
-            logger.error("WHT error using refreshListOfAllClusters, ", ex);
-            throw new WTFException("WHT error using refreshListOfAllClusters");
+            logger.error("WTF error using refreshListOfAllClusters, ", ex);
+            throw new WTFException("WTF error using refreshListOfAllClusters");
         } finally {
             hibSession.close();
         }
@@ -447,6 +447,7 @@ public class DbFacade {
             }
             // Possibly altered during long conversation
             HashMap<String, Long> oldVersions = (HashMap<String, Long>) httpSession.getAttribute("clusterListVersions");
+            if (oldVersions == null) throw new WTFException("WTF error using loadNamedCluster");
             Long oldVersion = oldVersions.get(clusterName);
 
             Long currentVersion = cluster.getVersion();
@@ -461,8 +462,8 @@ public class DbFacade {
 
         } catch (HibernateException e) {
             hibSession.getTransaction().rollback();
-            logger.error("WHT error using setSingleCluster, ", e);
-            throw new WTFException("WHT error using setSingleCluster");
+            logger.error("WTF error using setSingleCluster, ", e);
+            throw new WTFException("WTF error using setSingleCluster");
         } finally {
             hibSession.close();
         }
@@ -488,8 +489,9 @@ public class DbFacade {
                 throw new ConflictException("While using loadNamedClusterSet, desired ClusterSet not found");
             }
             // Possibly altered during long conversation
-            HashMap<String, Long> oldVersions = (HashMap<String, Long>) httpSession
-                    .getAttribute("clusterSetListVersions");
+            HashMap<String, Long> oldVersions = (HashMap<String, Long>) httpSession.getAttribute("clusterSetListVersions");
+            if (oldVersions == null) throw new WTFException("WTF error using loadNamedClusterSet");
+
             Long oldVersion = oldVersions.get(clusterSetName);
 
             Long currentVersion = clusterSet.getVersion();
@@ -504,8 +506,8 @@ public class DbFacade {
 
         } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
-            logger.error("WHT error using loadNamedClusterSet, ", ex);
-            throw new WTFException("WHT error using loadNamedClusterSet");
+            logger.error("WTF error using loadNamedClusterSet, ", ex);
+            throw new WTFException("WTF error using loadNamedClusterSet");
         } finally {
             hibSession.close();
         }
@@ -534,6 +536,7 @@ public class DbFacade {
             }
             // Possibly altered during long conversation
             HashMap<String, Long> oldVersions = (HashMap<String, Long>) httpSession.getAttribute("nodeSetListVersions");
+            if (oldVersions == null) throw new WTFException("WTF error using loadNamedNodeSet");
             Long oldVersion = oldVersions.get(nodeSetName);
 
             Long currentVersion = nodeSet.getVersion();
@@ -548,8 +551,8 @@ public class DbFacade {
 
         } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
-            logger.error("WHT error using loadNamedNodeSet, ", ex);
-            throw new WTFException("WHT error using loadNamedNodeSet");
+            logger.error("WTF error using loadNamedNodeSet, ", ex);
+            throw new WTFException("WTF error using loadNamedNodeSet");
         } finally {
             hibSession.close();
         }
@@ -575,13 +578,14 @@ public class DbFacade {
                 throw new ConflictException("While using loadNamedNodeType, desired NodeType not found");
             }
             // Possibly altered during long conversation
-            HashMap<String, Long> oldVersions = (HashMap<String, Long>) httpSession.getAttribute("nodeSetListVersions");
+            HashMap<String, Long> oldVersions = (HashMap<String, Long>) httpSession.getAttribute("nodeTypeListVersions");
+            if (oldVersions == null) throw new WTFException("WTF error using loadNamedNodeType");
             Long oldVersion = oldVersions.get(nodeTypeName);
 
             Long currentVersion = nodeType.getVersion();
             if (!currentVersion.equals(oldVersion)) {
                 hibSession.getTransaction().rollback();
-                logger.error("While using loadNamedNodeType, desired NodeType was altered by another user ");
+                logger.error("While using loadNamedNodeType, desired NodeType was altered by another user " + "ov: " + oldVersion + " nv: " + currentVersion);
                 throw new ConflictException(
                         "While using loadNamedNodeType, desired NodeType was altered by another user ");
             }
@@ -589,8 +593,8 @@ public class DbFacade {
             hibSession.getTransaction().commit();
         } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
-            logger.error("WHT error using loadNamedNodeType, ", ex);
-            throw new WTFException("WHT error using loadNamedNodeType");
+            logger.error("WTF error using loadNamedNodeType, ", ex);
+            throw new WTFException("WTF error using loadNamedNodeType");
         } finally {
             hibSession.close();
         }
@@ -623,6 +627,7 @@ public class DbFacade {
             }
             // Possibly altered during long conversation
             Long oldVersion = (Long) httpSession.getAttribute("clusterVersion");
+            if (oldVersion == null) throw new WTFException("WTF error using updateCluster");
 
             Long currentVersion = cluster.getVersion();
             if (!currentVersion.equals(oldVersion)) {
@@ -685,6 +690,7 @@ public class DbFacade {
             }
             // Possibly altered during long conversation
             Long oldVersion = (Long) httpSession.getAttribute("clusterSetVersion");
+            if (oldVersion == null) throw new WTFException("WTF error using updateClusterSet");
 
             Long currentVersion = clusterSet.getVersion();
             if (!currentVersion.equals(oldVersion)) {
@@ -705,8 +711,8 @@ public class DbFacade {
 
         } catch (HibernateException e) {
             hibSession.getTransaction().rollback();
-            logger.error("WHT error using updateClusterSet, ", e);
-            throw new WTFException("WHT error using updateClusterSet");
+            logger.error("WTF error using updateClusterSet, ", e);
+            throw new WTFException("WTF error using updateClusterSet");
         } finally {
             hibSession.close();
         }
@@ -740,6 +746,8 @@ public class DbFacade {
 
             // Possibly altered during long conversation
             Long oldVersion = (Long) httpSession.getAttribute("nodeSetVersion");
+            if (oldVersion == null) throw new WTFException("WTF error using updateNodeSet");
+            
             Long currentVersion = nodeType.getVersion();
             if (!currentVersion.equals(oldVersion)) {
                 hibSession.getTransaction().rollback();
@@ -775,8 +783,8 @@ public class DbFacade {
 
         } catch (HibernateException e) {
             hibSession.getTransaction().rollback();
-            logger.error("WHT error using updateNodeSet, ", e);
-            throw new WTFException("WHT error using updateNodeSet");
+            logger.error("WTF error using updateNodeSet, ", e);
+            throw new WTFException("WTF error using updateNodeSet");
         } finally {
             hibSession.close();
         }
@@ -806,6 +814,8 @@ public class DbFacade {
             }
             // Possibly altered during long conversation
             Long oldVersion = (Long) httpSession.getAttribute("nodeTypeVersion");
+            if (oldVersion == null) throw new WTFException("WTF error using updateNodeType");
+            
             Long currentVersion = nodeType.getVersion();
             if (!currentVersion.equals(oldVersion)) {
                 hibSession.getTransaction().rollback();
@@ -824,8 +834,8 @@ public class DbFacade {
 
         } catch (HibernateException e) {
             hibSession.getTransaction().rollback();
-            logger.error("WHT error using updateNodeType, ", e);
-            throw new WTFException("WHT error using updateNodeType");
+            logger.error("WTF error using updateNodeType, ", e);
+            throw new WTFException("WTF error using updateNodeType");
         } finally {
             hibSession.close();
         }
@@ -849,8 +859,8 @@ public class DbFacade {
             }
         } catch (HibernateException e) {
             hibSession.getTransaction().rollback();
-            logger.error("WHT error using addNodeSet, ", e);
-            throw new WTFException("WHT error using addNodeSet");
+            logger.error("WTF error using addNodeSet, ", e);
+            throw new WTFException("WTF error using addNodeSet");
         } finally {
             hibSession.close();
         }
