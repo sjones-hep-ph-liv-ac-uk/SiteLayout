@@ -1,6 +1,6 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
+
 
 import org.apache.log4j.Logger;
 import java.io.IOException;
@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.basingwerk.sldb.mvc.exceptions.ConflictException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
+import com.basingwerk.sldb.mvc.model.DataAccessObject;
 
 @WebServlet("/EditClusterSetController")
 
@@ -29,7 +30,8 @@ public class EditClusterSetController extends HttpServlet {
         RequestDispatcher rd = null;
 
         try {
-            DbFacade.updateClusterSet(request);
+            DataAccessObject.getInstance().updateClusterSet(request);
+            
         } catch (WTFException e) {
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
@@ -43,7 +45,7 @@ public class EditClusterSetController extends HttpServlet {
             return;
         }
         try {
-            DbFacade.loadClusterSets(request, "clusterSetName", "ASC");
+            DataAccessObject.getInstance().loadClusterSets(request, "clusterSetName", "ASC");
             String next = "/cluster_set.jsp";
             rd = request.getRequestDispatcher(next);
             rd.forward(request, response);

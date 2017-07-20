@@ -1,6 +1,6 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
+
 
 import org.apache.log4j.Logger;
 import java.io.IOException;
@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
+import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import com.basingwerk.sldb.mvc.exceptions.ConflictException;
 
 @WebServlet("/ClusterSetController")
@@ -39,7 +40,7 @@ public class ClusterSetController extends HttpServlet {
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
-                DbFacade.loadClusterSets(request, "clusterSetName", "ASC");
+                DataAccessObject.getInstance().loadClusterSets(request, "clusterSetName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using loadClusterSets");
                 rd = request.getRequestDispatcher("/error.jsp");
@@ -75,7 +76,7 @@ public class ClusterSetController extends HttpServlet {
 
                 try {
 
-                    DbFacade.loadClusterSets(request, c, order);
+                    DataAccessObject.getInstance().loadClusterSets(request, c, order);
                 } catch (WTFException e) {
                     logger.error("WFT! Error trying to refresh cluster set, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -90,7 +91,7 @@ public class ClusterSetController extends HttpServlet {
             if (key.startsWith("DEL.")) {
                 String clusterSet = key.substring(4, key.length());
                 try {
-                    DbFacade.deleteClusterSet(request, clusterSet);
+                    DataAccessObject.getInstance().deleteClusterSet(request, clusterSet);
                 } catch (ConflictException e) {
                     request.setAttribute("theMessage",
                             "Could not update that cluster set at this time. Please try again. " + e.getMessage());
@@ -105,7 +106,7 @@ public class ClusterSetController extends HttpServlet {
                     return;
                 }
                 try {
-                    DbFacade.loadClusterSets(request, "clusterSetName", order);
+                    DataAccessObject.getInstance().loadClusterSets(request, "clusterSetName", order);
                 } catch (WTFException e) {
                     logger.error("WFT! HibernateException when trying to refresh cluster sets, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -121,7 +122,7 @@ public class ClusterSetController extends HttpServlet {
                 String clusterSet = key.substring(3, key.length());
 
                 try {
-                    DbFacade.loadNamedClusterSet(request, clusterSet);
+                    DataAccessObject.getInstance().loadNamedClusterSet(request, clusterSet);
                 } catch (ConflictException e) {
                     request.setAttribute("theMessage",
                             "Could not edit that clusterSet at this time. Please try again. " + e.getMessage());
@@ -135,7 +136,6 @@ public class ClusterSetController extends HttpServlet {
                     rd.forward(request, response);
                     return;
                 }
-                // request.setAttribute("clusterSet", cs);
                 String next = "/edit_cluster_set.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);

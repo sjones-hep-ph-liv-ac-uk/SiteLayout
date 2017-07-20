@@ -1,6 +1,6 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
+
 
 import org.apache.log4j.Logger;
 import java.io.IOException;
@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.basingwerk.sldb.mvc.exceptions.ConflictException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
+import com.basingwerk.sldb.mvc.model.DataAccessObject;
 
 @WebServlet("/EditClusterController")
 
@@ -31,7 +32,7 @@ public class EditClusterController extends HttpServlet {
         RequestDispatcher rd = null;
 
         try {
-            DbFacade.updateCluster(request);
+            DataAccessObject.getInstance().updateCluster(request);
         } catch (WTFException e) {
             logger.error("WTF! Cannot update that cluster, ", e);
             rd = request.getRequestDispatcher("/error.jsp");
@@ -47,7 +48,7 @@ public class EditClusterController extends HttpServlet {
             return;
         }
         try {
-            DbFacade.loadClusters(request, "clusterName", "ASC");
+            DataAccessObject.getInstance().loadClusters(request, "clusterName", "ASC");
             String next = "/cluster.jsp";
             rd = request.getRequestDispatcher(next);
             rd.forward(request, response);

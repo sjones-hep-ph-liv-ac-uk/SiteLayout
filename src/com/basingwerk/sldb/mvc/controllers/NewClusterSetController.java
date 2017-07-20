@@ -1,6 +1,6 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
+
 
 import org.apache.log4j.Logger;
 import java.io.IOException;
@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
+import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import com.basingwerk.sldb.mvc.exceptions.ConflictException;
 
 @WebServlet("/NewClusterSetController")
@@ -29,7 +30,7 @@ public class NewClusterSetController extends HttpServlet {
         RequestDispatcher rd = null;
 
         try {
-            DbFacade.addClusterSet(request);
+            DataAccessObject.getInstance().addClusterSet(request);
         } catch (ConflictException e) {
             request.setAttribute("theMessage",
                     "The cluster set could not be added. Please try again. " + e.getMessage());
@@ -45,7 +46,7 @@ public class NewClusterSetController extends HttpServlet {
         }
 
         try {
-            DbFacade.loadClusterSets(request, "clusterSetName", "ASC");
+            DataAccessObject.getInstance().loadClusterSets(request, "clusterSetName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error when using queryClusterSetList");
             rd = request.getRequestDispatcher("/error.jsp");

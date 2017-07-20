@@ -1,6 +1,6 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
+
 
 import org.apache.log4j.Logger;
 import java.io.IOException;
@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
+import com.basingwerk.sldb.mvc.model.DataAccessObject;
 
 @WebServlet("/MainScreenController")
 
@@ -37,7 +38,7 @@ public class MainScreenController extends HttpServlet {
             }
             String next = "";
             if (act.equals("Edit cluster sets")) {
-                DbFacade.loadClusterSets(request, "clusterSetName", "ASC");
+                DataAccessObject.getInstance().loadClusterSets(request, "clusterSetName", "ASC");
                 next = "/cluster_set.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -45,7 +46,7 @@ public class MainScreenController extends HttpServlet {
             }
 
             if (act.equals("Edit node types")) {
-                DbFacade.loadNodeTypes(request, "nodeTypeName", "ASC");
+                DataAccessObject.getInstance().loadNodeTypes(request, "nodeTypeName", "ASC");
                 next = "/nodetype.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -53,14 +54,14 @@ public class MainScreenController extends HttpServlet {
             }
 
             if (act.equals("Edit clusters")) {
-                DbFacade.loadClusters(request, "clusterName", "ASC");
+                DataAccessObject.getInstance().loadClusters(request, "clusterName", "ASC");
                 next = "/cluster.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
                 return;
             }
             if (act.equals("Edit node sets")) {
-                DbFacade.loadNodeSets(request, "nodeSetName", "ASC");
+                DataAccessObject.getInstance().loadNodeSets(request, "nodeSetName", "ASC");
                 next = "/nodeset.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -68,7 +69,7 @@ public class MainScreenController extends HttpServlet {
 
             }
             if (act.equals("Reports")) {
-                DbFacade.loadClusterSets(request, "clusterSetName", "ASC");
+                DataAccessObject.getInstance().loadClusterSets(request, "clusterSetName", "ASC");
                 next = "/select_cluster_set.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);

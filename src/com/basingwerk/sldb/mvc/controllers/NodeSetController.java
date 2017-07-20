@@ -1,6 +1,6 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
+
 
 import org.apache.log4j.Logger;
 import java.io.IOException;
@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
+import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import com.basingwerk.sldb.mvc.exceptions.ConflictException;
 
 @WebServlet("/NodeSetController")
@@ -39,7 +40,7 @@ public class NodeSetController extends HttpServlet {
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
-                DbFacade.loadNodeSets(request, "nodeSetName", "ASC");
+                DataAccessObject.getInstance().loadNodeSets(request, "nodeSetName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using refreshNodeSets");
                 rd = request.getRequestDispatcher("/error.jsp");
@@ -55,8 +56,8 @@ public class NodeSetController extends HttpServlet {
         if (act != null) {
 
             try {
-                DbFacade.loadClusters(request, "clusterName", "ASC");
-                DbFacade.loadNodeTypes(request, "nodeTypeName", "ASC");
+                DataAccessObject.getInstance().loadClusters(request, "clusterName", "ASC");
+                DataAccessObject.getInstance().loadNodeTypes(request, "nodeTypeName", "ASC");
 
             } catch (WTFException e) {
                 logger.error("WTF! Error preparing data, ", e);
@@ -87,7 +88,7 @@ public class NodeSetController extends HttpServlet {
                 }
 
                 try {
-                    DbFacade.loadNodeSets(request, c, order);
+                    DataAccessObject.getInstance().loadNodeSets(request, c, order);
                 } catch (WTFException e) {
                     logger.error("WTF! Error using refreshNodeSets, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -103,7 +104,7 @@ public class NodeSetController extends HttpServlet {
             if (key.startsWith("DEL.")) {
                 String nodeSetName = key.substring(4, key.length());
                 try {
-                    DbFacade.deleteNodeSet(request, nodeSetName);
+                    DataAccessObject.getInstance().deleteNodeSet(request, nodeSetName);
                 } catch (ConflictException e) {
                     logger.error("WTF! Error deleteing a node set, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -114,7 +115,7 @@ public class NodeSetController extends HttpServlet {
                     e.printStackTrace();
                 }
                 try {
-                    DbFacade.loadNodeSets(request, "nodeSetName", "ASC");
+                    DataAccessObject.getInstance().loadNodeSets(request, "nodeSetName", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error using refreshNodeSets.");
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -129,7 +130,7 @@ public class NodeSetController extends HttpServlet {
             if (key.startsWith("ED.")) {
                 String nodeSetName = key.substring(3, key.length());
                 try {
-                    DbFacade.loadNamedNodeSet(request, nodeSetName);
+                    DataAccessObject.getInstance().loadNamedNodeSet(request, nodeSetName);
                 } catch (ConflictException e) {
                     request.setAttribute("theMessage",
                             "Could not edit that nodeSet at this time. Please try again. " + e.getMessage());
@@ -145,8 +146,8 @@ public class NodeSetController extends HttpServlet {
                 }
 
                 try {
-                    DbFacade.loadClusters(request, "clusterName", "ASC");
-                    DbFacade.loadNodeTypes(request, "nodeTypeName", "ASC");
+                    DataAccessObject.getInstance().loadClusters(request, "clusterName", "ASC");
+                    DataAccessObject.getInstance().loadNodeTypes(request, "nodeTypeName", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error preparing data, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");

@@ -1,6 +1,6 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
+
 
 import org.apache.log4j.Logger;
 import java.io.IOException;
@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
+import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import com.basingwerk.sldb.mvc.exceptions.ConflictException;
 
 @WebServlet("/NewClusterController")
@@ -29,8 +30,8 @@ public class NewClusterController extends HttpServlet {
         RequestDispatcher rd = null;
 
         try {
-            DbFacade.addCluster(request);
-            DbFacade.loadClusters(request, "clusterName", "ASC");
+            DataAccessObject.getInstance().addCluster(request);
+            DataAccessObject.getInstance().loadClusters(request, "clusterName", "ASC");
             String next = "/cluster.jsp";
             rd = request.getRequestDispatcher(next);
             rd.forward(request, response);

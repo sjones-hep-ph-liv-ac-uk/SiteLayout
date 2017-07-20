@@ -1,6 +1,8 @@
 package com.basingwerk.sldb.mvc.model;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -8,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
 
@@ -31,13 +34,14 @@ public class NodeType {
     private double memPerNode;
 
     @OneToMany(mappedBy = "nodeType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<NodeSet> nodeSets = new HashSet<NodeSet>();
+    @MapKey(name="nodeSetName")
+    private Map<String,NodeSet> nodeSets = new HashMap<String,NodeSet>();
 
-    public Set<NodeSet> getNodeSets() {
+    public Map<String,NodeSet> getNodeSets() {
         return nodeSets;
     }
 
-    public void setNodeSets(Set<NodeSet> nodeSets) {
+    public void setNodeSets(Map<String,NodeSet> nodeSets) {
         this.nodeSets = nodeSets;
     }
 

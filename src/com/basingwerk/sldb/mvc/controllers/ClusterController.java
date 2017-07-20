@@ -11,9 +11,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
-import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
+
 import com.basingwerk.sldb.mvc.exceptions.ConflictException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
+import com.basingwerk.sldb.mvc.model.DataAccessObject;
 
 @WebServlet("/ClusterController")
 
@@ -38,7 +39,7 @@ public class ClusterController extends HttpServlet {
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
-                DbFacade.loadClusters(request, "clusterName", "ASC");
+                DataAccessObject.getInstance().loadClusters(request, "clusterName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using loadClusters");
                 rd = request.getRequestDispatcher("/error.jsp");
@@ -54,7 +55,7 @@ public class ClusterController extends HttpServlet {
         if (act != null) {
 
             try {
-                DbFacade.loadClusterSets(request, "clusterSetName", "ASC");
+                DataAccessObject.getInstance().loadClusterSets(request, "clusterSetName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error getting the cluster sets, ", e);
                 rd = request.getRequestDispatcher("/error.jsp");
@@ -84,7 +85,7 @@ public class ClusterController extends HttpServlet {
                 }
 
                 try {
-                    DbFacade.loadClusters(request, c, order);
+                    DataAccessObject.getInstance().loadClusters(request, c, order);
                 } catch (WTFException e) {
                     logger.error("WTF! A HibernateException occurred, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -100,7 +101,7 @@ public class ClusterController extends HttpServlet {
             if (key.startsWith("DEL.")) {
                 String cluster = key.substring(4, key.length());
                 try {
-                    DbFacade.deleteCluster(request, cluster);
+                    DataAccessObject.getInstance().deleteCluster(request, cluster);
                 } catch (ConflictException e) {
                     request.setAttribute("theMessage",
                             "Could not delete that cluster at this time. Please try again. " + e.getMessage());
@@ -116,7 +117,7 @@ public class ClusterController extends HttpServlet {
                 }
 
                 try {
-                    DbFacade.loadClusters(request, "clusterName", "ASC");
+                    DataAccessObject.getInstance().loadClusters(request, "clusterName", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Had a HibernateException when trying to setListOfClusters, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -131,8 +132,8 @@ public class ClusterController extends HttpServlet {
             if (key.startsWith("ED.")) {
                 String cluster = key.substring(3, key.length());
                 try {
-                    DbFacade.loadNamedCluster(request, cluster);
-                    DbFacade.loadClusterSets(request, "clusterSetName", "ASC");
+                    DataAccessObject.getInstance().loadNamedCluster(request, cluster);
+                    DataAccessObject.getInstance().loadClusterSets(request, "clusterSetName", "ASC");
                 } catch (ConflictException e) {
 
                     request.setAttribute("theMessage",

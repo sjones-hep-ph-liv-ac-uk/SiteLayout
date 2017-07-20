@@ -1,6 +1,6 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
+
 
 import org.apache.log4j.Logger;
 import java.io.IOException;
@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
+import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import com.basingwerk.sldb.mvc.exceptions.ConflictException;
 
 @WebServlet("/NewNodeSetController")
@@ -29,7 +30,7 @@ public class NewNodeSetController extends HttpServlet {
         RequestDispatcher rd = null;
 
         try {
-            DbFacade.addNodeSet(request);
+            DataAccessObject.getInstance().addNodeSet(request);
         } catch (ConflictException e) {
             request.setAttribute("theMessage",
                     "Could not add that data at this time. Please try again. " + e.getMessage());
@@ -45,7 +46,7 @@ public class NewNodeSetController extends HttpServlet {
         }
 
         try {
-            DbFacade.loadNodeSets(request, "nodeSetName", "ASC");
+            DataAccessObject.getInstance().loadNodeSets(request, "nodeSetName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error using refreshNodeSets, ", e);
             rd = request.getRequestDispatcher("/error.jsp");

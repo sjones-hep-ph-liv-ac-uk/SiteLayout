@@ -1,6 +1,6 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
+
 
 import org.apache.log4j.Logger;
 import java.io.IOException;
@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
+import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import com.basingwerk.sldb.mvc.model.NodeSetNodeTypeJoin;
 
 @WebServlet("/SelectClusterSetController")
@@ -35,16 +36,16 @@ public class SelectClusterSetController extends HttpServlet {
 
         ArrayList<String> clusters = null;
         try {
-            DbFacade.loadNodeTypes(request, "nodeTypeName", "ASC");
-            DbFacade.loadClusters(request, "clusterName", "ASC");
-            DbFacade.setBaselineNodeType(request);
-            clusters = DbFacade.listClustersOfClusterSet(request, clusterSetName);
+            DataAccessObject.getInstance().loadNodeTypes(request, "nodeTypeName", "ASC");
+            DataAccessObject.getInstance().loadClusters(request, "clusterName", "ASC");
+            DataAccessObject.getInstance().setBaselineNodeType(request);
+            clusters = DataAccessObject.getInstance().listClustersOfClusterSet(request, clusterSetName);
             java.util.HashMap<String, ArrayList> joinMap = new java.util.HashMap<String, ArrayList>();
 
             Iterator<String> c = clusters.iterator();
             while (c.hasNext()) {
                 String cluster = c.next();
-                ArrayList<NodeSetNodeTypeJoin> nsntj = DbFacade.getJoinForCluster(request, cluster);
+                ArrayList<NodeSetNodeTypeJoin> nsntj = DataAccessObject.getInstance().getJoinForCluster(request, cluster);
                 joinMap.put(cluster, nsntj);
             }
             request.setAttribute("joinMap", joinMap);

@@ -1,13 +1,17 @@
 package com.basingwerk.sldb.mvc.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+//import java.util.HashSet;
+//import java.util.Map;
+//import java.util.Set;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
@@ -33,13 +37,14 @@ public class ClusterSet {
     private String admin;
 
     @OneToMany(mappedBy = "clusterSet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Cluster> clusters = new HashSet<Cluster>();
+    @MapKey(name="clusterName")
+    private Map<String, Cluster> clusters = new HashMap<String,Cluster>();
 
-    public Set<Cluster> getClusters() {
+    public Map<String, Cluster> getClusters() {
         return clusters;
     }
 
-    public void setClusters(Set<Cluster> clusters) {
+    public void setClusters(Map<String, Cluster> clusters) {
         this.clusters = clusters;
     }
 

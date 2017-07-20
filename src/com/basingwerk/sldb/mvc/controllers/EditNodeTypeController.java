@@ -1,6 +1,6 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
+
 
 import org.apache.log4j.Logger;
 import java.io.IOException;
@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
+import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import com.basingwerk.sldb.mvc.exceptions.ConflictException;
 
 @WebServlet("/EditNodeTypeController")
@@ -29,7 +30,7 @@ public class EditNodeTypeController extends HttpServlet {
         RequestDispatcher rd = null;
 
         try {
-            DbFacade.updateNodeType(request);
+            DataAccessObject.getInstance().updateNodeType(request);
         } catch (ConflictException e) {
             request.setAttribute("theMessage", "The task could not be done. Please try again.");
             request.setAttribute("theJsp", "main_screen.jsp");
@@ -43,7 +44,7 @@ public class EditNodeTypeController extends HttpServlet {
             return;
         }
         try {
-            DbFacade.loadNodeTypes(request, "nodeTypeName", "ASC");
+            DataAccessObject.getInstance().loadNodeTypes(request, "nodeTypeName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error when using updateNodeType, ", e);
             rd = request.getRequestDispatcher("/error.jsp");

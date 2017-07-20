@@ -1,5 +1,5 @@
 package com.basingwerk.sldb.mvc.controllers;
-import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
+
 
 import org.apache.log4j.Logger;
 import java.io.IOException;
@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
+import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import com.basingwerk.sldb.mvc.exceptions.ConflictException;
 
 @WebServlet("/EditNodeSetController")
@@ -27,7 +28,8 @@ public class EditNodeSetController extends HttpServlet {
             throws ServletException, IOException {
         RequestDispatcher rd = null;
         try {
-            DbFacade.updateNodeSet(request);
+            DataAccessObject.getInstance().updateNodeSet(request);
+            
         } catch (WTFException e) {
             logger.error("WTF! Cannot update node set.");
             rd = request.getRequestDispatcher("/error.jsp");
@@ -41,7 +43,7 @@ public class EditNodeSetController extends HttpServlet {
             return;
         }            
         try {
-            DbFacade.loadNodeSets(request, "nodeSetName", "ASC");
+            DataAccessObject.getInstance().loadNodeSets(request, "nodeSetName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error using refreshNodeSets");
             rd = request.getRequestDispatcher("/error.jsp");

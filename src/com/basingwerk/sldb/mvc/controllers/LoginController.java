@@ -2,11 +2,11 @@ package com.basingwerk.sldb.mvc.controllers;
 
 import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
-import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
+
 
 import org.hibernate.Session;
 import org.apache.log4j.Logger;
-import org.hibernate.HibernateException;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -59,7 +59,7 @@ public class LoginController extends HttpServlet {
             session.setAttribute("sessionFactory", sessionFactory);
             Session hibSession = sessionFactory.openSession();
             hibSession.setFlushMode(FlushMode.COMMIT);
-            System.out.println("Underlying Hibernate session flushmode is " + hibSession.getFlushMode());
+            // System.out.println("Underlying Hibernate session flushmode is " + hibSession.getFlushMode());
 
             if (!hibSession.isConnected()) {
                 hibSession.close();

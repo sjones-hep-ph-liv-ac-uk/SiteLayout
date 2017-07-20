@@ -1,6 +1,6 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-import com.basingwerk.sldb.mvc.dbfacade.DbFacade;
+
 
 import org.apache.log4j.Logger;
 import java.io.IOException;
@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
+import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import com.basingwerk.sldb.mvc.exceptions.ConflictException;
 
 @WebServlet("/NewNodeTypeController")
@@ -29,7 +30,7 @@ public class NewNodeTypeController extends HttpServlet {
         RequestDispatcher rd = null;
 
         try {
-            DbFacade.addNodeType(request);
+            DataAccessObject.getInstance().addNodeType(request);
         } catch (ConflictException e) {
             request.setAttribute("theMessage", "The node type could not be added. Please try again." + e.getMessage());
             request.setAttribute("theJsp", "main_screen.jsp");
@@ -44,7 +45,7 @@ public class NewNodeTypeController extends HttpServlet {
         }
 
         try {
-            DbFacade.loadNodeTypes(request, "nodeTypeName", "ASC");
+            DataAccessObject.getInstance().loadNodeTypes(request, "nodeTypeName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error using refreshNodeTypes.");
             rd = request.getRequestDispatcher("/error.jsp");
