@@ -1,7 +1,6 @@
 package com.basingwerk.sldb.mvc.controllers;
 
 
-
 import org.apache.log4j.Logger;
 import java.io.IOException;
 import javax.servlet.RequestDispatcher;
@@ -30,7 +29,7 @@ public class EditNodeTypeController extends HttpServlet {
         RequestDispatcher rd = null;
 
         try {
-            DataAccessObject.getInstance().updateNodeType(request);
+            ((DataAccessObject) request.getSession().getAttribute("dao")).updateNodeType(request);
         } catch (ConflictException e) {
             request.setAttribute("theMessage", "The task could not be done. Please try again.");
             request.setAttribute("theJsp", "main_screen.jsp");
@@ -44,7 +43,7 @@ public class EditNodeTypeController extends HttpServlet {
             return;
         }
         try {
-            DataAccessObject.getInstance().loadNodeTypes(request, "nodeTypeName", "ASC");
+            ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodeTypes(request, "nodeTypeName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error when using updateNodeType, ", e);
             rd = request.getRequestDispatcher("/error.jsp");

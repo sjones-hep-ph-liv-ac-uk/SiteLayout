@@ -1,7 +1,5 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-
-
 import org.apache.log4j.Logger;
 import java.io.IOException;
 
@@ -32,7 +30,7 @@ public class EditClusterController extends HttpServlet {
         RequestDispatcher rd = null;
 
         try {
-            DataAccessObject.getInstance().updateCluster(request);
+            ((DataAccessObject) request.getSession().getAttribute("dao")).updateCluster(request);
         } catch (WTFException e) {
             logger.error("WTF! Cannot update that cluster, ", e);
             rd = request.getRequestDispatcher("/error.jsp");
@@ -48,7 +46,7 @@ public class EditClusterController extends HttpServlet {
             return;
         }
         try {
-            DataAccessObject.getInstance().loadClusters(request, "clusterName", "ASC");
+            ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusters(request, "clusterName", "ASC");
             String next = "/cluster.jsp";
             rd = request.getRequestDispatcher(next);
             rd.forward(request, response);

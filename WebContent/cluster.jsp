@@ -50,8 +50,9 @@
 				<td></td>
 				<td></td>
 			</tr>
-
+			<c:set var="index" value="-1" scope="page" />
 			<c:forEach items="${clusterList}" var="cluster">
+			    <c:set var="index" value="${index + 1}" scope="page"/>
 				<tr>
 					<td><c:out value="${cluster.clusterName}" /></td>
 					<td><c:out value="${cluster.descr}" /></td>
@@ -59,7 +60,7 @@
 					<td class="tg-yw4l"><input type="submit" value="Del"
 						name=DEL.${cluster.clusterName}></td>
 					<td class="tg-yw4l"><input type="submit" value="Edit"
-						name=ED.${cluster.clusterName}></td>
+						name=ED.${index}></td>  <!--  ${cluster.clusterName} -->
 				</tr>
 			</c:forEach>
 			<tr>

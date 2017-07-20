@@ -10,6 +10,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Logger;
 
 import com.basingwerk.sldb.mvc.exceptions.ConflictException;
@@ -39,7 +41,7 @@ public class ClusterController extends HttpServlet {
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
-                DataAccessObject.getInstance().loadClusters(request, "clusterName", "ASC");
+                ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusters(request, "clusterName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using loadClusters");
                 rd = request.getRequestDispatcher("/error.jsp");
@@ -55,9 +57,9 @@ public class ClusterController extends HttpServlet {
         if (act != null) {
 
             try {
-                DataAccessObject.getInstance().loadClusterSets(request, "clusterSetName", "ASC");
+                ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusterSets(request, "clusterSetName", "ASC");
             } catch (WTFException e) {
-                logger.error("WTF! Error getting the cluster sets, ", e);
+                logger.error("WTF! Error while using loadClusterSets, ", e);
                 rd = request.getRequestDispatcher("/error.jsp");
                 rd.forward(request, response);
                 return;
@@ -85,9 +87,9 @@ public class ClusterController extends HttpServlet {
                 }
 
                 try {
-                    DataAccessObject.getInstance().loadClusters(request, c, order);
+                    ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusters(request, c, order);
                 } catch (WTFException e) {
-                    logger.error("WTF! A HibernateException occurred, ", e);
+                    logger.error("WTF! Error while using loadClusters");
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
@@ -101,7 +103,7 @@ public class ClusterController extends HttpServlet {
             if (key.startsWith("DEL.")) {
                 String cluster = key.substring(4, key.length());
                 try {
-                    DataAccessObject.getInstance().deleteCluster(request, cluster);
+                    ((DataAccessObject) request.getSession().getAttribute("dao")).deleteCluster(request, cluster);
                 } catch (ConflictException e) {
                     request.setAttribute("theMessage",
                             "Could not delete that cluster at this time. Please try again. " + e.getMessage());
@@ -117,9 +119,9 @@ public class ClusterController extends HttpServlet {
                 }
 
                 try {
-                    DataAccessObject.getInstance().loadClusters(request, "clusterName", "ASC");
+                    ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusters(request, "clusterName", "ASC");
                 } catch (WTFException e) {
-                    logger.error("WTF! Had a HibernateException when trying to setListOfClusters, ", e);
+                    logger.error("WTF! Error while using loadClusters");
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
@@ -131,9 +133,10 @@ public class ClusterController extends HttpServlet {
             }
             if (key.startsWith("ED.")) {
                 String cluster = key.substring(3, key.length());
+                Integer index = Integer.parseInt(cluster);
                 try {
-                    DataAccessObject.getInstance().loadNamedCluster(request, cluster);
-                    DataAccessObject.getInstance().loadClusterSets(request, "clusterSetName", "ASC");
+                    ((DataAccessObject) request.getSession().getAttribute("dao")).loadIndexedCluster(request, index);
+                    ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusterSets(request, "clusterSetName", "ASC");
                 } catch (ConflictException e) {
 
                     request.setAttribute("theMessage",
@@ -143,7 +146,7 @@ public class ClusterController extends HttpServlet {
                     rd.forward(request, response);
                     return;
                 } catch (WTFException e) {
-                    logger.error("WTF! A HibernateException occurred, ", e);
+                    logger.error("WTF! Error while editing a cluster");
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;

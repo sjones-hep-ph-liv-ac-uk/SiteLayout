@@ -1,7 +1,5 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-
-
 import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.util.Iterator;
@@ -40,7 +38,7 @@ public class ClusterSetController extends HttpServlet {
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
-                DataAccessObject.getInstance().loadClusterSets(request, "clusterSetName", "ASC");
+               ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusterSets(request, "clusterSetName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using loadClusterSets");
                 rd = request.getRequestDispatcher("/error.jsp");
@@ -76,9 +74,9 @@ public class ClusterSetController extends HttpServlet {
 
                 try {
 
-                    DataAccessObject.getInstance().loadClusterSets(request, c, order);
+                   ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusterSets(request, c, order);
                 } catch (WTFException e) {
-                    logger.error("WFT! Error trying to refresh cluster set, ", e);
+                    logger.error("WTF! Error while using loadClusterSets");
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
@@ -91,7 +89,7 @@ public class ClusterSetController extends HttpServlet {
             if (key.startsWith("DEL.")) {
                 String clusterSet = key.substring(4, key.length());
                 try {
-                    DataAccessObject.getInstance().deleteClusterSet(request, clusterSet);
+                   ((DataAccessObject) request.getSession().getAttribute("dao")).deleteClusterSet(request, clusterSet);
                 } catch (ConflictException e) {
                     request.setAttribute("theMessage",
                             "Could not update that cluster set at this time. Please try again. " + e.getMessage());
@@ -100,15 +98,15 @@ public class ClusterSetController extends HttpServlet {
                     rd.forward(request, response);
                     return;
                 } catch (WTFException e) {
-                    logger.error("WTF! Error using deleteClusterSet, ", e);
+                    logger.error("WTF! Error while using deleteClusterSet");
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
                 }
                 try {
-                    DataAccessObject.getInstance().loadClusterSets(request, "clusterSetName", order);
+                   ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusterSets(request, "clusterSetName", order);
                 } catch (WTFException e) {
-                    logger.error("WFT! HibernateException when trying to refresh cluster sets, ", e);
+                    logger.error("WTF! Error while using loadClusterSets");
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
@@ -120,9 +118,10 @@ public class ClusterSetController extends HttpServlet {
             }
             if (key.startsWith("ED.")) {
                 String clusterSet = key.substring(3, key.length());
+                Integer index = Integer.parseInt(clusterSet);
 
                 try {
-                    DataAccessObject.getInstance().loadNamedClusterSet(request, clusterSet);
+                   ((DataAccessObject) request.getSession().getAttribute("dao")).loadIndexedClusterSet(request, index);
                 } catch (ConflictException e) {
                     request.setAttribute("theMessage",
                             "Could not edit that clusterSet at this time. Please try again. " + e.getMessage());
@@ -131,7 +130,7 @@ public class ClusterSetController extends HttpServlet {
                     rd.forward(request, response);
                     return;
                 } catch (WTFException e) {
-                    logger.error("WTF! Error using queryOneClusterSet, ", e);
+                    logger.error("WTF! Error while editing a cluster set");
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;

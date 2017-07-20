@@ -1,19 +1,14 @@
 package com.basingwerk.sldb.mvc.controllers;
 
+import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
-
-
 import org.hibernate.Session;
 import org.apache.log4j.Logger;
-
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-
 import com.basingwerk.sldb.mvc.model.User;
-
 import java.io.IOException;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -55,6 +50,8 @@ public class LoginController extends HttpServlet {
 
             SessionFactory sessionFactory = cfg.configure().buildSessionFactory();
             HttpSession session = request.getSession();
+            DataAccessObject dao = new DataAccessObject();
+            session.setAttribute("dao", dao);
 
             session.setAttribute("sessionFactory", sessionFactory);
             Session hibSession = sessionFactory.openSession();
@@ -74,6 +71,9 @@ public class LoginController extends HttpServlet {
             hibSession.close();
             User user = new User(username, password);
             request.setAttribute("user", user);
+            
+            
+            
 
             rd = request.getRequestDispatcher("/main_screen.jsp");
             rd.forward(request, response);

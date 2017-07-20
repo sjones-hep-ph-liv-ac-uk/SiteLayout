@@ -1,7 +1,5 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-
-
 import org.apache.log4j.Logger;
 import java.io.IOException;
 import javax.servlet.RequestDispatcher;
@@ -38,7 +36,7 @@ public class MainScreenController extends HttpServlet {
             }
             String next = "";
             if (act.equals("Edit cluster sets")) {
-                DataAccessObject.getInstance().loadClusterSets(request, "clusterSetName", "ASC");
+                ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusterSets(request, "clusterSetName", "ASC");
                 next = "/cluster_set.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -46,7 +44,7 @@ public class MainScreenController extends HttpServlet {
             }
 
             if (act.equals("Edit node types")) {
-                DataAccessObject.getInstance().loadNodeTypes(request, "nodeTypeName", "ASC");
+                ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodeTypes(request, "nodeTypeName", "ASC");
                 next = "/nodetype.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -54,14 +52,14 @@ public class MainScreenController extends HttpServlet {
             }
 
             if (act.equals("Edit clusters")) {
-                DataAccessObject.getInstance().loadClusters(request, "clusterName", "ASC");
+                ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusters(request, "clusterName", "ASC");
                 next = "/cluster.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
                 return;
             }
             if (act.equals("Edit node sets")) {
-                DataAccessObject.getInstance().loadNodeSets(request, "nodeSetName", "ASC");
+                ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodeSets(request, "nodeSetName", "ASC");
                 next = "/nodeset.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -69,7 +67,7 @@ public class MainScreenController extends HttpServlet {
 
             }
             if (act.equals("Reports")) {
-                DataAccessObject.getInstance().loadClusterSets(request, "clusterSetName", "ASC");
+                ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusterSets(request, "clusterSetName", "ASC");
                 next = "/select_cluster_set.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);

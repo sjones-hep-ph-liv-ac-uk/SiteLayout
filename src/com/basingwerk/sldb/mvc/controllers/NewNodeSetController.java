@@ -1,7 +1,5 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-
-
 import org.apache.log4j.Logger;
 import java.io.IOException;
 import javax.servlet.RequestDispatcher;
@@ -30,7 +28,7 @@ public class NewNodeSetController extends HttpServlet {
         RequestDispatcher rd = null;
 
         try {
-            DataAccessObject.getInstance().addNodeSet(request);
+            ((DataAccessObject) request.getSession().getAttribute("dao")).addNodeSet(request);
         } catch (ConflictException e) {
             request.setAttribute("theMessage",
                     "Could not add that data at this time. Please try again. " + e.getMessage());
@@ -46,7 +44,7 @@ public class NewNodeSetController extends HttpServlet {
         }
 
         try {
-            DataAccessObject.getInstance().loadNodeSets(request, "nodeSetName", "ASC");
+            ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodeSets(request, "nodeSetName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error using refreshNodeSets, ", e);
             rd = request.getRequestDispatcher("/error.jsp");

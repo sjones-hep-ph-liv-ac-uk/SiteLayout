@@ -1,7 +1,5 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-
-
 import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.util.Iterator;
@@ -40,7 +38,7 @@ public class NodeSetController extends HttpServlet {
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
-                DataAccessObject.getInstance().loadNodeSets(request, "nodeSetName", "ASC");
+                ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodeSets(request, "nodeSetName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using refreshNodeSets");
                 rd = request.getRequestDispatcher("/error.jsp");
@@ -56,8 +54,8 @@ public class NodeSetController extends HttpServlet {
         if (act != null) {
 
             try {
-                DataAccessObject.getInstance().loadClusters(request, "clusterName", "ASC");
-                DataAccessObject.getInstance().loadNodeTypes(request, "nodeTypeName", "ASC");
+                ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusters(request, "clusterName", "ASC");
+                ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodeTypes(request, "nodeTypeName", "ASC");
 
             } catch (WTFException e) {
                 logger.error("WTF! Error preparing data, ", e);
@@ -88,7 +86,7 @@ public class NodeSetController extends HttpServlet {
                 }
 
                 try {
-                    DataAccessObject.getInstance().loadNodeSets(request, c, order);
+                    ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodeSets(request, c, order);
                 } catch (WTFException e) {
                     logger.error("WTF! Error using refreshNodeSets, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -104,9 +102,9 @@ public class NodeSetController extends HttpServlet {
             if (key.startsWith("DEL.")) {
                 String nodeSetName = key.substring(4, key.length());
                 try {
-                    DataAccessObject.getInstance().deleteNodeSet(request, nodeSetName);
+                    ((DataAccessObject) request.getSession().getAttribute("dao")).deleteNodeSet(request, nodeSetName);
                 } catch (ConflictException e) {
-                    logger.error("WTF! Error deleteing a node set, ", e);
+                    logger.error("WTF! Error deleting a node set, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
@@ -115,7 +113,7 @@ public class NodeSetController extends HttpServlet {
                     e.printStackTrace();
                 }
                 try {
-                    DataAccessObject.getInstance().loadNodeSets(request, "nodeSetName", "ASC");
+                    ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodeSets(request, "nodeSetName", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error using refreshNodeSets.");
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -128,9 +126,10 @@ public class NodeSetController extends HttpServlet {
                 return;
             }
             if (key.startsWith("ED.")) {
-                String nodeSetName = key.substring(3, key.length());
+                String nodeSet = key.substring(3, key.length());
+                Integer index = Integer.parseInt(nodeSet);
                 try {
-                    DataAccessObject.getInstance().loadNamedNodeSet(request, nodeSetName);
+                    ((DataAccessObject) request.getSession().getAttribute("dao")).loadIndexedNodeSet(request, index);
                 } catch (ConflictException e) {
                     request.setAttribute("theMessage",
                             "Could not edit that nodeSet at this time. Please try again. " + e.getMessage());
@@ -146,8 +145,8 @@ public class NodeSetController extends HttpServlet {
                 }
 
                 try {
-                    DataAccessObject.getInstance().loadClusters(request, "clusterName", "ASC");
-                    DataAccessObject.getInstance().loadNodeTypes(request, "nodeTypeName", "ASC");
+                    ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusters(request, "clusterName", "ASC");
+                    ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodeTypes(request, "nodeTypeName", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error preparing data, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");

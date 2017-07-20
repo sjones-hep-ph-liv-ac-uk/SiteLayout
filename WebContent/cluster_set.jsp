@@ -73,7 +73,9 @@
 				<td></td>
 				<td></td>
 			</tr>
+			<c:set var="index" value="-1" scope="page" />
 			<c:forEach items="${clusterSetList}" var="clusterSet">
+			    <c:set var="index" value="${index + 1}" scope="page"/>
 				<tr>
 					<td><c:out value="${clusterSet.clusterSetName}" /></td>
 					<td><c:out value="${clusterSet.description}" /></td>
@@ -84,7 +86,7 @@
 					<td class="tg-yw4l"><input type="submit" value="Del"
 						name=DEL.${clusterSet.clusterSetName}></td>
 					<td class="tg-yw4l"><input type="submit" value="Edit"
-						name=ED.${clusterSet.clusterSetName}></td>
+						name=ED.${index}></td> <!-- ${clusterSet.clusterSetName} -->
 				</tr>
 			</c:forEach>
 			<tr>

@@ -1,6 +1,5 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-
 import org.apache.log4j.Logger;
 import java.io.IOException;
 import javax.servlet.RequestDispatcher;
@@ -28,7 +27,7 @@ public class EditNodeSetController extends HttpServlet {
             throws ServletException, IOException {
         RequestDispatcher rd = null;
         try {
-            DataAccessObject.getInstance().updateNodeSet(request);
+            ((DataAccessObject) request.getSession().getAttribute("dao")).updateNodeSet(request);
             
         } catch (WTFException e) {
             logger.error("WTF! Cannot update node set.");
@@ -43,7 +42,7 @@ public class EditNodeSetController extends HttpServlet {
             return;
         }            
         try {
-            DataAccessObject.getInstance().loadNodeSets(request, "nodeSetName", "ASC");
+            ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodeSets(request, "nodeSetName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error using refreshNodeSets");
             rd = request.getRequestDispatcher("/error.jsp");

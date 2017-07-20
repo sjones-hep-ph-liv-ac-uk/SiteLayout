@@ -53,7 +53,9 @@
 				<td></td>
 				<td></td>
 			</tr>
+			<c:set var="index" value="-1" scope="page" />
 			<c:forEach items="${nodeTypeList}" var="nodeType">
+			    <c:set var="index" value="${index + 1}" scope="page"/>
 				<tr>
 					<td><c:out value="${nodeType.nodeTypeName}" /></td>
 					<td><c:out value="${nodeType.cpu}" /></td>
@@ -63,7 +65,7 @@
 					<td class="tg-yw4l"><input type="submit" value="Del"
 						name=DEL.${nodeType.nodeTypeName}></td>
 					<td class="tg-yw4l"><input type="submit" value="Edit"
-						name=ED.${nodeType.nodeTypeName}></td>
+						name=ED.${index}></td>   <!--  ED.${nodeType.nodeTypeName} -->
 				</tr>
 			</c:forEach>
 			<tr>

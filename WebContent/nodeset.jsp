@@ -53,7 +53,9 @@
 				<td></td>
 				<td></td>
 			</tr>
+			<c:set var="index" value="-1" scope="page" />
 			<c:forEach items="${nodeSetList}" var="nodeSet">
+			    <c:set var="index" value="${index + 1}" scope="page"/>
 				<tr>
 					<td><c:out value="${nodeSet.nodeSetName}" /></td>
 					<td><c:out value="${nodeSet.nodeType.nodeTypeName}" /></td>
@@ -62,7 +64,7 @@
 					<td class="tg-yw4l"><input type="submit" value="Del"
 						name=DEL.${nodeSet.nodeSetName}></td>
 					<td class="tg-yw4l"><input type="submit" value="Edit"
-						name=ED.${nodeSet.nodeSetName}></td>
+						name=ED.${index}></td> <!-- ${nodeSet.nodeSetName} -->
 				</tr>
 			</c:forEach>
 			<tr>
