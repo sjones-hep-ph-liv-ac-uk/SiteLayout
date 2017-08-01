@@ -52,6 +52,8 @@
 				</td>
 				<td></td>
 				<td></td>
+				<td></td>
+				<%-- <td></td>--%>
 			</tr>
 			<c:set var="index" value="-1" scope="page" />
 			<c:forEach items="${nodeList}" var="node">
@@ -61,10 +63,10 @@
 					<td><c:out value="${node.nodeState.state}" /></td>
 					<td><c:out value="${node.description}" /></td>
 					<td><c:out value="${node.nodeSet.nodeSetName}" /></td>
-					<td class="tg-yw4l"><input type="submit" value="Del"
-						name=DEL.${node.nodeName}></td>
-					<td class="tg-yw4l"><input type="submit" value="Edit"
-						name=ED.${index}></td> <!-- ${node.nodeName} -->
+					<td><input type="checkbox" name="choices" value="CHK.${node.nodeName}"> </input></td>
+					<td class="tg-yw4l"><input type="submit" value="Del" name=DEL.${node.nodeName}></td>
+					<td class="tg-yw4l"><input type="submit" value="Edit" name=ED.${index}></td> 
+					<%--<td class="tg-yw4l"><input type="submit" value="Toggle" name=TGL.${index}></td> --%> 
 				</tr>
 			</c:forEach>
 			<tr>
@@ -72,7 +74,10 @@
 				<td><input type="submit" value="New" name="New" /></td>
 				<td><input type="submit" value="Refresh" name="Refresh" /></td>
 				<td></td>
+				<td><input type="submit" value="Toggle" name="Toggle" /></td>
 				<td></td>
+				<td></td>
+				<%-- <td></td> --%>
 			</tr>
 		</table>
 	</form>

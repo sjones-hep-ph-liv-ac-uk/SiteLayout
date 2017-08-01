@@ -49,7 +49,7 @@ public class DataAccessObject {
     Node cachedNode = null;
 
     // Helper functions
-    public /* static */ ArrayList<NodeSetNodeTypeJoin> getJoinForCluster(HttpServletRequest request, String clusterName)
+    public ArrayList<NodeSetNodeTypeJoin> getJoinForCluster(HttpServletRequest request, String clusterName)
             throws WTFException {
         HttpSession httpSession = request.getSession();
         Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
@@ -75,7 +75,7 @@ public class DataAccessObject {
         return nsntj;
     }
 
-    public /* static */ ArrayList<String> listClustersOfClusterSet(HttpServletRequest request, String clusterSetName)
+    public ArrayList<String> listClustersOfClusterSet(HttpServletRequest request, String clusterSetName)
             throws WTFException {
         HttpSession httpSession = request.getSession();
         Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
@@ -98,7 +98,7 @@ public class DataAccessObject {
         return cl;
     }
 
-    public /* static */ void setBaselineNodeType(HttpServletRequest request) throws WTFException {
+    public void setBaselineNodeType(HttpServletRequest request) throws WTFException {
 
         HttpSession httpSession = request.getSession();
         Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
@@ -125,7 +125,6 @@ public class DataAccessObject {
         }
     }
 
-    // Member functions
 
     public void loadClusters(HttpServletRequest request, String col, String order) throws WTFException {
 
@@ -534,6 +533,73 @@ public class DataAccessObject {
         httpSession.setAttribute("nodeVersion", storedNode.getVersion());
         request.setAttribute("node", storedNode);
         cachedNode = storedNode;
+        return;
+    }
+
+    public void toggleCheckedNodes(HttpServletRequest request) throws WTFException {
+
+        HttpSession httpSession = request.getSession();
+
+        Session hibSession = null;
+        
+        try {
+            hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+            String[] choices = request.getParameterValues("choices");
+            if (choices == null) {
+                return;
+            }
+            hibSession.beginTransaction();
+            for (String c : choices) {
+                String nodeName = c.substring(4, c.length());
+                Node node = (Node) hibSession.createCriteria(Node.class).add(Restrictions.eq("nodeName", nodeName))
+                        .uniqueResult();
+                if (node.getNodeState().getState().equalsIgnoreCase("ONLINE")) {
+                    NodeState s = (NodeState) hibSession.createCriteria(NodeState.class)
+                            .add(Restrictions.eq("state", "OFFLINE")).uniqueResult();
+                    node.setNodeState(s);
+                } else {
+                    NodeState s = (NodeState) hibSession.createCriteria(NodeState.class)
+                            .add(Restrictions.eq("state", "ONLINE")).uniqueResult();
+                    node.setNodeState(s);
+                }
+                hibSession.save(node);
+            }
+            hibSession.getTransaction().commit();
+        } catch (HibernateException ex) {
+            hibSession.getTransaction().rollback();
+            logger.warn("Some minor error occured toggling a node state", ex);
+        } finally {
+            hibSession.close();
+        }
+        return;
+    }
+
+    public void toggleIndexedNode(HttpServletRequest request, Integer nodeIndex) throws WTFException {
+        HttpSession httpSession = request.getSession();
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+
+        try {
+            hibSession.beginTransaction();
+            Node cn = nodeList.get(nodeIndex);
+            if (cn.getNodeState().getState().equalsIgnoreCase("ONLINE")) {
+                NodeState s = (NodeState) hibSession.createCriteria(NodeState.class)
+                        .add(Restrictions.eq("state", "OFFLINE")).uniqueResult();
+                cn.setNodeState(s);
+            } else {
+                NodeState s = (NodeState) hibSession.createCriteria(NodeState.class)
+                        .add(Restrictions.eq("state", "ONLINE")).uniqueResult();
+                cn.setNodeState(s);
+            }
+
+            hibSession.save(cn);
+            hibSession.getTransaction().commit();
+        } catch (HibernateException ex) {
+            hibSession.getTransaction().rollback();
+            logger.warn("Some minor error occured toggling a node state", ex);
+            // throw new WTFException("WTF error using toggleIndexedNode");
+        } finally {
+            hibSession.close();
+        }
         return;
     }
 

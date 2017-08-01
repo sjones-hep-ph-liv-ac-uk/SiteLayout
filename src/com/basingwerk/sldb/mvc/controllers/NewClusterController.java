@@ -29,7 +29,6 @@ public class NewClusterController extends HttpServlet {
 
         DataAccessObject dao = DataAccessObject.getInstance();
 
-
         try {
             dao.addCluster(request);
             dao.loadClusters(request, "clusterName", "ASC");

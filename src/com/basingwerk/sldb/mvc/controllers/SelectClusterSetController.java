@@ -39,6 +39,7 @@ public class SelectClusterSetController extends HttpServlet {
             dao.loadNodeTypes(request, "nodeTypeName", "ASC");
             dao.loadClusters(request, "clusterName", "ASC");
             dao.setBaselineNodeType(request);
+
             clusters = dao.listClustersOfClusterSet(request, clusterSetName);
             java.util.HashMap<String, ArrayList> joinMap = new java.util.HashMap<String, ArrayList>();
 

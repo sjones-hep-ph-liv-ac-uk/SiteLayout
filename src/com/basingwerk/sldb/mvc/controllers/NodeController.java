@@ -2,7 +2,10 @@ package com.basingwerk.sldb.mvc.controllers;
 
 import org.apache.log4j.Logger;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
@@ -29,7 +32,7 @@ public class NodeController extends HttpServlet {
             throws ServletException, IOException {
         RequestDispatcher rd = null;
         DataAccessObject dao = DataAccessObject.getInstance();
-
+        
         String act = null;
         act = request.getParameter("Back");
         if (act != null) {
@@ -37,9 +40,27 @@ public class NodeController extends HttpServlet {
             rd.forward(request, response);
             return;
         }
+
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
+                dao.loadNodes(request, "nodeName", "ASC");
+            } catch (WTFException e) {
+                logger.error("WTF! Error while using refreshNodes");
+                rd = request.getRequestDispatcher("/error.jsp");
+                rd.forward(request, response);
+                return;
+            }
+            rd = request.getRequestDispatcher("/node.jsp");
+            rd.forward(request, response);
+            return;
+        }
+
+        act = request.getParameter("Toggle");
+        if (act != null) {
+
+            try {
+                dao.toggleCheckedNodes(request);
                 dao.loadNodes(request, "nodeName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using refreshNodes");
@@ -68,6 +89,7 @@ public class NodeController extends HttpServlet {
             rd.forward(request, response);
             return;
         }
+
 
         Map params = request.getParameterMap();
         Iterator i = params.keySet().iterator();
@@ -101,17 +123,19 @@ public class NodeController extends HttpServlet {
             }
 
             if (key.startsWith("DEL.")) {
-                String nodeSetName = key.substring(4, key.length());
+                String node = key.substring(4, key.length());
                 try {
-                    dao.deleteNode(request, nodeSetName);
+                    dao.deleteNode(request, node);
                 } catch (ConflictException e) {
                     logger.error("WTF! Error deleting a node, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
                 } catch (WTFException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    logger.error("WTF! Error deleting a node, ", e);
+                    rd = request.getRequestDispatcher("/error.jsp");
+                    rd.forward(request, response);
+                    return;
                 }
                 try {
                     dao.loadNodes(request, "nodeName", "ASC");
@@ -127,8 +151,8 @@ public class NodeController extends HttpServlet {
                 return;
             }
             if (key.startsWith("ED.")) {
-                String nodeSet = key.substring(3, key.length());
-                Integer index = Integer.parseInt(nodeSet);
+                String node = key.substring(3, key.length());
+                Integer index = Integer.parseInt(node);
                 try {
                     dao.loadIndexedNode(request, index);
                 } catch (ConflictException e) {
@@ -160,11 +184,29 @@ public class NodeController extends HttpServlet {
                 rd.forward(request, response);
                 return;
             }
+
+            if (key.startsWith("TGL.")) {
+                String node = key.substring(4, key.length());
+                Integer index = Integer.parseInt(node);
+                try {
+                    dao.toggleIndexedNode(request, index);
+                } catch (WTFException e) {
+                    logger.error("WTF! Error using loadNodes");
+                    rd = request.getRequestDispatcher("/error.jsp");
+                    rd.forward(request, response);
+                    return;
+                }
+                rd = request.getRequestDispatcher("/node.jsp");
+                rd.forward(request, response);
+                return;
+
+            }
         }
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         doGet(request, response);
     }
 }

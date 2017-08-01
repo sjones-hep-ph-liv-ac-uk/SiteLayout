@@ -39,11 +39,11 @@ public class NodeState {
         this.nodes = nodes;
     }
 
-    public String getstate() {
+    public String getState() {
         return state;
     }
 
-    public void setstate(String state) {
+    public void setState(String state) {
         this.state = state;
     }
 

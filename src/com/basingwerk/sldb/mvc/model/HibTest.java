@@ -67,11 +67,9 @@ public class HibTest {
 //        session.save(clusterSetB);
 //        session.getTransaction().commit();
 //
-//        System.out.println("Done save");
 //
 //        session = sessionFactory.openSession();
 //        ClusterSet cs = (ClusterSet) session.get(com.basingwerk.sldb.mvc.model.ClusterSet.class, "TESTCLUSTERSETB");
-//        System.out.println(cs.getClusters().size());
 //
 //        NodeType nodeType = new NodeType();
 //        nodeType.setNodeTypeName("FASTNODE");

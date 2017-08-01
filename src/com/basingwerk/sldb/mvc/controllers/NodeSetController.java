@@ -112,8 +112,10 @@ public class NodeSetController extends HttpServlet {
                     rd.forward(request, response);
                     return;
                 } catch (WTFException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    logger.error("WTF! Error deleting a node set, ", e);
+                    rd = request.getRequestDispatcher("/error.jsp");
+                    rd.forward(request, response);
+                    return;
                 }
                 try {
                     dao.loadNodeSets(request, "nodeSetName", "ASC");

@@ -78,7 +78,6 @@ public class LoginController extends HttpServlet {
             rd.forward(request, response);
             return;
         } catch (HibernateException e) {
-            e.printStackTrace();
             msg = "HibernateException when trying to connect to database" + e.getStackTrace();
         }
         logger.error(msg);
