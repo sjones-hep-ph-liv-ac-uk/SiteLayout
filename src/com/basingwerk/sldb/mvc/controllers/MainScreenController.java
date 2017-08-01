@@ -66,6 +66,14 @@ public class MainScreenController extends HttpServlet {
                 return;
 
             }
+            if (act.equals("Edit nodes")) {
+                ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodes(request, "nodeName", "ASC");
+                next = "/node.jsp";
+                rd = request.getRequestDispatcher(next);
+                rd.forward(request, response);
+                return;
+
+            }
             if (act.equals("Reports")) {
                 ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusterSets(request, "clusterSetName", "ASC");
                 next = "/select_cluster_set.jsp";

@@ -27,17 +27,23 @@ public class DataAccessObject {
         clusterSetList = new ArrayList<ClusterSet> ();
         nodeSetList = new ArrayList<NodeSet>(); 
         nodeTypeList = new ArrayList<NodeType>(); 
+        nodeList = new ArrayList<Node>();
+        nodeStateList = new ArrayList<NodeState>();
+        
     }
     
     ArrayList<Cluster> clusterList = null;
     ArrayList<ClusterSet> clusterSetList = null;
     ArrayList<NodeSet> nodeSetList = null;
     ArrayList<NodeType> nodeTypeList = null;
+    ArrayList<Node> nodeList = null;
+    ArrayList<NodeState> nodeStateList = null;
 
     Cluster cachedCluster = null;
     ClusterSet cachedClusterSet = null;
     NodeSet cachedNodeSet= null;
     NodeType cachedNodeType= null;
+    Node cachedNode = null;
 
     // Helper functions
     public static ArrayList<NodeSetNodeTypeJoin> getJoinForCluster(HttpServletRequest request, String clusterName)
@@ -144,6 +150,31 @@ public class DataAccessObject {
         request.setAttribute("clusterList", clusterList);
         
     }
+    public void loadNodeStates(HttpServletRequest request, String col, String order) throws WTFException {
+
+        HttpSession httpSession = request.getSession();
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+
+        Order ord = org.hibernate.criterion.Order.desc(col);
+        if (order.equalsIgnoreCase("ASC")) {
+            ord = org.hibernate.criterion.Order.asc(col);
+        }
+
+        nodeStateList = null;
+        try {
+
+            hibSession.beginTransaction();
+            nodeStateList = (ArrayList<NodeState>) hibSession.createCriteria(NodeState.class).addOrder(ord).list();
+        } catch (HibernateException ex) {
+            hibSession.getTransaction().rollback();
+            logger.error("WTF error using loadNodeStates, ", ex);
+            throw new WTFException("WTF error using loadNodeStates");
+        } finally {
+            hibSession.close();
+        }
+
+        request.setAttribute("nodeStateList", nodeStateList );
+    }
 
     public void loadClusterSets(HttpServletRequest request, String col, String order) throws WTFException {
 
@@ -199,6 +230,31 @@ public class DataAccessObject {
         httpSession.setAttribute("nodeSetList", nodeSetList);
 
 
+    }
+    public void loadNodes(HttpServletRequest request, String col, String order) throws WTFException {
+
+        HttpSession httpSession = request.getSession();
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+
+        Order ord = org.hibernate.criterion.Order.desc(col);
+        if (order.equalsIgnoreCase("ASC")) {
+            ord = org.hibernate.criterion.Order.asc(col);
+        }
+
+        nodeList = null;
+        try {
+
+            hibSession.beginTransaction();
+            nodeList = (ArrayList<Node>) hibSession.createCriteria(Node.class).addOrder(ord).list();
+            hibSession.getTransaction().commit();
+        } catch (HibernateException ex) {
+            hibSession.getTransaction().rollback();
+            logger.error("Had an error when trying to refresh node sets, ", ex);
+            throw new WTFException("Had an error when trying to refresh nodes");
+        } finally {
+            hibSession.close();
+        }
+        httpSession.setAttribute("nodeList", nodeList);
     }
 
     public void loadNodeTypes(HttpServletRequest request, String col, String order) throws WTFException {
@@ -429,6 +485,58 @@ public class DataAccessObject {
         cachedNodeType = storedNodeType;
         return;
     }
+    
+    
+    public void loadIndexedNode (HttpServletRequest request, Integer nodeIndex)
+            throws WTFException, ConflictException {
+
+        HttpSession httpSession = request.getSession();
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+
+        cachedNode = null;
+        Node storedNode = null;
+        try {
+            hibSession.beginTransaction();
+
+            cachedNode = nodeList.get(nodeIndex);
+            if (cachedNode == null) {
+                logger.error("While using loadIndexedNode, desired Node not found");
+                throw new ConflictException("While using loadIndexedNode, desired Node not found");
+            }
+
+            Long cachedVersion = cachedNode.getVersion();
+            storedNode = (Node) hibSession.createCriteria(Node.class)
+                    .add(Restrictions.eq("nodeName", cachedNode.getNodeName())).uniqueResult();
+            // Possibly deleted during long conversation
+            if (storedNode== null) {
+                hibSession.getTransaction().rollback();
+                logger.error("While using loadIndexedNode, desired Node not found");
+                throw new ConflictException("While using loadIndexedNode, desired Node not found");
+            }
+
+            Long storedVersion = storedNode.getVersion();
+            if (!storedVersion.equals(cachedVersion)) {
+                hibSession.getTransaction().rollback();
+                logger.error("While using loadIndexedNode, desired Node was altered by another user ");
+                throw new ConflictException(
+                        "While using loadIndexedNode, desired Node was altered by another user ");
+            }
+
+            hibSession.getTransaction().commit();
+
+        } catch (HibernateException ex) {
+            hibSession.getTransaction().rollback();
+            logger.error("WTF error using loadIndexedNode, ", ex);
+            throw new WTFException("WTF error using loadIndexedNode");
+        } finally {
+            hibSession.close();
+        }
+        httpSession.setAttribute("nodeVersion", storedNode.getVersion());
+        request.setAttribute("node", storedNode);
+        cachedNode = storedNode;
+        return;
+    }
+    
 
     public void addCluster(HttpServletRequest request) throws ConflictException, WTFException {
         HttpSession httpSession = request.getSession();
@@ -600,6 +708,63 @@ public class DataAccessObject {
         }
     }
 
+    public void addNode(HttpServletRequest request) throws WTFException, ConflictException {
+
+        HttpSession httpSession = request.getSession();
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        
+        String nodeName  = request.getParameter("nodeName");
+        String nodeDescription = request.getParameter("nodeDescription");
+        String nodeSetName = request.getParameter("nodeSetList");
+        String nodeStateName = request.getParameter("nodeStateList");
+        logger.error("SJDEBUG While using addNode, params were |" + nodeName + "|" + nodeDescription + "|" + nodeSetName + "|" + nodeStateName + "|"  );
+
+//        NodeSet nodeSet = new NodeSet();
+//        NodeState nodeState = new NodeState();
+        Node n = new Node();
+        
+
+        try {
+            hibSession.beginTransaction();
+
+            NodeSet nodeSet= (NodeSet) hibSession.createCriteria(NodeSet.class)
+                    .add(Restrictions.eq("nodeSetName", nodeSetName)).uniqueResult();
+            if (nodeSet == null) {
+                // Possibly deleted during long conversation
+                hibSession.getTransaction().rollback();
+                logger.error("While using addNode, desired NodeSet not found");
+                throw new ConflictException("While using addNode, desired NodeSet not found");
+            }
+
+            NodeState nodeState = (NodeState) hibSession.createCriteria(NodeState.class)
+                    .add(Restrictions.eq("state", nodeStateName)).uniqueResult();
+            if (nodeState == null) {
+                // Possibly deleted during long conversation
+                hibSession.getTransaction().rollback();
+                logger.error("While using addNode, desired nodeState not found");
+                throw new ConflictException("While using addNode, desired nodeState not found");
+            }
+            
+            n.setNodeName(nodeName);
+            n.setDescription(nodeDescription);
+            n.setNodeSet(nodeSet);
+            n.setNodeState(nodeState);
+            
+            hibSession.save(n);
+            hibSession.getTransaction().commit();
+        } catch (ConstraintViolationException e) {
+            hibSession.getTransaction().rollback();
+            logger.error("While using addNode, the nodeName conflicted with an existing node");
+            throw new ConflictException("While using addNode, the nodeName conflicted with an existing node");
+        } catch (HibernateException e) {
+            hibSession.getTransaction().rollback();
+            logger.error("WTF error using addNode, ", e);
+            throw new WTFException("WTF error using addNode");
+        } finally {
+            hibSession.close();
+        }
+    }
+    
     public void deleteCluster(HttpServletRequest request, String clusterName) throws WTFException, ConflictException {
 
         HttpSession httpSession = request.getSession();
@@ -672,6 +837,33 @@ public class DataAccessObject {
             hibSession.close();
         }
     }
+    
+    public void deleteNode(HttpServletRequest request, String nodeName) throws WTFException, ConflictException {
+
+        HttpSession httpSession = request.getSession();
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+
+        Node node= (Node) hibSession.createCriteria(Node.class)
+                .add(Restrictions.eq("nodeName", nodeName)).uniqueResult();
+        
+        if (node == null) {
+            logger.error("While using deleteNode, desired Node not found");
+            throw new ConflictException("While using deleteNode, desired Nodenot found");
+        }
+        try {
+            hibSession.beginTransaction();
+            hibSession.delete(node);
+            hibSession.getTransaction().commit();
+        } catch (HibernateException ex) {
+            // Possibly deleted during long conversation
+            hibSession.getTransaction().rollback();
+            logger.error("While using deleteNode, desired Node not found");
+            throw new ConflictException("While using deleteNode , desired Nodenot found");
+        } finally {
+            hibSession.close();
+        }
+    }
+    
 
     public void deleteNodeType(HttpServletRequest request, String nodeTypeName) throws WTFException, ConflictException {
 
@@ -843,6 +1035,83 @@ public class DataAccessObject {
         }
     }
 
+    public void updateNode(HttpServletRequest request) throws WTFException, ConflictException {
+
+        HttpSession httpSession = request.getSession();
+        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+
+        try {
+            hibSession.beginTransaction();
+
+            // We assume it is updated, whether it is or is not
+            String updatedNodeName = request.getParameter("nodeName");
+            String updateDescription = request.getParameter("nodeDescription");
+            String updatedNodeSet = request.getParameter("nodeSetList");
+            String updatedNodeState = request.getParameter("nodeStateList");
+            
+            Node storedNode = null;
+
+            if (cachedNode == null) {
+                hibSession.getTransaction().rollback();
+                logger.error("While using updateNode, desired Node not found");
+                throw new ConflictException("While using updateNode, desired Node not found");
+            }
+            Long cachedNodeVersion = cachedNode.getVersion();
+
+            storedNode = (Node) hibSession.createCriteria(Node.class)
+                    .add(Restrictions.eq("nodeName", updatedNodeName)).uniqueResult();
+            
+            // Possibly deleted during long conversation
+            if (storedNode == null) {
+                hibSession.getTransaction().rollback();
+                logger.error("While using updateNode, desired Node  not found");
+                throw new ConflictException("While using updateNode, desired Node  not found");
+            }
+            // Possibly altered during long conversation
+            Long storedNodeVersion = storedNode.getVersion();
+
+            if (!storedNodeVersion.equals(cachedNodeVersion)) {
+                hibSession.getTransaction().rollback();
+                logger.error("While using updateNode, desired Node was altered by another user ");
+                throw new ConflictException("While using updateNode, desired Node was altered by another user ");
+            }
+
+            // Both the same. Safe to update
+            storedNode.setNodeName(updatedNodeName);
+            storedNode.setDescription(updateDescription);
+            
+            NodeSet nodeSet = (NodeSet) hibSession.createCriteria(NodeSet.class)
+                    .add(Restrictions.eq("nodeSetName", updatedNodeSet)).uniqueResult();
+            if (nodeSet  == null) {
+                // Possibly deleted during long conversation
+                hibSession.getTransaction().rollback();
+                logger.error("While using updateNode, desired nodeSet  not found");
+                throw new ConflictException("While using updateNode, desired nodeSet not found");
+            }
+            storedNode.setNodeSet(nodeSet);
+            
+            NodeState nodeState = (NodeState) hibSession.createCriteria(NodeState.class)
+                    .add(Restrictions.eq("state", updatedNodeState)).uniqueResult();
+            if (nodeState == null) {
+                // Possibly deleted during long conversation
+                hibSession.getTransaction().rollback();
+                logger.error("While using updateNode, desired nodeState not found");
+                throw new ConflictException("While using updateNode, desired nodeState not found");
+            }
+            storedNode.setNodeState(nodeState);
+            
+            hibSession.update(storedNode);
+            hibSession.getTransaction().commit();
+            
+        } catch (HibernateException e) {
+            hibSession.getTransaction().rollback();
+            logger.error("WTF error using updateNode, ", e);
+            throw new WTFException("WTF error using updateNode");
+        } finally {
+            hibSession.close();
+        }
+    }
+    
     public void updateNodeType(HttpServletRequest request) throws WTFException, ConflictException {
 
         HttpSession httpSession = request.getSession();

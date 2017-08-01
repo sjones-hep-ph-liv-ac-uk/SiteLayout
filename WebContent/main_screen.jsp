@@ -37,6 +37,10 @@
 					name="SomeButton" /></td>
 			</tr>
 			<tr>
+				<td class="tg-yw4l"><input type="submit" value="Edit nodes"
+					name="SomeButton" /></td>
+			</tr>
+			<tr>
 				<td class="tg-yw4l"><input type="submit" value="Reports"
 					name="SomeButton" /></td>
 			</tr>

@@ -15,8 +15,8 @@ grant ALL PRIVILEGES ON resources.* TO 'resources'@'127.0.0.1';
 SET TRANSACTION ISOLATION LEVEL SERIALIZABLE; 
 SET autocommit = 0;
 
-#DROP TABLE nodeType;
-CREATE TABLE nodeType(
+#DROP TABLE NodeType;
+CREATE TABLE NodeType(
   nodeTypeName varchar(10),
   cpu integer,
   slot integer,
@@ -26,8 +26,8 @@ CREATE TABLE nodeType(
   PRIMARY KEY( nodeTypeName)
 ) TYPE = INNODB;
 
-#DROP TABLE clusterSet;
-CREATE TABLE clusterSet (
+#DROP TABLE ClusterSet;
+CREATE TABLE ClusterSet (
   clusterSetName varchar(50),
   description  varchar(50),
   location varchar(50),
@@ -38,26 +38,64 @@ CREATE TABLE clusterSet (
   PRIMARY KEY( clusterSetName )
 ) TYPE = INNODB;
 
-#DROP TABLE cluster;
-CREATE TABLE cluster (
+#DROP TABLE Cluster;
+CREATE TABLE Cluster (
   clusterName  varchar(20),
   descr        varchar(50),
   clusterSetName varchar(50) NOT NULL,
   version   bigint(20),
   PRIMARY KEY( clusterName ),
-  FOREIGN KEY (clusterSetName) REFERENCES clusterSet(clusterSetName) 
+  FOREIGN KEY (clusterSetName) REFERENCES ClusterSet(clusterSetName) 
 ) TYPE = INNODB;
 
-#DROP TABLE nodeSet;
-CREATE TABLE nodeSet (
+
+
+#DROP TABLE NodeSet;
+CREATE TABLE NodeSet (
   nodeSetName varchar(10),
   nodeTypeName varchar(10),
   nodeCount integer,
   cluster varchar(20),
   version   bigint(20),
   PRIMARY KEY( nodeSetName ),
-  FOREIGN KEY (cluster) REFERENCES cluster(clusterName) ,
-  FOREIGN KEY (nodeTypeName) REFERENCES nodeType(nodeTypeName)
+  FOREIGN KEY (cluster) REFERENCES Cluster(clusterName) ,
+  FOREIGN KEY (nodeTypeName) REFERENCES NodeType(nodeTypeName)
 ) TYPE = INNODB;
+
+DROP TABLE NodeState;
+CREATE TABLE NodeState (
+  state    varchar(10),
+  version   bigint(20),
+  PRIMARY KEY( state    )
+) TYPE = INNODB;
+
+# Static data
+INSERT INTO `NodeState` (`state`,version) VALUES
+('OK',0),
+('HARDWARE_FAULT',1),
+('SOFTWARE_FAULT',2);
+
+DROP TABLE Node;
+#SET FOREIGN_KEY_CHECKS = 0;
+CREATE TABLE Node (
+  nodeName varchar(10),
+  nodeSetName varchar(10),
+  description  varchar(50),
+  state    varchar(10),
+  version   bigint(20),
+  PRIMARY KEY( nodeName )
+# , FOREIGN KEY (nodeSetName) REFERENCES NodeSet(nodeSetName)
+#  FOREIGN KEY (state ) REFERENCES NodeState(state)
+) TYPE = INNODB;
+
+ALTER TABLE Node ADD FOREIGN KEY (nodeSetName) REFERENCES NodeSet(nodeSetName);
+ALTER TABLE Node ADD FOREIGN KEY (state) REFERENCES NodeState(state);
+ALTER TABLE Node ADD FOREIGN KEY (state) REFERENCES NodeSet(nodeSetName);
+
+
+
+#SET FOREIGN_KEY_CHECKS = 1;
+
+
 
 

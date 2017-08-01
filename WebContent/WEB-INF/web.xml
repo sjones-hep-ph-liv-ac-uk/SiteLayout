@@ -157,6 +157,32 @@ version="2.3"> -->
     <url-pattern>/EditClusterSetController</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>NodeController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.NodeController </servlet-class> </servlet>
+  <servlet-mapping>
+    <servlet-name>NodeController</servlet-name>
+    <url-pattern>/NodeController</url-pattern> 
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>EditNodeController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.EditNodeController </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>EditNodeController</servlet-name>
+    <url-pattern>/EditNodeController</url-pattern>
+  </servlet-mapping>
+ 
+  <servlet>
+    <servlet-name>NewNodeController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.NewNodeController </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>NewNodeController</servlet-name>
+    <url-pattern>/NewNodeController</url-pattern>
+  </servlet-mapping>
+
+
   <welcome-file-list>
     <welcome-file>login.jsp</welcome-file>
   </welcome-file-list>

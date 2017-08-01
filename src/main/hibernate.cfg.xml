@@ -52,6 +52,8 @@
 <mapping class="com.basingwerk.sldb.mvc.model.Cluster"/>
 <mapping class="com.basingwerk.sldb.mvc.model.ClusterSet"/>
 <mapping class="com.basingwerk.sldb.mvc.model.NodeType"/>
+<mapping class="com.basingwerk.sldb.mvc.model.Node"/>
+<mapping class="com.basingwerk.sldb.mvc.model.NodeState"/>
  
     </session-factory>
 </hibernate-configuration>
