@@ -26,6 +26,9 @@ public class EditNodeSetController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
+
+        DataAccessObject dao = DataAccessObject.getInstance();
+
         try {
             ((DataAccessObject) request.getSession().getAttribute("dao")).updateNodeSet(request);
             

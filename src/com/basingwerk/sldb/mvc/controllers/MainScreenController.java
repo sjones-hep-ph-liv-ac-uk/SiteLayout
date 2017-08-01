@@ -27,12 +27,6 @@ public class MainScreenController extends HttpServlet {
         RequestDispatcher rd = null;
         try {
             DataAccessObject dao = DataAccessObject.getInstance();
-            if (dao == null) {
-                logger.error("WTF! Cannot connect.");
-                rd = request.getRequestDispatcher("/error.jsp");
-                rd.forward(request, response);
-                return;
-            }
             
             String act = request.getParameter("SomeButton");
             if (act == null) {

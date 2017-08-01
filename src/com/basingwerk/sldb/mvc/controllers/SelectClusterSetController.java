@@ -29,6 +29,8 @@ public class SelectClusterSetController extends HttpServlet {
             throws ServletException, IOException {
 
         RequestDispatcher rd = null;
+        DataAccessObject dao = DataAccessObject.getInstance();
+
 
         String clusterSetName = request.getParameter("clusterSetList");
 

@@ -31,6 +31,9 @@ public class LoginController extends HttpServlet {
             throws ServletException, IOException {
         String msg;
         RequestDispatcher rd = null;
+
+        DataAccessObject dao = DataAccessObject.getInstance();
+
         try {
 
             String database = request.getParameter("database");
@@ -52,8 +55,8 @@ public class LoginController extends HttpServlet {
 
             SessionFactory sessionFactory = cfg.configure().buildSessionFactory();
             HttpSession session = request.getSession();
-            DataAccessObject dao = new DataAccessObject();
-            session.setAttribute("dao", dao);
+//            DataAccessObject dao = new DataAccessObject();
+//            session.setAttribute("dao", dao);
 
             session.setAttribute("sessionFactory", sessionFactory);
             Session hibSession = sessionFactory.openSession();

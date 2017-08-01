@@ -27,6 +27,9 @@ public class NewNodeTypeController extends HttpServlet {
 
         RequestDispatcher rd = null;
 
+        DataAccessObject dao = DataAccessObject.getInstance();
+
+
         try {
             ((DataAccessObject) request.getSession().getAttribute("dao")).addNodeType(request);
         } catch (ConflictException e) {

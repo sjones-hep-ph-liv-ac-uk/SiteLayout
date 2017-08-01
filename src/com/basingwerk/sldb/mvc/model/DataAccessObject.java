@@ -67,8 +67,8 @@ public class DataAccessObject {
             }
         } catch (HibernateException e) {
             hibSession.getTransaction().rollback();
-            logger.error("WTF error using addNodeSet, ", e);
-            throw new WTFException("WTF error using addNodeSet");
+            logger.error("WTF error using getJoinForCluster, ", e);
+            throw new WTFException("WTF error using getJoinForCluster");
         } finally {
             hibSession.close();
         }
@@ -89,8 +89,8 @@ public class DataAccessObject {
             hibSession.getTransaction().commit();
         } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
-            logger.error("Error using getClustersOfClusterSet, ", ex);
-            throw new WTFException("Error using getClustersOfClusterSet");
+            logger.error("Error using listClustersOfClusterSet, ", ex);
+            throw new WTFException("Error using listClustersOfClusterSet");
         } finally {
             hibSession.close();
         }
@@ -144,8 +144,8 @@ public class DataAccessObject {
             clusterList = (ArrayList<Cluster>) hibSession.createCriteria(Cluster.class).addOrder(ord).list();
         } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
-            logger.error("WTF error using refreshListOfAllClusters, ", ex);
-            throw new WTFException("WTF error using refreshListOfAllClusters");
+            logger.error("WTF error using loadClusters, ", ex);
+            throw new WTFException("WTF error using loadClusters");
         } finally {
             hibSession.close();
         }
@@ -198,8 +198,8 @@ public class DataAccessObject {
 
         } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
-            logger.error("Had a problem when using refreshClusterSets, ", ex);
-            throw new WTFException("Had a problem when using refreshClusterSets");
+            logger.error("Had a problem when using loadClusterSets, ", ex);
+            throw new WTFException("Had a problem when using loadClusterSets");
         } finally {
             hibSession.close();
         }
@@ -226,8 +226,8 @@ public class DataAccessObject {
             hibSession.getTransaction().commit();
         } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
-            logger.error("Had an error when trying to refresh node sets, ", ex);
-            throw new WTFException("Had an error when trying to refresh node sets");
+            logger.error("Had an error using loadNodeSets", ex);
+            throw new WTFException("Had an error using loadNodeSets");
         } finally {
             hibSession.close();
         }
@@ -253,8 +253,8 @@ public class DataAccessObject {
             hibSession.getTransaction().commit();
         } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
-            logger.error("Had an error when trying to refresh node sets, ", ex);
-            throw new WTFException("Had an error when trying to refresh nodes");
+            logger.error("Had an error using loadNodes, ", ex);
+            throw new WTFException("Had an error using loadNodes");
         } finally {
             hibSession.close();
         }
@@ -279,8 +279,8 @@ public class DataAccessObject {
             hibSession.getTransaction().commit();
         } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
-            logger.error("Had an error when using refreshNodeTypes, ", ex);
-            throw new WTFException("Had an error when using refreshNodeTypes");
+            logger.error("Had an error using loadNodeTypes, ", ex);
+            throw new WTFException("Had an error using loadNodeTypes");
         } finally {
             hibSession.close();
         }
@@ -303,8 +303,8 @@ public class DataAccessObject {
 
             cachedCluster = clusterList.get(clusterIndex);
             if (cachedCluster == null) {
-                logger.error("While using loadNamedCluster, desired Cluster not found");
-                throw new ConflictException("While using loadNamedCluster, desired Cluster not found");
+                logger.error("While using loadIndexedCluster, desired Cluster not found");
+                throw new ConflictException("While using loadIndexedCluster, desired Cluster not found");
             }
             Long cachedVersion = cachedCluster.getVersion();
 
@@ -313,23 +313,23 @@ public class DataAccessObject {
             // Possibly deleted during long conversation
             if (storedCluster == null) {
                 hibSession.getTransaction().rollback();
-                logger.error("While using loadNamedCluster, desired Cluster not found");
-                throw new ConflictException("While using loadNamedCluster, desired Cluster not found");
+                logger.error("While using loadIndexedCluster, desired Cluster not found");
+                throw new ConflictException("While using loadIndexedCluster, desired Cluster not found");
             }
             Long storedVersion = storedCluster.getVersion();
 
             if (!storedVersion.equals(cachedVersion)) {
                 hibSession.getTransaction().rollback();
-                logger.error("While using loadNamedCluster, desired Cluster was altered by another user ");
+                logger.error("While using loadIndexedCluster, desired Cluster was altered by another user ");
                 throw new ConflictException(
-                        "While using loadNamedCluster, desired Cluster was altered by another user ");
+                        "While using loadIndexedCluster, desired Cluster was altered by another user ");
             }
 
             hibSession.getTransaction().commit();
         } catch (HibernateException e) {
             hibSession.getTransaction().rollback();
-            logger.error("WTF error using setSingleCluster, ", e);
-            throw new WTFException("WTF error using setSingleCluster");
+            logger.error("WTF error using loadIndexedCluster, ", e);
+            throw new WTFException("WTF error using loadIndexedCluster");
         } finally {
             hibSession.close();
         }
@@ -352,8 +352,8 @@ public class DataAccessObject {
             hibSession.beginTransaction();
             cachedClusterSet = clusterSetList.get(clusterSetIndex);
             if (cachedClusterSet == null) {
-                logger.error("While using loadNamedClusterSet, desired ClusterSet not found");
-                throw new ConflictException("While using loadNamedClusterSet, desired ClusterSet not found");
+                logger.error("While using loadIndexedClusterSet, desired ClusterSet not found");
+                throw new ConflictException("While using loadIndexedClusterSet, desired ClusterSet not found");
             }
             Long cachedVersion = cachedClusterSet.getVersion();
 
@@ -362,24 +362,24 @@ public class DataAccessObject {
             if (storedClusterSet == null) {
                 // Possibly deleted during long conversation
                 hibSession.getTransaction().rollback();
-                logger.error("While using loadNamedClusterSet, desired ClusterSet not found");
-                throw new ConflictException("While using loadNamedClusterSet, desired ClusterSet not found");
+                logger.error("While using loadIndexedClusterSet, desired ClusterSet not found");
+                throw new ConflictException("While using loadIndexedClusterSet, desired ClusterSet not found");
             }
             // Possibly altered during long conversation
             Long storedVersion = storedClusterSet.getVersion();
             if (!storedVersion.equals(cachedVersion)) {
                 hibSession.getTransaction().rollback();
-                logger.error("While using loadNamedClusterSet, desired ClusterSet was altered by another user ");
+                logger.error("While using loadIndexedClusterSet, desired ClusterSet was altered by another user ");
                 throw new ConflictException(
-                        "While using loadNamedClusterSet, desired ClusterSet was altered by another user ");
+                        "While using loadIndexedClusterSet, desired ClusterSet was altered by another user ");
             }
 
             hibSession.getTransaction().commit();
 
         } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
-            logger.error("WTF error using loadNamedClusterSet, ", ex);
-            throw new WTFException("WTF error using loadNamedClusterSet");
+            logger.error("WTF error using loadIndexedClusterSet, ", ex);
+            throw new WTFException("WTF error using loadIndexedClusterSet");
         } finally {
             hibSession.close();
         }
@@ -403,8 +403,8 @@ public class DataAccessObject {
 
             cachedNodeSet = nodeSetList.get(nodeSetIndex);
             if (cachedNodeSet == null) {
-                logger.error("While using loadNamedNodeSet, desired NodeSet not found");
-                throw new ConflictException("While using loadNamedNodeSet, desired NodeSet not found");
+                logger.error("While using loadIndexedNodeSet, desired NodeSet not found");
+                throw new ConflictException("While using loadIndexedNodeSet, desired NodeSet not found");
             }
 
             Long cachedVersion = cachedNodeSet.getVersion();
@@ -413,24 +413,24 @@ public class DataAccessObject {
             // Possibly deleted during long conversation
             if (storedNodeSet == null) {
                 hibSession.getTransaction().rollback();
-                logger.error("While using loadNamedNodeSet, desired NodeSet not found");
-                throw new ConflictException("While using loadNamedNodeSet, desired NodeSet not found");
+                logger.error("While using loadIndexedNodeSet, desired NodeSet not found");
+                throw new ConflictException("While using loadIndexedNodeSet, desired NodeSet not found");
             }
 
             Long storedVersion = storedNodeSet.getVersion();
             if (!storedVersion.equals(cachedVersion)) {
                 hibSession.getTransaction().rollback();
-                logger.error("While using loadNamedNodeSet, desired NodeSet was altered by another user ");
+                logger.error("While using loadIndexedNodeSet, desired NodeSet was altered by another user ");
                 throw new ConflictException(
-                        "While using loadNamedNodeSet, desired NodeSet was altered by another user ");
+                        "While using loadIndexedNodeSet, desired NodeSet was altered by another user ");
             }
 
             hibSession.getTransaction().commit();
 
         } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
-            logger.error("WTF error using loadNamedNodeSet, ", ex);
-            throw new WTFException("WTF error using loadNamedNodeSet");
+            logger.error("WTF error using loadIndexedNodeSet, ", ex);
+            throw new WTFException("WTF error using loadIndexedNodeSet");
         } finally {
             hibSession.close();
         }
@@ -452,8 +452,8 @@ public class DataAccessObject {
             hibSession.beginTransaction();
             cachedNodeType = nodeTypeList.get(nodeTypeIndex);
             if (cachedNodeType == null) {
-                logger.error("While using loadNamedNodeType, desired NodeType not found");
-                throw new ConflictException("While using loadNamedNodeType, desired NodeType not found");
+                logger.error("While using loadIndexedNodeType, desired NodeType not found");
+                throw new ConflictException("While using loadIndexedNodeType, desired NodeType not found");
             }
 
             Long cachedVersion = cachedNodeType.getVersion();
@@ -463,23 +463,23 @@ public class DataAccessObject {
             // Possibly deleted during long conversation
             if (storedNodeType == null) {
                 hibSession.getTransaction().rollback();
-                logger.error("While using loadNamedNodeType, desired NodeType not found");
-                throw new ConflictException("While using loadNamedNodeType, desired NodeType not found");
+                logger.error("While using loadIndexedNodeType, desired NodeType not found");
+                throw new ConflictException("While using loadIndexedNodeType, desired NodeType not found");
             }
 
             Long storedVersion = storedNodeType.getVersion();
             if (!storedVersion.equals(cachedVersion)) {
                 hibSession.getTransaction().rollback();
-                logger.error("While using loadNamedNodeType, desired NodeType was altered by another user ");
+                logger.error("While using loadIndexedNodeType, desired NodeType was altered by another user ");
                 throw new ConflictException(
-                        "While using loadNamedNodeType, desired NodeType was altered by another user ");
+                        "While using loadIndexedNodeType, desired NodeType was altered by another user ");
             }
 
             hibSession.getTransaction().commit();
         } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
-            logger.error("WTF error using loadNamedNodeType, ", ex);
-            throw new WTFException("WTF error using loadNamedNodeType");
+            logger.error("WTF error using loadIndexedNodeType, ", ex);
+            throw new WTFException("WTF error using loadIndexedNodeType");
         } finally {
             hibSession.close();
         }
@@ -716,11 +716,7 @@ public class DataAccessObject {
         String nodeDescription = request.getParameter("nodeDescription");
         String nodeSetName = request.getParameter("nodeSetList");
         String nodeStateName = request.getParameter("nodeStateList");
-        logger.error("SJDEBUG While using addNode, params were |" + nodeName + "|" + nodeDescription + "|" + nodeSetName
-                + "|" + nodeStateName + "|");
 
-        // NodeSet nodeSet = new NodeSet();
-        // NodeState nodeState = new NodeState();
         Node n = new Node();
 
         try {

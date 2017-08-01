@@ -26,6 +26,8 @@ public class NewNodeController extends HttpServlet {
             throws ServletException, IOException {
 
         RequestDispatcher rd = null;
+        DataAccessObject dao = DataAccessObject.getInstance();
+
 
         try {
             ((DataAccessObject) request.getSession().getAttribute("dao")).addNode(request);

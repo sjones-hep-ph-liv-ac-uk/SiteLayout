@@ -28,6 +28,8 @@ public class EditClusterController extends HttpServlet {
             throws ServletException, IOException {
 
         RequestDispatcher rd = null;
+        DataAccessObject dao = DataAccessObject.getInstance();
+
 
         try {
             ((DataAccessObject) request.getSession().getAttribute("dao")).updateCluster(request);

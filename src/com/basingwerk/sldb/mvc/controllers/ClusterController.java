@@ -31,6 +31,9 @@ public class ClusterController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
+
+        DataAccessObject dao = DataAccessObject.getInstance();
+
         String act = null;
         act = request.getParameter("Back");
         if (act != null) {

@@ -29,6 +29,9 @@ public class NodeSetController extends HttpServlet {
             throws ServletException, IOException {
         RequestDispatcher rd = null;
         String act = null;
+
+        DataAccessObject dao = DataAccessObject.getInstance();
+
         act = request.getParameter("Back");
         if (act != null) {
             rd = request.getRequestDispatcher("/main_screen.jsp");
