@@ -30,7 +30,7 @@ public class EditNodeSetController extends HttpServlet {
         DataAccessObject dao = DataAccessObject.getInstance();
 
         try {
-            ((DataAccessObject) request.getSession().getAttribute("dao")).updateNodeSet(request);
+            dao.updateNodeSet(request);
             
         } catch (WTFException e) {
             logger.error("WTF! Cannot update node set.");
@@ -45,7 +45,7 @@ public class EditNodeSetController extends HttpServlet {
             return;
         }            
         try {
-            ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodeSets(request, "nodeSetName", "ASC");
+            dao.loadNodeSets(request, "nodeSetName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error using refreshNodeSets");
             rd = request.getRequestDispatcher("/error.jsp");

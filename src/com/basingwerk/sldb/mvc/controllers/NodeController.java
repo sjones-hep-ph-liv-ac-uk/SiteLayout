@@ -40,7 +40,7 @@ public class NodeController extends HttpServlet {
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
-                ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodes(request, "nodeName", "ASC");
+                dao.loadNodes(request, "nodeName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using refreshNodes");
                 rd = request.getRequestDispatcher("/error.jsp");
@@ -56,8 +56,8 @@ public class NodeController extends HttpServlet {
         if (act != null) {
 
             try {
-                ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodeSets(request, "nodeSetName", "ASC");
-                ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodeStates(request, "state", "ASC");
+                dao.loadNodeSets(request, "nodeSetName", "ASC");
+                dao.loadNodeStates(request, "state", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error preparing data, ", e);
                 rd = request.getRequestDispatcher("/error.jsp");
@@ -87,7 +87,7 @@ public class NodeController extends HttpServlet {
                 }
 
                 try {
-                    ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodes(request, c, order);
+                    dao.loadNodes(request, c, order);
                 } catch (WTFException e) {
                     logger.error("WTF! Error using loadNodes, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -103,7 +103,7 @@ public class NodeController extends HttpServlet {
             if (key.startsWith("DEL.")) {
                 String nodeSetName = key.substring(4, key.length());
                 try {
-                    ((DataAccessObject) request.getSession().getAttribute("dao")).deleteNode(request, nodeSetName);
+                    dao.deleteNode(request, nodeSetName);
                 } catch (ConflictException e) {
                     logger.error("WTF! Error deleting a node, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -114,7 +114,7 @@ public class NodeController extends HttpServlet {
                     e.printStackTrace();
                 }
                 try {
-                    ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodes(request, "nodeName", "ASC");
+                    dao.loadNodes(request, "nodeName", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error using loadNodes.");
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -130,7 +130,7 @@ public class NodeController extends HttpServlet {
                 String nodeSet = key.substring(3, key.length());
                 Integer index = Integer.parseInt(nodeSet);
                 try {
-                    ((DataAccessObject) request.getSession().getAttribute("dao")).loadIndexedNode(request, index);
+                    dao.loadIndexedNode(request, index);
                 } catch (ConflictException e) {
                     request.setAttribute("theMessage",
                             "Could not edit that node at this time. Please try again. " + e.getMessage());
@@ -146,8 +146,8 @@ public class NodeController extends HttpServlet {
                 }
 
                 try {
-                    ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodeSets(request, "nodeSetName", "ASC");
-                    ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodeStates(request, "state", "ASC");
+                    dao.loadNodeSets(request, "nodeSetName", "ASC");
+                    dao.loadNodeStates(request, "state", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error preparing data, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");

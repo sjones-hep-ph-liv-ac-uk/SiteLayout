@@ -36,16 +36,16 @@ public class SelectClusterSetController extends HttpServlet {
 
         ArrayList<String> clusters = null;
         try {
-            ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodeTypes(request, "nodeTypeName", "ASC");
-            ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusters(request, "clusterName", "ASC");
-            ((DataAccessObject) request.getSession().getAttribute("dao")).setBaselineNodeType(request);
-            clusters = ((DataAccessObject) request.getSession().getAttribute("dao")).listClustersOfClusterSet(request, clusterSetName);
+            dao.loadNodeTypes(request, "nodeTypeName", "ASC");
+            dao.loadClusters(request, "clusterName", "ASC");
+            dao.setBaselineNodeType(request);
+            clusters = dao.listClustersOfClusterSet(request, clusterSetName);
             java.util.HashMap<String, ArrayList> joinMap = new java.util.HashMap<String, ArrayList>();
 
             Iterator<String> c = clusters.iterator();
             while (c.hasNext()) {
                 String cluster = c.next();
-                ArrayList<NodeSetNodeTypeJoin> nsntj = ((DataAccessObject) request.getSession().getAttribute("dao")).getJoinForCluster(request, cluster);
+                ArrayList<NodeSetNodeTypeJoin> nsntj = dao.getJoinForCluster(request, cluster);
                 joinMap.put(cluster, nsntj);
             }
             request.setAttribute("joinMap", joinMap);

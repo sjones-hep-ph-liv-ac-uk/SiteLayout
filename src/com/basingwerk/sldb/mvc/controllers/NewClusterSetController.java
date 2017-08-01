@@ -30,7 +30,7 @@ public class NewClusterSetController extends HttpServlet {
 
 
         try {
-            ((DataAccessObject) request.getSession().getAttribute("dao")).addClusterSet(request);
+            dao.addClusterSet(request);
         } catch (ConflictException e) {
             request.setAttribute("theMessage",
                     "The cluster set could not be added. Please try again. " + e.getMessage());
@@ -46,7 +46,7 @@ public class NewClusterSetController extends HttpServlet {
         }
 
         try {
-            ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusterSets(request, "clusterSetName", "ASC");
+            dao.loadClusterSets(request, "clusterSetName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error when using queryClusterSetList");
             rd = request.getRequestDispatcher("/error.jsp");

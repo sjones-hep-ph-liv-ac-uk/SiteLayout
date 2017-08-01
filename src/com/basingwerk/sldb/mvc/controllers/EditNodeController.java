@@ -30,7 +30,7 @@ public class EditNodeController extends HttpServlet {
         DataAccessObject dao = DataAccessObject.getInstance();
 
         try {
-            ((DataAccessObject) request.getSession().getAttribute("dao")).updateNode(request);
+            dao.updateNode(request);
         } catch (WTFException e) {
             logger.error("WTF! Cannot update node.");
             rd = request.getRequestDispatcher("/error.jsp");
@@ -44,7 +44,7 @@ public class EditNodeController extends HttpServlet {
             return;
         }            
         try {
-            ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodes(request, "nodeName", "ASC");
+            dao.loadNodes(request, "nodeName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error using loadNodes");
             rd = request.getRequestDispatcher("/error.jsp");

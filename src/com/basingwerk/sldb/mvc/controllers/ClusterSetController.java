@@ -41,7 +41,7 @@ public class ClusterSetController extends HttpServlet {
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
-               ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusterSets(request, "clusterSetName", "ASC");
+               dao.loadClusterSets(request, "clusterSetName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using loadClusterSets");
                 rd = request.getRequestDispatcher("/error.jsp");
@@ -77,7 +77,7 @@ public class ClusterSetController extends HttpServlet {
 
                 try {
 
-                   ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusterSets(request, c, order);
+                   dao.loadClusterSets(request, c, order);
                 } catch (WTFException e) {
                     logger.error("WTF! Error while using loadClusterSets");
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -92,7 +92,7 @@ public class ClusterSetController extends HttpServlet {
             if (key.startsWith("DEL.")) {
                 String clusterSet = key.substring(4, key.length());
                 try {
-                   ((DataAccessObject) request.getSession().getAttribute("dao")).deleteClusterSet(request, clusterSet);
+                   dao.deleteClusterSet(request, clusterSet);
                 } catch (ConflictException e) {
                     request.setAttribute("theMessage",
                             "Could not update that cluster set at this time. Please try again. " + e.getMessage());
@@ -107,7 +107,7 @@ public class ClusterSetController extends HttpServlet {
                     return;
                 }
                 try {
-                   ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusterSets(request, "clusterSetName", order);
+                   dao.loadClusterSets(request, "clusterSetName", order);
                 } catch (WTFException e) {
                     logger.error("WTF! Error while using loadClusterSets");
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -124,7 +124,7 @@ public class ClusterSetController extends HttpServlet {
                 Integer index = Integer.parseInt(clusterSet);
 
                 try {
-                   ((DataAccessObject) request.getSession().getAttribute("dao")).loadIndexedClusterSet(request, index);
+                   dao.loadIndexedClusterSet(request, index);
                 } catch (ConflictException e) {
                     request.setAttribute("theMessage",
                             "Could not edit that clusterSet at this time. Please try again. " + e.getMessage());

@@ -30,7 +30,7 @@ public class NewNodeSetController extends HttpServlet {
 
 
         try {
-            ((DataAccessObject) request.getSession().getAttribute("dao")).addNodeSet(request);
+            dao.addNodeSet(request);
         } catch (ConflictException e) {
             request.setAttribute("theMessage",
                     "Could not add that data at this time. Please try again. " + e.getMessage());
@@ -46,7 +46,7 @@ public class NewNodeSetController extends HttpServlet {
         }
 
         try {
-            ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodeSets(request, "nodeSetName", "ASC");
+            dao.loadNodeSets(request, "nodeSetName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error using refreshNodeSets, ", e);
             rd = request.getRequestDispatcher("/error.jsp");

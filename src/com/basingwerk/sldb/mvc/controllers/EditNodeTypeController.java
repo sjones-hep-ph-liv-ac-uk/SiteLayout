@@ -31,7 +31,7 @@ public class EditNodeTypeController extends HttpServlet {
         DataAccessObject dao = DataAccessObject.getInstance();
 
         try {
-            ((DataAccessObject) request.getSession().getAttribute("dao")).updateNodeType(request);
+            dao.updateNodeType(request);
         } catch (ConflictException e) {
             request.setAttribute("theMessage", "The task could not be done. Please try again.");
             request.setAttribute("theJsp", "main_screen.jsp");
@@ -45,7 +45,7 @@ public class EditNodeTypeController extends HttpServlet {
             return;
         }
         try {
-            ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodeTypes(request, "nodeTypeName", "ASC");
+            dao.loadNodeTypes(request, "nodeTypeName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error when using updateNodeType, ", e);
             rd = request.getRequestDispatcher("/error.jsp");

@@ -30,7 +30,7 @@ public class NewNodeController extends HttpServlet {
 
 
         try {
-            ((DataAccessObject) request.getSession().getAttribute("dao")).addNode(request);
+            dao.addNode(request);
         } catch (ConflictException e) {
             request.setAttribute("theMessage",
                     "Could not add that data at this time. Please try again. " + e.getMessage());
@@ -46,7 +46,7 @@ public class NewNodeController extends HttpServlet {
         }
 
         try {
-            ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodes(request, "nodeName", "ASC");
+            dao.loadNodes(request, "nodeName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error using loadNodes, ", e);
             rd = request.getRequestDispatcher("/error.jsp");

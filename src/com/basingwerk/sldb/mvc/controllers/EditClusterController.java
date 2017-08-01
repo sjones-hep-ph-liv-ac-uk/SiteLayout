@@ -32,7 +32,7 @@ public class EditClusterController extends HttpServlet {
 
 
         try {
-            ((DataAccessObject) request.getSession().getAttribute("dao")).updateCluster(request);
+            dao.updateCluster(request);
         } catch (WTFException e) {
             logger.error("WTF! Cannot update that cluster, ", e);
             rd = request.getRequestDispatcher("/error.jsp");
@@ -48,7 +48,7 @@ public class EditClusterController extends HttpServlet {
             return;
         }
         try {
-            ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusters(request, "clusterName", "ASC");
+            dao.loadClusters(request, "clusterName", "ASC");
             String next = "/cluster.jsp";
             rd = request.getRequestDispatcher(next);
             rd.forward(request, response);

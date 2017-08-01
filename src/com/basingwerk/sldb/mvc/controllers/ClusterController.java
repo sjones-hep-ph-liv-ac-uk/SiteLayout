@@ -44,7 +44,7 @@ public class ClusterController extends HttpServlet {
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
-                ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusters(request, "clusterName", "ASC");
+                dao.loadClusters(request, "clusterName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using loadClusters");
                 rd = request.getRequestDispatcher("/error.jsp");
@@ -60,7 +60,7 @@ public class ClusterController extends HttpServlet {
         if (act != null) {
 
             try {
-                ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusterSets(request, "clusterSetName", "ASC");
+                dao.loadClusterSets(request, "clusterSetName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using loadClusterSets, ", e);
                 rd = request.getRequestDispatcher("/error.jsp");
@@ -90,7 +90,7 @@ public class ClusterController extends HttpServlet {
                 }
 
                 try {
-                    ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusters(request, c, order);
+                    dao.loadClusters(request, c, order);
                 } catch (WTFException e) {
                     logger.error("WTF! Error while using loadClusters");
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -106,7 +106,7 @@ public class ClusterController extends HttpServlet {
             if (key.startsWith("DEL.")) {
                 String cluster = key.substring(4, key.length());
                 try {
-                    ((DataAccessObject) request.getSession().getAttribute("dao")).deleteCluster(request, cluster);
+                    dao.deleteCluster(request, cluster);
                 } catch (ConflictException e) {
                     request.setAttribute("theMessage",
                             "Could not delete that cluster at this time. Please try again. " + e.getMessage());
@@ -122,7 +122,7 @@ public class ClusterController extends HttpServlet {
                 }
 
                 try {
-                    ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusters(request, "clusterName", "ASC");
+                    dao.loadClusters(request, "clusterName", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error while using loadClusters");
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -138,8 +138,8 @@ public class ClusterController extends HttpServlet {
                 String cluster = key.substring(3, key.length());
                 Integer index = Integer.parseInt(cluster);
                 try {
-                    ((DataAccessObject) request.getSession().getAttribute("dao")).loadIndexedCluster(request, index);
-                    ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusterSets(request, "clusterSetName", "ASC");
+                    dao.loadIndexedCluster(request, index);
+                    dao.loadClusterSets(request, "clusterSetName", "ASC");
                 } catch (ConflictException e) {
 
                     request.setAttribute("theMessage",

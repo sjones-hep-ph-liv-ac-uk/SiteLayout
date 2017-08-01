@@ -41,7 +41,7 @@ public class NodeTypeController extends HttpServlet {
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
-                ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodeTypes(request, "nodeTypeName", "ASC");
+                dao.loadNodeTypes(request, "nodeTypeName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using loadNodeTypes");
                 rd = request.getRequestDispatcher("/error.jsp");
@@ -75,7 +75,7 @@ public class NodeTypeController extends HttpServlet {
                     c = sortCmd.substring(5, sortCmd.length()).trim();
                 }
                 try {
-                    ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodeTypes(request, c, order);
+                    dao.loadNodeTypes(request, c, order);
                 } catch (WTFException e) {
                     logger.error("WTF! Error refreshing node types, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -97,7 +97,7 @@ public class NodeTypeController extends HttpServlet {
                     return;
                 }
                 try {
-                    ((DataAccessObject) request.getSession().getAttribute("dao")).deleteNodeType(request, nodeType);
+                    dao.deleteNodeType(request, nodeType);
                 } catch (ConflictException e) {
                     request.setAttribute("theMessage", "The node type could not be deleted. Please try again.");
                     request.setAttribute("theJsp", "main_screen.jsp");
@@ -112,7 +112,7 @@ public class NodeTypeController extends HttpServlet {
                     return;
                 }
                 try {
-                    ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodeTypes(request, "nodeTypeName", "ASC");
+                    dao.loadNodeTypes(request, "nodeTypeName", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error when using refreshNodeTypes, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -129,7 +129,7 @@ public class NodeTypeController extends HttpServlet {
                 String nodeType = key.substring(3, key.length());
                 Integer index = Integer.parseInt(nodeType);
                 try {
-                    ((DataAccessObject) request.getSession().getAttribute("dao")).loadIndexedNodeType(request, index);
+                    dao.loadIndexedNodeType(request, index);
                 } catch (ConflictException e) {
                     request.setAttribute("theMessage",
                             "Could not edit that nodeType at this time. Please try again. " + e.getMessage());

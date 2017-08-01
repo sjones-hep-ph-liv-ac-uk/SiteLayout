@@ -31,8 +31,8 @@ public class NewClusterController extends HttpServlet {
 
 
         try {
-            ((DataAccessObject) request.getSession().getAttribute("dao")).addCluster(request);
-            ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusters(request, "clusterName", "ASC");
+            dao.addCluster(request);
+            dao.loadClusters(request, "clusterName", "ASC");
             String next = "/cluster.jsp";
             rd = request.getRequestDispatcher(next);
             rd.forward(request, response);

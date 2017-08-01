@@ -31,7 +31,7 @@ public class NewNodeTypeController extends HttpServlet {
 
 
         try {
-            ((DataAccessObject) request.getSession().getAttribute("dao")).addNodeType(request);
+            dao.addNodeType(request);
         } catch (ConflictException e) {
             request.setAttribute("theMessage", "The node type could not be added. Please try again." + e.getMessage());
             request.setAttribute("theJsp", "main_screen.jsp");
@@ -46,7 +46,7 @@ public class NewNodeTypeController extends HttpServlet {
         }
 
         try {
-            ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodeTypes(request, "nodeTypeName", "ASC");
+            dao.loadNodeTypes(request, "nodeTypeName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error using refreshNodeTypes.");
             rd = request.getRequestDispatcher("/error.jsp");

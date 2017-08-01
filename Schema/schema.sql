@@ -73,7 +73,9 @@ CREATE TABLE NodeState (
 INSERT INTO `NodeState` (`state`,version) VALUES
 ('OK',0),
 ('HARDWARE_FAULT',1),
-('SOFTWARE_FAULT',2);
+('SOFTWARE_FAULT',2),
+('ONLINE',3),
+('OFFLINE',4);
 
 DROP TABLE Node;
 #SET FOREIGN_KEY_CHECKS = 0;
