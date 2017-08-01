@@ -26,7 +26,14 @@ public class MainScreenController extends HttpServlet {
             throws ServletException, IOException {
         RequestDispatcher rd = null;
         try {
-
+            DataAccessObject dao = DataAccessObject.getInstance();
+            if (dao == null) {
+                logger.error("WTF! Cannot connect.");
+                rd = request.getRequestDispatcher("/error.jsp");
+                rd.forward(request, response);
+                return;
+            }
+            
             String act = request.getParameter("SomeButton");
             if (act == null) {
                 logger.error("WTF! Null found when looking at SomeButton.");
@@ -36,7 +43,7 @@ public class MainScreenController extends HttpServlet {
             }
             String next = "";
             if (act.equals("Edit cluster sets")) {
-                ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusterSets(request, "clusterSetName", "ASC");
+                dao.loadClusterSets(request, "clusterSetName", "ASC");
                 next = "/cluster_set.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -44,7 +51,7 @@ public class MainScreenController extends HttpServlet {
             }
 
             if (act.equals("Edit node types")) {
-                ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodeTypes(request, "nodeTypeName", "ASC");
+                dao.loadNodeTypes(request, "nodeTypeName", "ASC");
                 next = "/nodetype.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -52,14 +59,14 @@ public class MainScreenController extends HttpServlet {
             }
 
             if (act.equals("Edit clusters")) {
-                ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusters(request, "clusterName", "ASC");
+                dao.loadClusters(request, "clusterName", "ASC");
                 next = "/cluster.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
                 return;
             }
             if (act.equals("Edit node sets")) {
-                ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodeSets(request, "nodeSetName", "ASC");
+                dao.loadNodeSets(request, "nodeSetName", "ASC");
                 next = "/nodeset.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -67,7 +74,7 @@ public class MainScreenController extends HttpServlet {
 
             }
             if (act.equals("Edit nodes")) {
-                ((DataAccessObject) request.getSession().getAttribute("dao")).loadNodes(request, "nodeName", "ASC");
+                dao.loadNodes(request, "nodeName", "ASC");
                 next = "/node.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -75,7 +82,7 @@ public class MainScreenController extends HttpServlet {
 
             }
             if (act.equals("Reports")) {
-                ((DataAccessObject) request.getSession().getAttribute("dao")).loadClusterSets(request, "clusterSetName", "ASC");
+                dao.loadClusterSets(request, "clusterSetName", "ASC");
                 next = "/select_cluster_set.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);

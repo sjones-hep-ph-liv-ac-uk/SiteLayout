@@ -43,6 +43,8 @@ public class LoginController extends HttpServlet {
             cfg.addAnnotatedClass(com.basingwerk.sldb.mvc.model.NodeSet.class);
             cfg.addAnnotatedClass(com.basingwerk.sldb.mvc.model.Cluster.class);
             cfg.addAnnotatedClass(com.basingwerk.sldb.mvc.model.ClusterSet.class);
+            cfg.addAnnotatedClass(com.basingwerk.sldb.mvc.model.Node.class);
+            cfg.addAnnotatedClass(com.basingwerk.sldb.mvc.model.NodeState.class);
 
             cfg.getProperties().setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/" + database);
             cfg.getProperties().setProperty("hibernate.connection.password", username);
@@ -56,7 +58,6 @@ public class LoginController extends HttpServlet {
             session.setAttribute("sessionFactory", sessionFactory);
             Session hibSession = sessionFactory.openSession();
             hibSession.setFlushMode(FlushMode.COMMIT);
-            // System.out.println("Underlying Hibernate session flushmode is " + hibSession.getFlushMode());
 
             if (!hibSession.isConnected()) {
                 hibSession.close();
@@ -71,9 +72,6 @@ public class LoginController extends HttpServlet {
             hibSession.close();
             User user = new User(username, password);
             request.setAttribute("user", user);
-            
-            
-            
 
             rd = request.getRequestDispatcher("/main_screen.jsp");
             rd.forward(request, response);

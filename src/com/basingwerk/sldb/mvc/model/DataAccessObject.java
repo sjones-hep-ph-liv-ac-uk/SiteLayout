@@ -22,31 +22,34 @@ import com.basingwerk.sldb.mvc.exceptions.WTFException;
 public class DataAccessObject {
     final static Logger logger = Logger.getLogger(DataAccessObject.class);
 
-    public DataAccessObject() {
-        clusterList = new ArrayList<Cluster> ();
-        clusterSetList = new ArrayList<ClusterSet> ();
-        nodeSetList = new ArrayList<NodeSet>(); 
-        nodeTypeList = new ArrayList<NodeType>(); 
-        nodeList = new ArrayList<Node>();
-        nodeStateList = new ArrayList<NodeState>();
-        
+    private static DataAccessObject instance = null;
+
+    protected DataAccessObject() {
+        // Exists only to defeat instantiation.
     }
-    
-    ArrayList<Cluster> clusterList = null;
-    ArrayList<ClusterSet> clusterSetList = null;
-    ArrayList<NodeSet> nodeSetList = null;
-    ArrayList<NodeType> nodeTypeList = null;
-    ArrayList<Node> nodeList = null;
-    ArrayList<NodeState> nodeStateList = null;
+
+    public static DataAccessObject getInstance() {
+        if (instance == null) {
+            instance = new DataAccessObject();
+        }
+        return instance;
+    }
+
+    ArrayList<Cluster> clusterList = new ArrayList<Cluster>();
+    ArrayList<ClusterSet> clusterSetList = new ArrayList<ClusterSet>();
+    ArrayList<NodeSet> nodeSetList = new ArrayList<NodeSet>();
+    ArrayList<NodeType> nodeTypeList = new ArrayList<NodeType>();
+    ArrayList<Node> nodeList = new ArrayList<Node>();
+    ArrayList<NodeState> nodeStateList = new ArrayList<NodeState>();
 
     Cluster cachedCluster = null;
     ClusterSet cachedClusterSet = null;
-    NodeSet cachedNodeSet= null;
-    NodeType cachedNodeType= null;
+    NodeSet cachedNodeSet = null;
+    NodeType cachedNodeType = null;
     Node cachedNode = null;
 
     // Helper functions
-    public static ArrayList<NodeSetNodeTypeJoin> getJoinForCluster(HttpServletRequest request, String clusterName)
+    public /* static */ ArrayList<NodeSetNodeTypeJoin> getJoinForCluster(HttpServletRequest request, String clusterName)
             throws WTFException {
         HttpSession httpSession = request.getSession();
         Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
@@ -72,7 +75,7 @@ public class DataAccessObject {
         return nsntj;
     }
 
-    public static ArrayList<String> listClustersOfClusterSet(HttpServletRequest request, String clusterSetName)
+    public /* static */ ArrayList<String> listClustersOfClusterSet(HttpServletRequest request, String clusterSetName)
             throws WTFException {
         HttpSession httpSession = request.getSession();
         Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
@@ -95,7 +98,7 @@ public class DataAccessObject {
         return cl;
     }
 
-    public static void setBaselineNodeType(HttpServletRequest request) throws WTFException {
+    public /* static */ void setBaselineNodeType(HttpServletRequest request) throws WTFException {
 
         HttpSession httpSession = request.getSession();
         Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
@@ -148,8 +151,9 @@ public class DataAccessObject {
         }
 
         request.setAttribute("clusterList", clusterList);
-        
+
     }
+
     public void loadNodeStates(HttpServletRequest request, String col, String order) throws WTFException {
 
         HttpSession httpSession = request.getSession();
@@ -173,7 +177,7 @@ public class DataAccessObject {
             hibSession.close();
         }
 
-        request.setAttribute("nodeStateList", nodeStateList );
+        request.setAttribute("nodeStateList", nodeStateList);
     }
 
     public void loadClusterSets(HttpServletRequest request, String col, String order) throws WTFException {
@@ -229,8 +233,8 @@ public class DataAccessObject {
         }
         httpSession.setAttribute("nodeSetList", nodeSetList);
 
-
     }
+
     public void loadNodes(HttpServletRequest request, String col, String order) throws WTFException {
 
         HttpSession httpSession = request.getSession();
@@ -283,7 +287,6 @@ public class DataAccessObject {
 
         httpSession.setAttribute("nodeTypeList", nodeTypeList);
         request.setAttribute("nodeTypeList", nodeTypeList);
-
 
     }
 
@@ -433,7 +436,7 @@ public class DataAccessObject {
         }
         httpSession.setAttribute("nodeSetVersion", storedNodeSet.getVersion());
         request.setAttribute("nodeSet", storedNodeSet);
-        cachedNodeSet= storedNodeSet;
+        cachedNodeSet = storedNodeSet;
         return;
     }
 
@@ -485,10 +488,8 @@ public class DataAccessObject {
         cachedNodeType = storedNodeType;
         return;
     }
-    
-    
-    public void loadIndexedNode (HttpServletRequest request, Integer nodeIndex)
-            throws WTFException, ConflictException {
+
+    public void loadIndexedNode(HttpServletRequest request, Integer nodeIndex) throws WTFException, ConflictException {
 
         HttpSession httpSession = request.getSession();
         Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
@@ -508,7 +509,7 @@ public class DataAccessObject {
             storedNode = (Node) hibSession.createCriteria(Node.class)
                     .add(Restrictions.eq("nodeName", cachedNode.getNodeName())).uniqueResult();
             // Possibly deleted during long conversation
-            if (storedNode== null) {
+            if (storedNode == null) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using loadIndexedNode, desired Node not found");
                 throw new ConflictException("While using loadIndexedNode, desired Node not found");
@@ -518,8 +519,7 @@ public class DataAccessObject {
             if (!storedVersion.equals(cachedVersion)) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using loadIndexedNode, desired Node was altered by another user ");
-                throw new ConflictException(
-                        "While using loadIndexedNode, desired Node was altered by another user ");
+                throw new ConflictException("While using loadIndexedNode, desired Node was altered by another user ");
             }
 
             hibSession.getTransaction().commit();
@@ -536,7 +536,6 @@ public class DataAccessObject {
         cachedNode = storedNode;
         return;
     }
-    
 
     public void addCluster(HttpServletRequest request) throws ConflictException, WTFException {
         HttpSession httpSession = request.getSession();
@@ -553,7 +552,7 @@ public class DataAccessObject {
 
             ClusterSet cs = (ClusterSet) hibSession.createCriteria(ClusterSet.class)
                     .add(Restrictions.eq("clusterSetName", clusterSetName)).uniqueResult();
-            
+
             if (cs == null) {
                 // Possibly deleted during long conversation
                 hibSession.getTransaction().rollback();
@@ -712,22 +711,22 @@ public class DataAccessObject {
 
         HttpSession httpSession = request.getSession();
         Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
-        
-        String nodeName  = request.getParameter("nodeName");
+
+        String nodeName = request.getParameter("nodeName");
         String nodeDescription = request.getParameter("nodeDescription");
         String nodeSetName = request.getParameter("nodeSetList");
         String nodeStateName = request.getParameter("nodeStateList");
-        logger.error("SJDEBUG While using addNode, params were |" + nodeName + "|" + nodeDescription + "|" + nodeSetName + "|" + nodeStateName + "|"  );
+        logger.error("SJDEBUG While using addNode, params were |" + nodeName + "|" + nodeDescription + "|" + nodeSetName
+                + "|" + nodeStateName + "|");
 
-//        NodeSet nodeSet = new NodeSet();
-//        NodeState nodeState = new NodeState();
+        // NodeSet nodeSet = new NodeSet();
+        // NodeState nodeState = new NodeState();
         Node n = new Node();
-        
 
         try {
             hibSession.beginTransaction();
 
-            NodeSet nodeSet= (NodeSet) hibSession.createCriteria(NodeSet.class)
+            NodeSet nodeSet = (NodeSet) hibSession.createCriteria(NodeSet.class)
                     .add(Restrictions.eq("nodeSetName", nodeSetName)).uniqueResult();
             if (nodeSet == null) {
                 // Possibly deleted during long conversation
@@ -744,12 +743,12 @@ public class DataAccessObject {
                 logger.error("While using addNode, desired nodeState not found");
                 throw new ConflictException("While using addNode, desired nodeState not found");
             }
-            
+
             n.setNodeName(nodeName);
             n.setDescription(nodeDescription);
             n.setNodeSet(nodeSet);
             n.setNodeState(nodeState);
-            
+
             hibSession.save(n);
             hibSession.getTransaction().commit();
         } catch (ConstraintViolationException e) {
@@ -764,7 +763,7 @@ public class DataAccessObject {
             hibSession.close();
         }
     }
-    
+
     public void deleteCluster(HttpServletRequest request, String clusterName) throws WTFException, ConflictException {
 
         HttpSession httpSession = request.getSession();
@@ -772,7 +771,7 @@ public class DataAccessObject {
 
         try {
             Cluster cluster = (Cluster) hibSession.createCriteria(Cluster.class)
-                    .add(Restrictions.eq("clusterName", clusterName)).uniqueResult();            
+                    .add(Restrictions.eq("clusterName", clusterName)).uniqueResult();
             hibSession.beginTransaction();
             hibSession.delete(cluster);
             hibSession.getTransaction().commit();
@@ -819,7 +818,7 @@ public class DataAccessObject {
 
         NodeSet nodeSet = (NodeSet) hibSession.createCriteria(NodeSet.class)
                 .add(Restrictions.eq("nodeSetName", nodeSetName)).uniqueResult();
-        
+
         if (nodeSet == null) {
             logger.error("While using deleteNodeSet, desired NodeSet not found");
             throw new ConflictException("While using deleteNodeSet, desired NodeSet not found");
@@ -837,15 +836,15 @@ public class DataAccessObject {
             hibSession.close();
         }
     }
-    
+
     public void deleteNode(HttpServletRequest request, String nodeName) throws WTFException, ConflictException {
 
         HttpSession httpSession = request.getSession();
         Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
 
-        Node node= (Node) hibSession.createCriteria(Node.class)
-                .add(Restrictions.eq("nodeName", nodeName)).uniqueResult();
-        
+        Node node = (Node) hibSession.createCriteria(Node.class).add(Restrictions.eq("nodeName", nodeName))
+                .uniqueResult();
+
         if (node == null) {
             logger.error("While using deleteNode, desired Node not found");
             throw new ConflictException("While using deleteNode, desired Nodenot found");
@@ -863,7 +862,6 @@ public class DataAccessObject {
             hibSession.close();
         }
     }
-    
 
     public void deleteNodeType(HttpServletRequest request, String nodeTypeName) throws WTFException, ConflictException {
 
@@ -945,7 +943,7 @@ public class DataAccessObject {
             storedCluster.setClusterSet(newClusterSet);
             hibSession.update(storedCluster);
             hibSession.getTransaction().commit();
-            
+
         } catch (HibernateException e) {
             hibSession.getTransaction().rollback();
             logger.error("WTF error using updateClusterSet, ", e);
@@ -954,8 +952,7 @@ public class DataAccessObject {
             hibSession.close();
         }
     }
-    
-    
+
     public void updateNodeSet(HttpServletRequest request) throws WTFException, ConflictException {
 
         HttpSession httpSession = request.getSession();
@@ -1004,28 +1001,27 @@ public class DataAccessObject {
 
             Cluster cluster = (Cluster) hibSession.createCriteria(Cluster.class)
                     .add(Restrictions.eq("clusterName", updatedClusterName)).uniqueResult();
-            if (cluster  == null) {
+            if (cluster == null) {
                 // Possibly deleted during long conversation
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateNodeSet, desired Cluster  not found");
                 throw new ConflictException("While using updateNodeSet, desired Cluster not found");
             }
             storedNodeSet.setCluster(cluster);
-            
 
             NodeType nodeType = (NodeType) hibSession.createCriteria(NodeType.class)
                     .add(Restrictions.eq("nodeTypeName", updatedNodeTypeName)).uniqueResult();
-            if (nodeType  == null) {
+            if (nodeType == null) {
                 // Possibly deleted during long conversation
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateNodeSet, desired NodeType  not found");
                 throw new ConflictException("While using updateNodeSet, desired NodeType not found");
             }
             storedNodeSet.setNodeType(nodeType);
-            
+
             hibSession.update(storedNodeSet);
             hibSession.getTransaction().commit();
-            
+
         } catch (HibernateException e) {
             hibSession.getTransaction().rollback();
             logger.error("WTF error using updateNodeSet, ", e);
@@ -1048,7 +1044,7 @@ public class DataAccessObject {
             String updateDescription = request.getParameter("nodeDescription");
             String updatedNodeSet = request.getParameter("nodeSetList");
             String updatedNodeState = request.getParameter("nodeStateList");
-            
+
             Node storedNode = null;
 
             if (cachedNode == null) {
@@ -1058,9 +1054,9 @@ public class DataAccessObject {
             }
             Long cachedNodeVersion = cachedNode.getVersion();
 
-            storedNode = (Node) hibSession.createCriteria(Node.class)
-                    .add(Restrictions.eq("nodeName", updatedNodeName)).uniqueResult();
-            
+            storedNode = (Node) hibSession.createCriteria(Node.class).add(Restrictions.eq("nodeName", updatedNodeName))
+                    .uniqueResult();
+
             // Possibly deleted during long conversation
             if (storedNode == null) {
                 hibSession.getTransaction().rollback();
@@ -1079,17 +1075,17 @@ public class DataAccessObject {
             // Both the same. Safe to update
             storedNode.setNodeName(updatedNodeName);
             storedNode.setDescription(updateDescription);
-            
+
             NodeSet nodeSet = (NodeSet) hibSession.createCriteria(NodeSet.class)
                     .add(Restrictions.eq("nodeSetName", updatedNodeSet)).uniqueResult();
-            if (nodeSet  == null) {
+            if (nodeSet == null) {
                 // Possibly deleted during long conversation
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateNode, desired nodeSet  not found");
                 throw new ConflictException("While using updateNode, desired nodeSet not found");
             }
             storedNode.setNodeSet(nodeSet);
-            
+
             NodeState nodeState = (NodeState) hibSession.createCriteria(NodeState.class)
                     .add(Restrictions.eq("state", updatedNodeState)).uniqueResult();
             if (nodeState == null) {
@@ -1099,10 +1095,10 @@ public class DataAccessObject {
                 throw new ConflictException("While using updateNode, desired nodeState not found");
             }
             storedNode.setNodeState(nodeState);
-            
+
             hibSession.update(storedNode);
             hibSession.getTransaction().commit();
-            
+
         } catch (HibernateException e) {
             hibSession.getTransaction().rollback();
             logger.error("WTF error using updateNode, ", e);
@@ -1111,7 +1107,7 @@ public class DataAccessObject {
             hibSession.close();
         }
     }
-    
+
     public void updateNodeType(HttpServletRequest request) throws WTFException, ConflictException {
 
         HttpSession httpSession = request.getSession();
@@ -1126,7 +1122,6 @@ public class DataAccessObject {
             String updatedMemPerNode = request.getParameter("memPerNode");
 
             NodeType storedNodeType = null;
-            
 
             if (cachedNodeType == null) {
                 hibSession.getTransaction().rollback();
@@ -1150,7 +1145,8 @@ public class DataAccessObject {
             if (!storedNodeTypeVersion.equals(cachedNodeTypeVersion)) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateNodeType, desired NodeType was altered by another user ");
-                throw new ConflictException("While using updateNodeType, desired NodeType was altered by another user ");
+                throw new ConflictException(
+                        "While using updateNodeType, desired NodeType was altered by another user ");
             }
 
             // Both the same. Safe to update
@@ -1159,10 +1155,10 @@ public class DataAccessObject {
             storedNodeType.setSlot(Integer.parseInt(updatedSlot));
             storedNodeType.setHs06PerSlot(Double.parseDouble(updatedHs06PerSlot));
             storedNodeType.setMemPerNode(Double.parseDouble(updatedMemPerNode));
-            
+
             hibSession.update(storedNodeType);
             hibSession.getTransaction().commit();
-            
+
         } catch (HibernateException e) {
             hibSession.getTransaction().rollback();
             logger.error("WTF error using updateNodeType, ", e);
@@ -1179,17 +1175,17 @@ public class DataAccessObject {
 
         try {
             hibSession.beginTransaction();
-            
+
             String updatedClusterSetName = request.getParameter("clusterSetName");
             String updatedDescription = request.getParameter("description");
             String updatedLocation = request.getParameter("location");
             String updatedLongitude = request.getParameter("longitude");
             String updatedLatitude = request.getParameter("latitude");
             String updatedAdmin = request.getParameter("admin");
-            
+
             ClusterSet storedClusterSet = null;
 
-           if (cachedClusterSet == null) {
+            if (cachedClusterSet == null) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateClusterSet, desired ClusterSet not found");
                 throw new ConflictException("While using updateClusterSet, desired ClusterSet not found");
@@ -1211,7 +1207,8 @@ public class DataAccessObject {
             if (!storedClusterSetVersion.equals(cachedClusterSetVersion)) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateClusterSet, desired ClusterSet was altered by another user ");
-                throw new ConflictException("While using updateClusterSet, desired ClusterSet was altered by another user ");
+                throw new ConflictException(
+                        "While using updateClusterSet, desired ClusterSet was altered by another user ");
             }
 
             // Both the same. Safe to update
@@ -1222,7 +1219,7 @@ public class DataAccessObject {
             storedClusterSet.setLongitude(Double.parseDouble(updatedLongitude));
             storedClusterSet.setLatitude(Double.parseDouble(updatedLatitude));
             storedClusterSet.setAdmin(updatedAdmin);
-            
+
             hibSession.update(storedClusterSet);
             hibSession.getTransaction().commit();
         } catch (HibernateException e) {
