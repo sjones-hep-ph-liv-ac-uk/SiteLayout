@@ -37,6 +37,7 @@ public class Node {
     public void setNodeSet(NodeSet nodeSet) {
         this.nodeSet = nodeSet;
     }
+    
     @ManyToOne
     @JoinColumn(name = "state")
     private NodeState nodeState;

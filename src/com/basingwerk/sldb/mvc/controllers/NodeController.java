@@ -1,22 +1,18 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-import org.apache.log4j.Logger;
+import com.basingwerk.sldb.mvc.exceptions.ConflictException;
+import com.basingwerk.sldb.mvc.exceptions.WTFException;
+import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.basingwerk.sldb.mvc.exceptions.WTFException;
-import com.basingwerk.sldb.mvc.model.DataAccessObject;
-import com.basingwerk.sldb.mvc.exceptions.ConflictException;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import org.apache.log4j.Logger;
 
 @WebServlet("/NodeController")
 
@@ -34,6 +30,7 @@ public class NodeController extends HttpServlet {
         DataAccessObject dao = DataAccessObject.getInstance();
         
         String act = null;
+
         act = request.getParameter("Back");
         if (act != null) {
             rd = request.getRequestDispatcher("/main_screen.jsp");

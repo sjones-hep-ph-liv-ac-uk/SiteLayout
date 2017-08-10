@@ -1,19 +1,18 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-import org.apache.log4j.Logger;
+import com.basingwerk.sldb.mvc.exceptions.WTFException;
+import com.basingwerk.sldb.mvc.model.DataAccessObject;
+import com.basingwerk.sldb.mvc.model.NodeSetNodeTypeJoin;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.basingwerk.sldb.mvc.exceptions.WTFException;
-import com.basingwerk.sldb.mvc.model.DataAccessObject;
-import com.basingwerk.sldb.mvc.model.NodeSetNodeTypeJoin;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import org.apache.log4j.Logger;
 
 @WebServlet("/SelectClusterSetController")
 
@@ -27,10 +26,8 @@ public class SelectClusterSetController extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         RequestDispatcher rd = null;
         DataAccessObject dao = DataAccessObject.getInstance();
-
 
         String clusterSetName = request.getParameter("clusterSetList");
 

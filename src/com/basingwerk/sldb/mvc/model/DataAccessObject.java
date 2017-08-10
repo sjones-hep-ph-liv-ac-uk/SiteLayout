@@ -1,23 +1,19 @@
 package com.basingwerk.sldb.mvc.model;
 
+import com.basingwerk.sldb.mvc.exceptions.ConflictException;
+import com.basingwerk.sldb.mvc.exceptions.WTFException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import org.hibernate.Query;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import org.apache.log4j.Logger;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
-
-import com.basingwerk.sldb.mvc.exceptions.ConflictException;
-import com.basingwerk.sldb.mvc.exceptions.WTFException;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 public class DataAccessObject {
     final static Logger logger = Logger.getLogger(DataAccessObject.class);
@@ -51,8 +47,23 @@ public class DataAccessObject {
     // Helper functions
     public ArrayList<NodeSetNodeTypeJoin> getJoinForCluster(HttpServletRequest request, String clusterName)
             throws WTFException {
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
+
         ArrayList<NodeSetNodeTypeJoin> nsntj = new ArrayList<NodeSetNodeTypeJoin>();
         try {
             hibSession.beginTransaction();
@@ -77,8 +88,22 @@ public class DataAccessObject {
 
     public ArrayList<String> listClustersOfClusterSet(HttpServletRequest request, String clusterSetName)
             throws WTFException {
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         ArrayList<String> cl = new ArrayList<String>();
         try {
@@ -100,8 +125,21 @@ public class DataAccessObject {
 
     public void setBaselineNodeType(HttpServletRequest request) throws WTFException {
 
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         ArrayList<NodeType> nodeTypes = null;
         try {
@@ -128,8 +166,21 @@ public class DataAccessObject {
 
     public void loadClusters(HttpServletRequest request, String col, String order) throws WTFException {
 
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         Order ord = org.hibernate.criterion.Order.desc(col);
         if (order.equalsIgnoreCase("ASC")) {
@@ -155,8 +206,21 @@ public class DataAccessObject {
 
     public void loadNodeStates(HttpServletRequest request, String col, String order) throws WTFException {
 
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         Order ord = org.hibernate.criterion.Order.desc(col);
         if (order.equalsIgnoreCase("ASC")) {
@@ -181,8 +245,21 @@ public class DataAccessObject {
 
     public void loadClusterSets(HttpServletRequest request, String col, String order) throws WTFException {
 
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         Order ord = org.hibernate.criterion.Order.desc(col);
         if (order.equalsIgnoreCase("ASC")) {
@@ -209,8 +286,21 @@ public class DataAccessObject {
 
     public void loadNodeSets(HttpServletRequest request, String col, String order) throws WTFException {
 
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         Order ord = org.hibernate.criterion.Order.desc(col);
         if (order.equalsIgnoreCase("ASC")) {
@@ -236,8 +326,21 @@ public class DataAccessObject {
 
     public void loadNodes(HttpServletRequest request, String col, String order) throws WTFException {
 
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         Order ord = org.hibernate.criterion.Order.desc(col);
         if (order.equalsIgnoreCase("ASC")) {
@@ -262,8 +365,21 @@ public class DataAccessObject {
 
     public void loadNodeTypes(HttpServletRequest request, String col, String order) throws WTFException {
 
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         Order ord = org.hibernate.criterion.Order.desc(col);
         if (order.equalsIgnoreCase("ASC")) {
@@ -291,8 +407,22 @@ public class DataAccessObject {
 
     public void loadIndexedCluster(HttpServletRequest request, Integer clusterIndex)
             throws WTFException, ConflictException {
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         cachedCluster = null;
         Cluster storedCluster = null;
@@ -341,8 +471,22 @@ public class DataAccessObject {
 
     public void loadIndexedClusterSet(HttpServletRequest request, Integer clusterSetIndex)
             throws WTFException, ConflictException {
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         cachedClusterSet = null;
 
@@ -392,8 +536,21 @@ public class DataAccessObject {
     public void loadIndexedNodeSet(HttpServletRequest request, Integer nodeSetIndex)
             throws WTFException, ConflictException {
 
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         cachedNodeSet = null;
         NodeSet storedNodeSet = null;
@@ -442,8 +599,21 @@ public class DataAccessObject {
     public void loadIndexedNodeType(HttpServletRequest request, Integer nodeTypeIndex)
             throws WTFException, ConflictException {
 
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         cachedNodeType = null;
         NodeType storedNodeType = null;
@@ -490,8 +660,21 @@ public class DataAccessObject {
 
     public void loadIndexedNode(HttpServletRequest request, Integer nodeIndex) throws WTFException, ConflictException {
 
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         cachedNode = null;
         Node storedNode = null;
@@ -538,9 +721,21 @@ public class DataAccessObject {
 
     public void toggleCheckedNodes(HttpServletRequest request) throws WTFException {
 
-        HttpSession httpSession = request.getSession();
-
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
         Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
         
         try {
             hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
@@ -575,8 +770,22 @@ public class DataAccessObject {
     }
 
     public void toggleIndexedNode(HttpServletRequest request, Integer nodeIndex) throws WTFException {
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         try {
             hibSession.beginTransaction();
@@ -604,8 +813,22 @@ public class DataAccessObject {
     }
 
     public void addCluster(HttpServletRequest request) throws ConflictException, WTFException {
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         String clusterName = request.getParameter("clusterName");
         String descr = request.getParameter("descr");
@@ -647,8 +870,21 @@ public class DataAccessObject {
 
     public void addClusterSet(HttpServletRequest request) throws WTFException, ConflictException {
 
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         String clusterSetName = request.getParameter("clusterSetName");
         String description = request.getParameter("description");
@@ -687,8 +923,21 @@ public class DataAccessObject {
 
     public void addNodeType(HttpServletRequest request) throws WTFException, ConflictException {
 
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         String nodeTypeName = request.getParameter("nodeTypeName");
         String cpu = request.getParameter("cpu");
@@ -725,8 +974,21 @@ public class DataAccessObject {
 
     public void addNodeSet(HttpServletRequest request) throws WTFException, ConflictException {
 
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         String nodeSetName = request.getParameter("nodeSetName");
         String nodeCount = request.getParameter("nodeCount");
@@ -775,8 +1037,21 @@ public class DataAccessObject {
 
     public void addNode(HttpServletRequest request) throws WTFException, ConflictException {
 
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         String nodeName = request.getParameter("nodeName");
         String nodeDescription = request.getParameter("nodeDescription");
@@ -828,8 +1103,21 @@ public class DataAccessObject {
 
     public void deleteCluster(HttpServletRequest request, String clusterName) throws WTFException, ConflictException {
 
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         try {
             Cluster cluster = (Cluster) hibSession.createCriteria(Cluster.class)
@@ -850,8 +1138,21 @@ public class DataAccessObject {
     public void deleteClusterSet(HttpServletRequest request, String clusterSetName)
             throws WTFException, ConflictException {
 
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         ClusterSet clusterSet = (ClusterSet) hibSession.createCriteria(ClusterSet.class)
                 .add(Restrictions.eq("clusterSetName", clusterSetName)).uniqueResult();
@@ -875,8 +1176,21 @@ public class DataAccessObject {
 
     public void deleteNodeSet(HttpServletRequest request, String nodeSetName) throws WTFException, ConflictException {
 
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         NodeSet nodeSet = (NodeSet) hibSession.createCriteria(NodeSet.class)
                 .add(Restrictions.eq("nodeSetName", nodeSetName)).uniqueResult();
@@ -901,8 +1215,21 @@ public class DataAccessObject {
 
     public void deleteNode(HttpServletRequest request, String nodeName) throws WTFException, ConflictException {
 
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         Node node = (Node) hibSession.createCriteria(Node.class).add(Restrictions.eq("nodeName", nodeName))
                 .uniqueResult();
@@ -927,8 +1254,21 @@ public class DataAccessObject {
 
     public void deleteNodeType(HttpServletRequest request, String nodeTypeName) throws WTFException, ConflictException {
 
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         NodeType nodeType = (NodeType) hibSession.createCriteria(NodeType.class)
                 .add(Restrictions.eq("nodeTypeName", nodeTypeName)).uniqueResult();
@@ -952,8 +1292,21 @@ public class DataAccessObject {
 
     public void updateCluster(HttpServletRequest request) throws WTFException, ConflictException {
 
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         try {
             hibSession.beginTransaction();
@@ -1014,11 +1367,38 @@ public class DataAccessObject {
             hibSession.close();
         }
     }
+    
+//    private static Session getSession(HttpServletRequest request) {
+//        HttpSession httpSession = request.getSession();
+//        if (httpSession == null) {
+//            logger.error("WTF error, no HttpSession");
+//            return null;
+//        }
+//        SessionFactory fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+//        if (fac == null) {
+//            logger.error("WTF error, no SessionFactory");
+//            return null;
+//        }
+//        return fac.openSession();
+//    }
 
     public void updateNodeSet(HttpServletRequest request) throws WTFException, ConflictException {
+        
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
 
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         try {
             hibSession.beginTransaction();
@@ -1095,8 +1475,21 @@ public class DataAccessObject {
 
     public void updateNode(HttpServletRequest request) throws WTFException, ConflictException {
 
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         try {
             hibSession.beginTransaction();
@@ -1172,8 +1565,21 @@ public class DataAccessObject {
 
     public void updateNodeType(HttpServletRequest request) throws WTFException, ConflictException {
 
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         try {
             hibSession.beginTransaction();
@@ -1232,8 +1638,21 @@ public class DataAccessObject {
 
     public void updateClusterSet(HttpServletRequest request) throws WTFException, ConflictException {
 
-        HttpSession httpSession = request.getSession();
-        Session hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new WTFException("WTF error, hibernate session unavailable");
+        }
 
         try {
             hibSession.beginTransaction();
@@ -1291,5 +1710,13 @@ public class DataAccessObject {
         } finally {
             hibSession.close();
         }
+    }
+
+    public void logout(HttpServletRequest request) {
+        HttpSession httpSession = null;
+
+        httpSession = request.getSession();
+        httpSession.invalidate();
+        return;
     }
 }

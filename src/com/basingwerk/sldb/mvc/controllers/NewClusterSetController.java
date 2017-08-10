@@ -1,6 +1,5 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-import org.apache.log4j.Logger;
 import java.io.IOException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -11,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
 import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import com.basingwerk.sldb.mvc.exceptions.ConflictException;
+import org.apache.log4j.Logger;
 
 @WebServlet("/NewClusterSetController")
 
@@ -24,10 +24,8 @@ public class NewClusterSetController extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         RequestDispatcher rd = null;
         DataAccessObject dao = DataAccessObject.getInstance();
-
 
         try {
             dao.addClusterSet(request);

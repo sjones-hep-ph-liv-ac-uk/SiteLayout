@@ -37,6 +37,10 @@
 				<td class="tg-yw4l"><input type="submit" value="Reports"
 					name="SomeButton" /></td>
 			</tr>
+			<tr>
+				<td class="tg-yw4l"><input type="submit" value="Logout"
+					name="SomeButton" /></td>
+			</tr>
 		</table>
 	</form>
 </body>

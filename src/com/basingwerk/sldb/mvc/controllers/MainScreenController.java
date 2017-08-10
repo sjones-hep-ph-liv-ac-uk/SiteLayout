@@ -1,16 +1,15 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-import org.apache.log4j.Logger;
+import com.basingwerk.sldb.mvc.exceptions.WTFException;
+import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import java.io.IOException;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.basingwerk.sldb.mvc.exceptions.WTFException;
-import com.basingwerk.sldb.mvc.model.DataAccessObject;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import org.apache.log4j.Logger;
 
 @WebServlet("/MainScreenController")
 
@@ -25,8 +24,9 @@ public class MainScreenController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
+        DataAccessObject dao = DataAccessObject.getInstance();
+
         try {
-            DataAccessObject dao = DataAccessObject.getInstance();
             
             String act = request.getParameter("SomeButton");
             if (act == null) {
@@ -83,6 +83,16 @@ public class MainScreenController extends HttpServlet {
                 return;
 
             }
+            if (act.equals("Logout")) {
+                
+                dao.logout(request);
+                next = "/login.jsp";
+                rd = request.getRequestDispatcher(next);
+                rd.forward(request, response);
+                return;
+
+            }
+            
             logger.error("WTF! Never seen that button before.");
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);

@@ -1,19 +1,18 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-import org.apache.log4j.Logger;
+import com.basingwerk.sldb.mvc.exceptions.ConflictException;
+import com.basingwerk.sldb.mvc.exceptions.WTFException;
+import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.basingwerk.sldb.mvc.exceptions.WTFException;
-import com.basingwerk.sldb.mvc.model.DataAccessObject;
-import com.basingwerk.sldb.mvc.exceptions.ConflictException;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import org.apache.log4j.Logger;
 
 @WebServlet("/NodeTypeController")
 
@@ -29,7 +28,6 @@ public class NodeTypeController extends HttpServlet {
             throws ServletException, IOException {
         RequestDispatcher rd = null;
         DataAccessObject dao = DataAccessObject.getInstance();
-
 
         String act = null;
         act = request.getParameter("Back");

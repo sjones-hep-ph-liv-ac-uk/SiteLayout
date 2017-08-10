@@ -1,17 +1,16 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-
-import org.apache.log4j.Logger;
+import com.basingwerk.sldb.mvc.exceptions.ConflictException;
+import com.basingwerk.sldb.mvc.exceptions.WTFException;
+import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import java.io.IOException;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.basingwerk.sldb.mvc.exceptions.WTFException;
-import com.basingwerk.sldb.mvc.model.DataAccessObject;
-import com.basingwerk.sldb.mvc.exceptions.ConflictException;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import org.apache.log4j.Logger;
 
 @WebServlet("/EditNodeTypeController")
 
@@ -25,9 +24,7 @@ public class EditNodeTypeController extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         RequestDispatcher rd = null;
-
         DataAccessObject dao = DataAccessObject.getInstance();
 
         try {

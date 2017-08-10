@@ -1,21 +1,20 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-import com.basingwerk.sldb.mvc.model.DataAccessObject;
-import org.hibernate.FlushMode;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.apache.log4j.Logger;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
 import com.basingwerk.sldb.mvc.model.User;
 import java.io.IOException;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import org.apache.log4j.Logger;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.FlushMode;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 @WebServlet("/LoginController")
 
@@ -29,10 +28,9 @@ public class LoginController extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String msg;
         RequestDispatcher rd = null;
 
-        DataAccessObject dao = DataAccessObject.getInstance();
+        String msg;
 
         try {
 

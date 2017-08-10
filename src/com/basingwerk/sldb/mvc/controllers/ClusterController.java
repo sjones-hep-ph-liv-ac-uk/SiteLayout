@@ -3,17 +3,13 @@ package com.basingwerk.sldb.mvc.controllers;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import org.apache.log4j.Logger;
-
 import com.basingwerk.sldb.mvc.exceptions.ConflictException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
 import com.basingwerk.sldb.mvc.model.DataAccessObject;
@@ -31,10 +27,10 @@ public class ClusterController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
-
         DataAccessObject dao = DataAccessObject.getInstance();
 
         String act = null;
+
         act = request.getParameter("Back");
         if (act != null) {
             rd = request.getRequestDispatcher("/main_screen.jsp");
