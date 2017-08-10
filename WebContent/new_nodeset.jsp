@@ -1,26 +1,17 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<%@page import="com.basingwerk.sldb.mvc.model.NodeSet"%>
-<%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page import="com.basingwerk.sldb.mvc.model.NodeSet"%>
 <%@ page import="java.util.List"%>
-<%
-    List nodeTypeList = (List) request.getAttribute("nodeTypeList");
-	List clusterList = (List) request.getAttribute("clusterList");
+
+<%  List nodeTypeList = (List) request.getAttribute("nodeTypeList");
+    List clusterList = (List) request.getAttribute("clusterList");
 %>
-<!-- <c:set var="baseline" value="BASELINE" /> -->
 
 <html>
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/SiteLayout.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/SiteLayout.css">
 
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>New Node Set</title>
+<!-- <script src="valfuncs.js"></script> -->
 <script>
-
 function isNumber(value) {
   return !isNaN(value) ;
 }
@@ -29,6 +20,7 @@ function isInt(value) {
   return !isNaN(value) && parseInt(Number(value)) == value
     && !isNaN(parseInt(value, 10));
 }
+
 function validateForm() {
   var nodeSetName = document.forms["NewNodeSetForm"]["nodeSetName"].value;
   if (nodeSetName == "") {

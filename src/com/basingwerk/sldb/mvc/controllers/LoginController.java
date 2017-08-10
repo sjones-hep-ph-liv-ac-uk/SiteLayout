@@ -72,7 +72,8 @@ public class LoginController extends HttpServlet {
             }
             hibSession.close();
             User user = new User(username, password);
-            request.setAttribute("user", user);
+            // UNTESTED
+            session.setAttribute("user", user);
 
             rd = request.getRequestDispatcher("/main_screen.jsp");
             rd.forward(request, response);

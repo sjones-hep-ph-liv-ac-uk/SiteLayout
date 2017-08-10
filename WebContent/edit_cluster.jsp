@@ -1,26 +1,17 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<%@page import="com.basingwerk.sldb.mvc.model.ClusterSet"%>
+<%@ page import="com.basingwerk.sldb.mvc.model.Cluster"%>
+<%@ page import="com.basingwerk.sldb.mvc.model.ClusterSet"%>
 <%@ page import="java.util.List"%>
-<%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <% 	List clusterSetList = (List) request.getAttribute("clusterSetList"); %>
-
-<%	com.basingwerk.sldb.mvc.model.Cluster cluster = 
-   (com.basingwerk.sldb.mvc.model.Cluster) request.getAttribute("cluster");
-%>
+<%	Cluster cluster = (Cluster) request.getAttribute("cluster"); %>
 
 <html>
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/SiteLayout.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/SiteLayout.css">
 
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Edit Cluster</title>
+<!-- <script src="valfuncs.js"></script> -->
 <script>
-
 function isNumber(value) {
   return !isNaN(value) ;
 }
@@ -29,6 +20,7 @@ function isInt(value) {
   return !isNaN(value) && parseInt(Number(value)) == value
     && !isNaN(parseInt(value, 10));
 }
+
 function validateForm() {
   var clusterName = document.forms["EditClusterForm"]["clusterName"].value;
   if (clusterName == "") {

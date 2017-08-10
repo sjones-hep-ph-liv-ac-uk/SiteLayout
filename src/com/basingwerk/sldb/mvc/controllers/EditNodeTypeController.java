@@ -32,6 +32,7 @@ public class EditNodeTypeController extends HttpServlet {
 
         try {
             dao.updateNodeType(request);
+            
         } catch (ConflictException e) {
             request.setAttribute("theMessage", "The task could not be done. Please try again.");
             request.setAttribute("theJsp", "main_screen.jsp");

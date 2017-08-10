@@ -1,24 +1,15 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
+<%@ page import="com.basingwerk.sldb.mvc.model.NodeType"%>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<%@page import="com.basingwerk.sldb.mvc.model.NodeType"%>
-<%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%
-	NodeType nodeType = (NodeType) request.getAttribute("nodeType");
-%>
+<% NodeType nodeType = (NodeType) request.getAttribute("nodeType"); %>
 
 <html>
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/SiteLayout.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/SiteLayout.css">
 
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Edit Node Type</title>
 
+<!-- <script src="valfuncs.js"></script> -->
 <script>
-
 function isNumber(value) {
   return !isNaN(value) ;
 }
@@ -27,6 +18,7 @@ function isInt(value) {
   return !isNaN(value) && parseInt(Number(value)) == value
     && !isNaN(parseInt(value, 10));
 }
+
 function validateForm() {
   var nodeTypeName = document.forms["EditNodeTypeForm"]["nodeTypeName"].value;
   if (nodeTypeName == "") {

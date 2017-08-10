@@ -1,29 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<web-app 
+<!--  <web-app metadata-complete="false"  
   xmlns="http://java.sun.com/xml/ns/javaee" 
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
-  http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0"> 
+  http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0"> -->
+<web-app 
+  version="3.1" 
+  metadata-complete="false"  
+  xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
 
-<!-- <web-app 
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-xmlns="http://java.sun.com/xml/ns/javaee" 
-xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
-http://java.sun.com/xml/ns/javaee/web-app_2_3.xsd" 
-version="2.3"> -->
-
-<!-- <web-app 
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-xmlns="http://java.sun.com/xml/ns/j2ee"
-xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
-http://java.sun.com/xml/ns/j2ee/web-app_2_3.xsd"
-version="2.3"> -->
-
+  <jsp-config>
+    <jsp-property-group>
+      <url-pattern>*.jsp</url-pattern>
+      <url-pattern>*.jspf</url-pattern>
+      <page-encoding>UTF-8</page-encoding>
+      <scripting-invalid>false</scripting-invalid>
+      <include-prelude>/base.jspf</include-prelude>
+      <trim-directive-whitespaces>true</trim-directive-whitespaces>
+      <default-content-type>text/html</default-content-type>
+    </jsp-property-group>
+  </jsp-config>
 
   <display-name>SiteLayout</display-name>
 
-  <servlet>
+<servlet>
     <servlet-name>NodeSetController</servlet-name>
     <servlet-class>com.basingwerk.sldb.mvc.controllers.NodeSetController </servlet-class> </servlet>
   <servlet-mapping>
@@ -180,7 +183,7 @@ version="2.3"> -->
   <servlet-mapping>
     <servlet-name>NewNodeController</servlet-name>
     <url-pattern>/NewNodeController</url-pattern>
-  </servlet-mapping>
+  </servlet-mapping> 
 
 
   <welcome-file-list>

@@ -31,6 +31,7 @@ public class EditNodeController extends HttpServlet {
 
         try {
             dao.updateNode(request);
+            
         } catch (WTFException e) {
             logger.error("WTF! Cannot update node.");
             rd = request.getRequestDispatcher("/error.jsp");
