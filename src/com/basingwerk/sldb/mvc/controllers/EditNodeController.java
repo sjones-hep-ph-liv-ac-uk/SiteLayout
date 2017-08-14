@@ -1,6 +1,6 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-import com.basingwerk.sldb.mvc.exceptions.ConflictException;
+import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
 import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import java.io.IOException;
@@ -35,7 +35,7 @@ public class EditNodeController extends HttpServlet {
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
             return;
-        } catch (ConflictException e) {
+        } catch (RoutineException e) {
             request.setAttribute("theMessage", "The task could not be done. Please try again later.");
             request.setAttribute("theJsp", "main_screen.jsp");
             rd = request.getRequestDispatcher("/recoverable_message.jsp");
@@ -47,6 +47,10 @@ public class EditNodeController extends HttpServlet {
         } catch (WTFException e) {
             logger.error("WTF! Error using loadNodes");
             rd = request.getRequestDispatcher("/error.jsp");
+            rd.forward(request, response);
+            return;
+        } catch (RoutineException e) {
+            rd = request.getRequestDispatcher("/login.jsp");
             rd.forward(request, response);
             return;
         }

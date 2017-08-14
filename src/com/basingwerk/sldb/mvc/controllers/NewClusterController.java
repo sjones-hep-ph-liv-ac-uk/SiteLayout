@@ -1,6 +1,6 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-import com.basingwerk.sldb.mvc.exceptions.ConflictException;
+import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
 import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import java.io.IOException;
@@ -39,7 +39,7 @@ public class NewClusterController extends HttpServlet {
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
             return;
-        } catch (ConflictException e) {
+        } catch (RoutineException e) {
             request.setAttribute("theMessage",
                     "Could not add that cluster at this time. Please try again. " + e.getMessage());
             request.setAttribute("theJsp", "main_screen.jsp");

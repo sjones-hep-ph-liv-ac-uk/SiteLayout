@@ -1,6 +1,6 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-import com.basingwerk.sldb.mvc.exceptions.ConflictException;
+import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
 import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import java.io.IOException;
@@ -45,6 +45,10 @@ public class NodeSetController extends HttpServlet {
                 rd = request.getRequestDispatcher("/error.jsp");
                 rd.forward(request, response);
                 return;
+            } catch (RoutineException e) {
+                rd = request.getRequestDispatcher("/login.jsp");
+                rd.forward(request, response);
+                return;
             }
             rd = request.getRequestDispatcher("/nodeset.jsp");
             rd.forward(request, response);
@@ -61,6 +65,10 @@ public class NodeSetController extends HttpServlet {
             } catch (WTFException e) {
                 logger.error("WTF! Error preparing data, ", e);
                 rd = request.getRequestDispatcher("/error.jsp");
+                rd.forward(request, response);
+                return;
+            } catch (RoutineException e) {
+                rd = request.getRequestDispatcher("/login.jsp");
                 rd.forward(request, response);
                 return;
             }
@@ -93,6 +101,10 @@ public class NodeSetController extends HttpServlet {
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
+                } catch (RoutineException e) {
+                    rd = request.getRequestDispatcher("/login.jsp");
+                    rd.forward(request, response);
+                    return;
                 }
                 String next = "/nodeset.jsp";
                 rd = request.getRequestDispatcher(next);
@@ -104,7 +116,7 @@ public class NodeSetController extends HttpServlet {
                 String nodeSetName = key.substring(4, key.length());
                 try {
                     dao.deleteNodeSet(request, nodeSetName);
-                } catch (ConflictException e) {
+                } catch (RoutineException e) {
                     logger.error("WTF! Error deleting a node set, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
@@ -122,6 +134,10 @@ public class NodeSetController extends HttpServlet {
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
+                } catch (RoutineException e) {
+                    rd = request.getRequestDispatcher("/login.jsp");
+                    rd.forward(request, response);
+                    return;
                 }
                 String next = "/nodeset.jsp";
                 rd = request.getRequestDispatcher(next);
@@ -133,7 +149,7 @@ public class NodeSetController extends HttpServlet {
                 Integer index = Integer.parseInt(nodeSet);
                 try {
                     dao.loadIndexedNodeSet(request, index);
-                } catch (ConflictException e) {
+                } catch (RoutineException e) {
                     request.setAttribute("theMessage",
                             "Could not edit that nodeSet at this time. Please try again. " + e.getMessage());
                     request.setAttribute("theJsp", "main_screen.jsp");
@@ -153,6 +169,10 @@ public class NodeSetController extends HttpServlet {
                 } catch (WTFException e) {
                     logger.error("WTF! Error preparing data, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
+                    rd.forward(request, response);
+                    return;
+                } catch (RoutineException e) {
+                    rd = request.getRequestDispatcher("/login.jsp");
                     rd.forward(request, response);
                     return;
                 }

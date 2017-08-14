@@ -1,6 +1,6 @@
 package com.basingwerk.sldb.mvc.model;
 
-import com.basingwerk.sldb.mvc.exceptions.ConflictException;
+import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +46,7 @@ public class DataAccessObject {
 
     // Helper functions
     public ArrayList<NodeSetNodeTypeJoin> getJoinForCluster(HttpServletRequest request, String clusterName)
-            throws WTFException {
+            throws RoutineException, WTFException {
         
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -61,7 +61,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         ArrayList<NodeSetNodeTypeJoin> nsntj = new ArrayList<NodeSetNodeTypeJoin>();
@@ -87,7 +87,7 @@ public class DataAccessObject {
     }
 
     public ArrayList<String> listClustersOfClusterSet(HttpServletRequest request, String clusterSetName)
-            throws WTFException {
+            throws RoutineException,WTFException {
         
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -102,7 +102,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         ArrayList<String> cl = new ArrayList<String>();
@@ -123,7 +123,7 @@ public class DataAccessObject {
         return cl;
     }
 
-    public void setBaselineNodeType(HttpServletRequest request) throws WTFException {
+    public void setBaselineNodeType(HttpServletRequest request) throws RoutineException,WTFException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -138,7 +138,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         ArrayList<NodeType> nodeTypes = null;
@@ -164,7 +164,7 @@ public class DataAccessObject {
     }
 
 
-    public void loadClusters(HttpServletRequest request, String col, String order) throws WTFException {
+    public void loadClusters(HttpServletRequest request, String col, String order) throws RoutineException,WTFException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -179,7 +179,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         Order ord = org.hibernate.criterion.Order.desc(col);
@@ -204,7 +204,7 @@ public class DataAccessObject {
 
     }
 
-    public void loadNodeStates(HttpServletRequest request, String col, String order) throws WTFException {
+    public void loadNodeStates(HttpServletRequest request, String col, String order) throws RoutineException,WTFException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -219,7 +219,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         Order ord = org.hibernate.criterion.Order.desc(col);
@@ -243,7 +243,7 @@ public class DataAccessObject {
         request.setAttribute("nodeStateList", nodeStateList);
     }
 
-    public void loadClusterSets(HttpServletRequest request, String col, String order) throws WTFException {
+    public void loadClusterSets(HttpServletRequest request, String col, String order) throws RoutineException,WTFException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -258,7 +258,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         Order ord = org.hibernate.criterion.Order.desc(col);
@@ -284,7 +284,7 @@ public class DataAccessObject {
 
     }
 
-    public void loadNodeSets(HttpServletRequest request, String col, String order) throws WTFException {
+    public void loadNodeSets(HttpServletRequest request, String col, String order) throws RoutineException,WTFException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -299,7 +299,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         Order ord = org.hibernate.criterion.Order.desc(col);
@@ -324,7 +324,7 @@ public class DataAccessObject {
 
     }
 
-    public void loadNodes(HttpServletRequest request, String col, String order) throws WTFException {
+    public void loadNodes(HttpServletRequest request, String col, String order) throws RoutineException,WTFException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -339,7 +339,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         Order ord = org.hibernate.criterion.Order.desc(col);
@@ -363,7 +363,7 @@ public class DataAccessObject {
         httpSession.setAttribute("nodeList", nodeList);
     }
 
-    public void loadNodeTypes(HttpServletRequest request, String col, String order) throws WTFException {
+    public void loadNodeTypes(HttpServletRequest request, String col, String order) throws RoutineException,WTFException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -378,7 +378,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         Order ord = org.hibernate.criterion.Order.desc(col);
@@ -406,7 +406,7 @@ public class DataAccessObject {
     }
 
     public void loadIndexedCluster(HttpServletRequest request, Integer clusterIndex)
-            throws WTFException, ConflictException {
+            throws WTFException, RoutineException {
         
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -421,7 +421,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         cachedCluster = null;
@@ -433,7 +433,7 @@ public class DataAccessObject {
             cachedCluster = clusterList.get(clusterIndex);
             if (cachedCluster == null) {
                 logger.error("While using loadIndexedCluster, desired Cluster not found");
-                throw new ConflictException("While using loadIndexedCluster, desired Cluster not found");
+                throw new RoutineException("While using loadIndexedCluster, desired Cluster not found");
             }
             Long cachedVersion = cachedCluster.getVersion();
 
@@ -443,14 +443,14 @@ public class DataAccessObject {
             if (storedCluster == null) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using loadIndexedCluster, desired Cluster not found");
-                throw new ConflictException("While using loadIndexedCluster, desired Cluster not found");
+                throw new RoutineException("While using loadIndexedCluster, desired Cluster not found");
             }
             Long storedVersion = storedCluster.getVersion();
 
             if (!storedVersion.equals(cachedVersion)) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using loadIndexedCluster, desired Cluster was altered by another user ");
-                throw new ConflictException(
+                throw new RoutineException(
                         "While using loadIndexedCluster, desired Cluster was altered by another user ");
             }
 
@@ -470,7 +470,7 @@ public class DataAccessObject {
     }
 
     public void loadIndexedClusterSet(HttpServletRequest request, Integer clusterSetIndex)
-            throws WTFException, ConflictException {
+            throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -485,7 +485,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         cachedClusterSet = null;
@@ -496,7 +496,7 @@ public class DataAccessObject {
             cachedClusterSet = clusterSetList.get(clusterSetIndex);
             if (cachedClusterSet == null) {
                 logger.error("While using loadIndexedClusterSet, desired ClusterSet not found");
-                throw new ConflictException("While using loadIndexedClusterSet, desired ClusterSet not found");
+                throw new RoutineException("While using loadIndexedClusterSet, desired ClusterSet not found");
             }
             Long cachedVersion = cachedClusterSet.getVersion();
 
@@ -506,14 +506,14 @@ public class DataAccessObject {
                 // Possibly deleted during long conversation
                 hibSession.getTransaction().rollback();
                 logger.error("While using loadIndexedClusterSet, desired ClusterSet not found");
-                throw new ConflictException("While using loadIndexedClusterSet, desired ClusterSet not found");
+                throw new RoutineException("While using loadIndexedClusterSet, desired ClusterSet not found");
             }
             // Possibly altered during long conversation
             Long storedVersion = storedClusterSet.getVersion();
             if (!storedVersion.equals(cachedVersion)) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using loadIndexedClusterSet, desired ClusterSet was altered by another user ");
-                throw new ConflictException(
+                throw new RoutineException(
                         "While using loadIndexedClusterSet, desired ClusterSet was altered by another user ");
             }
 
@@ -534,7 +534,7 @@ public class DataAccessObject {
     }
 
     public void loadIndexedNodeSet(HttpServletRequest request, Integer nodeSetIndex)
-            throws WTFException, ConflictException {
+            throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -549,7 +549,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         cachedNodeSet = null;
@@ -560,7 +560,7 @@ public class DataAccessObject {
             cachedNodeSet = nodeSetList.get(nodeSetIndex);
             if (cachedNodeSet == null) {
                 logger.error("While using loadIndexedNodeSet, desired NodeSet not found");
-                throw new ConflictException("While using loadIndexedNodeSet, desired NodeSet not found");
+                throw new RoutineException("While using loadIndexedNodeSet, desired NodeSet not found");
             }
 
             Long cachedVersion = cachedNodeSet.getVersion();
@@ -570,14 +570,14 @@ public class DataAccessObject {
             if (storedNodeSet == null) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using loadIndexedNodeSet, desired NodeSet not found");
-                throw new ConflictException("While using loadIndexedNodeSet, desired NodeSet not found");
+                throw new RoutineException("While using loadIndexedNodeSet, desired NodeSet not found");
             }
 
             Long storedVersion = storedNodeSet.getVersion();
             if (!storedVersion.equals(cachedVersion)) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using loadIndexedNodeSet, desired NodeSet was altered by another user ");
-                throw new ConflictException(
+                throw new RoutineException(
                         "While using loadIndexedNodeSet, desired NodeSet was altered by another user ");
             }
 
@@ -597,7 +597,7 @@ public class DataAccessObject {
     }
 
     public void loadIndexedNodeType(HttpServletRequest request, Integer nodeTypeIndex)
-            throws WTFException, ConflictException {
+            throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -612,7 +612,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         cachedNodeType = null;
@@ -622,7 +622,7 @@ public class DataAccessObject {
             cachedNodeType = nodeTypeList.get(nodeTypeIndex);
             if (cachedNodeType == null) {
                 logger.error("While using loadIndexedNodeType, desired NodeType not found");
-                throw new ConflictException("While using loadIndexedNodeType, desired NodeType not found");
+                throw new RoutineException("While using loadIndexedNodeType, desired NodeType not found");
             }
 
             Long cachedVersion = cachedNodeType.getVersion();
@@ -633,14 +633,14 @@ public class DataAccessObject {
             if (storedNodeType == null) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using loadIndexedNodeType, desired NodeType not found");
-                throw new ConflictException("While using loadIndexedNodeType, desired NodeType not found");
+                throw new RoutineException("While using loadIndexedNodeType, desired NodeType not found");
             }
 
             Long storedVersion = storedNodeType.getVersion();
             if (!storedVersion.equals(cachedVersion)) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using loadIndexedNodeType, desired NodeType was altered by another user ");
-                throw new ConflictException(
+                throw new RoutineException(
                         "While using loadIndexedNodeType, desired NodeType was altered by another user ");
             }
 
@@ -658,7 +658,7 @@ public class DataAccessObject {
         return;
     }
 
-    public void loadIndexedNode(HttpServletRequest request, Integer nodeIndex) throws WTFException, ConflictException {
+    public void loadIndexedNode(HttpServletRequest request, Integer nodeIndex) throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -673,7 +673,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         cachedNode = null;
@@ -684,7 +684,7 @@ public class DataAccessObject {
             cachedNode = nodeList.get(nodeIndex);
             if (cachedNode == null) {
                 logger.error("While using loadIndexedNode, desired Node not found");
-                throw new ConflictException("While using loadIndexedNode, desired Node not found");
+                throw new RoutineException("While using loadIndexedNode, desired Node not found");
             }
 
             Long cachedVersion = cachedNode.getVersion();
@@ -694,14 +694,14 @@ public class DataAccessObject {
             if (storedNode == null) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using loadIndexedNode, desired Node not found");
-                throw new ConflictException("While using loadIndexedNode, desired Node not found");
+                throw new RoutineException("While using loadIndexedNode, desired Node not found");
             }
 
             Long storedVersion = storedNode.getVersion();
             if (!storedVersion.equals(cachedVersion)) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using loadIndexedNode, desired Node was altered by another user ");
-                throw new ConflictException("While using loadIndexedNode, desired Node was altered by another user ");
+                throw new RoutineException("While using loadIndexedNode, desired Node was altered by another user ");
             }
 
             hibSession.getTransaction().commit();
@@ -719,7 +719,7 @@ public class DataAccessObject {
         return;
     }
 
-    public void toggleCheckedNodes(HttpServletRequest request) throws WTFException {
+    public void toggleCheckedNodes(HttpServletRequest request) throws RoutineException,WTFException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -734,7 +734,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
         
         try {
@@ -769,7 +769,7 @@ public class DataAccessObject {
         return;
     }
 
-    public void toggleIndexedNode(HttpServletRequest request, Integer nodeIndex) throws WTFException {
+    public void toggleIndexedNode(HttpServletRequest request, Integer nodeIndex) throws RoutineException,WTFException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -784,7 +784,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         try {
@@ -812,7 +812,7 @@ public class DataAccessObject {
         return;
     }
 
-    public void addCluster(HttpServletRequest request) throws ConflictException, WTFException {
+    public void addCluster(HttpServletRequest request) throws RoutineException, WTFException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -827,7 +827,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         String clusterName = request.getParameter("clusterName");
@@ -846,7 +846,7 @@ public class DataAccessObject {
                 // Possibly deleted during long conversation
                 hibSession.getTransaction().rollback();
                 logger.error("While using addCluster, desired ClusterSet not found");
-                throw new ConflictException("While using addCluster, desired ClusterSet not found");
+                throw new RoutineException("While using addCluster, desired ClusterSet not found");
             }
             cluster.setClusterName(clusterName);
             cluster.setDescr(descr);
@@ -858,7 +858,7 @@ public class DataAccessObject {
         } catch (ConstraintViolationException e) {
             hibSession.getTransaction().rollback();
             logger.error("While using addCluster, the clusterName conflicted with an existing cluster");
-            throw new ConflictException("While using addCluster, the clusterName conflicted with an existing cluster");
+            throw new RoutineException("While using addCluster, the clusterName conflicted with an existing cluster");
         } catch (HibernateException e) {
             hibSession.getTransaction().rollback();
             logger.error("WTF while using addCluster", e);
@@ -868,7 +868,7 @@ public class DataAccessObject {
         }
     }
 
-    public void addClusterSet(HttpServletRequest request) throws WTFException, ConflictException {
+    public void addClusterSet(HttpServletRequest request) throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -883,7 +883,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         String clusterSetName = request.getParameter("clusterSetName");
@@ -910,7 +910,7 @@ public class DataAccessObject {
         } catch (ConstraintViolationException e) {
             hibSession.getTransaction().rollback();
             logger.error("While using addClusterSet, the clusterSetName conflicted with an existing clusterSet");
-            throw new ConflictException(
+            throw new RoutineException(
                     "While using addClusterSet, the clusterSetName conflicted with an existing clusterSet");
         } catch (HibernateException e) {
             hibSession.getTransaction().rollback();
@@ -921,7 +921,7 @@ public class DataAccessObject {
         }
     }
 
-    public void addNodeType(HttpServletRequest request) throws WTFException, ConflictException {
+    public void addNodeType(HttpServletRequest request) throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -936,7 +936,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         String nodeTypeName = request.getParameter("nodeTypeName");
@@ -961,7 +961,7 @@ public class DataAccessObject {
         } catch (ConstraintViolationException e) {
             hibSession.getTransaction().rollback();
             logger.error("While using addNodeType, the nodeTypeName conflicted with an existing nodeType");
-            throw new ConflictException(
+            throw new RoutineException(
                     "While using addNodeType, the nodeTypeName conflicted with an existing nodeType");
         } catch (HibernateException e) {
             hibSession.getTransaction().rollback();
@@ -972,7 +972,7 @@ public class DataAccessObject {
         }
     }
 
-    public void addNodeSet(HttpServletRequest request) throws WTFException, ConflictException {
+    public void addNodeSet(HttpServletRequest request) throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -987,7 +987,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         String nodeSetName = request.getParameter("nodeSetName");
@@ -1005,7 +1005,7 @@ public class DataAccessObject {
                 // Possibly deleted during long conversation
                 hibSession.getTransaction().rollback();
                 logger.error("While using addNodeSet, desired Cluster not found");
-                throw new ConflictException("While using addNodeSet, desired Cluster not found");
+                throw new RoutineException("While using addNodeSet, desired Cluster not found");
             }
 
             NodeType nodeType = (NodeType) hibSession.createCriteria(NodeType.class)
@@ -1014,7 +1014,7 @@ public class DataAccessObject {
                 // Possibly deleted during long conversation
                 hibSession.getTransaction().rollback();
                 logger.error("While using addNodeSet, desired NodeType not found");
-                throw new ConflictException("While using addNodeSet, desired NodeType not found");
+                throw new RoutineException("While using addNodeSet, desired NodeType not found");
             }
             nodeSet.setCluster(c);
             nodeSet.setNodeType(nodeType);
@@ -1025,7 +1025,7 @@ public class DataAccessObject {
         } catch (ConstraintViolationException e) {
             hibSession.getTransaction().rollback();
             logger.error("While using addNodeSet, the nodeSetName conflicted with an existing nodeSet");
-            throw new ConflictException("While using addNodeSet, the nodeSetName conflicted with an existing nodeSet");
+            throw new RoutineException("While using addNodeSet, the nodeSetName conflicted with an existing nodeSet");
         } catch (HibernateException e) {
             hibSession.getTransaction().rollback();
             logger.error("WTF error using addNodeSet, ", e);
@@ -1035,7 +1035,7 @@ public class DataAccessObject {
         }
     }
 
-    public void addNode(HttpServletRequest request) throws WTFException, ConflictException {
+    public void addNode(HttpServletRequest request) throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -1050,7 +1050,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         String nodeName = request.getParameter("nodeName");
@@ -1069,7 +1069,7 @@ public class DataAccessObject {
                 // Possibly deleted during long conversation
                 hibSession.getTransaction().rollback();
                 logger.error("While using addNode, desired NodeSet not found");
-                throw new ConflictException("While using addNode, desired NodeSet not found");
+                throw new RoutineException("While using addNode, desired NodeSet not found");
             }
 
             NodeState nodeState = (NodeState) hibSession.createCriteria(NodeState.class)
@@ -1078,7 +1078,7 @@ public class DataAccessObject {
                 // Possibly deleted during long conversation
                 hibSession.getTransaction().rollback();
                 logger.error("While using addNode, desired nodeState not found");
-                throw new ConflictException("While using addNode, desired nodeState not found");
+                throw new RoutineException("While using addNode, desired nodeState not found");
             }
 
             n.setNodeName(nodeName);
@@ -1091,7 +1091,7 @@ public class DataAccessObject {
         } catch (ConstraintViolationException e) {
             hibSession.getTransaction().rollback();
             logger.error("While using addNode, the nodeName conflicted with an existing node");
-            throw new ConflictException("While using addNode, the nodeName conflicted with an existing node");
+            throw new RoutineException("While using addNode, the nodeName conflicted with an existing node");
         } catch (HibernateException e) {
             hibSession.getTransaction().rollback();
             logger.error("WTF error using addNode, ", e);
@@ -1101,7 +1101,7 @@ public class DataAccessObject {
         }
     }
 
-    public void deleteCluster(HttpServletRequest request, String clusterName) throws WTFException, ConflictException {
+    public void deleteCluster(HttpServletRequest request, String clusterName) throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -1116,7 +1116,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         try {
@@ -1129,14 +1129,14 @@ public class DataAccessObject {
             // Possibly deleted during long conversation
             hibSession.getTransaction().rollback();
             logger.error("While using deleteCluster, desired Cluster not found");
-            throw new ConflictException("While using deleteCluster, desired Cluster not found");
+            throw new RoutineException("While using deleteCluster, desired Cluster not found");
         } finally {
             hibSession.close();
         }
     }
 
     public void deleteClusterSet(HttpServletRequest request, String clusterSetName)
-            throws WTFException, ConflictException {
+            throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -1151,14 +1151,14 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         ClusterSet clusterSet = (ClusterSet) hibSession.createCriteria(ClusterSet.class)
                 .add(Restrictions.eq("clusterSetName", clusterSetName)).uniqueResult();
         if (clusterSet == null) {
             logger.error("While using deleteCluster, desired Cluster not found");
-            throw new ConflictException("While using deleteCluster, desired Cluster not found");
+            throw new RoutineException("While using deleteCluster, desired Cluster not found");
         }
         try {
             hibSession.beginTransaction();
@@ -1168,13 +1168,13 @@ public class DataAccessObject {
             // Possibly deleted during long conversation
             hibSession.getTransaction().rollback();
             logger.error("While using deleteClusterSet, desired ClusterSet not found");
-            throw new ConflictException("While using deleteClusterSet, desired ClusterSet not found");
+            throw new RoutineException("While using deleteClusterSet, desired ClusterSet not found");
         } finally {
             hibSession.close();
         }
     }
 
-    public void deleteNodeSet(HttpServletRequest request, String nodeSetName) throws WTFException, ConflictException {
+    public void deleteNodeSet(HttpServletRequest request, String nodeSetName) throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -1189,7 +1189,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         NodeSet nodeSet = (NodeSet) hibSession.createCriteria(NodeSet.class)
@@ -1197,7 +1197,7 @@ public class DataAccessObject {
 
         if (nodeSet == null) {
             logger.error("While using deleteNodeSet, desired NodeSet not found");
-            throw new ConflictException("While using deleteNodeSet, desired NodeSet not found");
+            throw new RoutineException("While using deleteNodeSet, desired NodeSet not found");
         }
         try {
             hibSession.beginTransaction();
@@ -1207,13 +1207,13 @@ public class DataAccessObject {
             // Possibly deleted during long conversation
             hibSession.getTransaction().rollback();
             logger.error("While using deleteNodeSet, desired NodeSet not found");
-            throw new ConflictException("While using deleteNodeSet, desired NodeSet not found");
+            throw new RoutineException("While using deleteNodeSet, desired NodeSet not found");
         } finally {
             hibSession.close();
         }
     }
 
-    public void deleteNode(HttpServletRequest request, String nodeName) throws WTFException, ConflictException {
+    public void deleteNode(HttpServletRequest request, String nodeName) throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -1228,7 +1228,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         Node node = (Node) hibSession.createCriteria(Node.class).add(Restrictions.eq("nodeName", nodeName))
@@ -1236,7 +1236,7 @@ public class DataAccessObject {
 
         if (node == null) {
             logger.error("While using deleteNode, desired Node not found");
-            throw new ConflictException("While using deleteNode, desired Nodenot found");
+            throw new RoutineException("While using deleteNode, desired Nodenot found");
         }
         try {
             hibSession.beginTransaction();
@@ -1246,13 +1246,13 @@ public class DataAccessObject {
             // Possibly deleted during long conversation
             hibSession.getTransaction().rollback();
             logger.error("While using deleteNode, desired Node not found");
-            throw new ConflictException("While using deleteNode , desired Nodenot found");
+            throw new RoutineException("While using deleteNode , desired Nodenot found");
         } finally {
             hibSession.close();
         }
     }
 
-    public void deleteNodeType(HttpServletRequest request, String nodeTypeName) throws WTFException, ConflictException {
+    public void deleteNodeType(HttpServletRequest request, String nodeTypeName) throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -1267,14 +1267,14 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         NodeType nodeType = (NodeType) hibSession.createCriteria(NodeType.class)
                 .add(Restrictions.eq("nodeTypeName", nodeTypeName)).uniqueResult();
         if (nodeType == null) {
             logger.error("While using deleteNodeType, desired NodeType not found");
-            throw new ConflictException("While using deleteNodeType, desired NodeType not found");
+            throw new RoutineException("While using deleteNodeType, desired NodeType not found");
         }
         try {
             hibSession.beginTransaction();
@@ -1284,13 +1284,13 @@ public class DataAccessObject {
             // Possibly deleted during long conversation
             hibSession.getTransaction().rollback();
             logger.error("While using deleteNodeType, desired NodeType not found");
-            throw new ConflictException("While using deleteNodeType, desired NodeType not found");
+            throw new RoutineException("While using deleteNodeType, desired NodeType not found");
         } finally {
             hibSession.close();
         }
     }
 
-    public void updateCluster(HttpServletRequest request) throws WTFException, ConflictException {
+    public void updateCluster(HttpServletRequest request) throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -1305,7 +1305,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         try {
@@ -1321,7 +1321,7 @@ public class DataAccessObject {
             if (cachedCluster == null) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateCluster, desired Cluster not found");
-                throw new ConflictException("While using updateCluster, desired Cluster not found");
+                throw new RoutineException("While using updateCluster, desired Cluster not found");
             }
             Long cachedClusterVersion = cachedCluster.getVersion();
 
@@ -1331,7 +1331,7 @@ public class DataAccessObject {
             if (storedCluster == null) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateCluster, desired Cluster  not found");
-                throw new ConflictException("While using updateCluster, desired Cluster  not found");
+                throw new RoutineException("While using updateCluster, desired Cluster  not found");
             }
             // Possibly altered during long conversation
 
@@ -1340,7 +1340,7 @@ public class DataAccessObject {
             if (!storedClusterVersion.equals(cachedClusterVersion)) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateCluster, desired Cluster was altered by another user ");
-                throw new ConflictException("While using updateCluster, desired Cluster was altered by another user ");
+                throw new RoutineException("While using updateCluster, desired Cluster was altered by another user ");
             }
 
             // Both the same. Safe to update
@@ -1353,7 +1353,7 @@ public class DataAccessObject {
                 // Possibly deleted during long conversation
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateCluster, desired ClusterSet  not found");
-                throw new ConflictException("While using updateCluster, desired ClusterSet not found");
+                throw new RoutineException("While using updateCluster, desired ClusterSet not found");
             }
             storedCluster.setClusterSet(newClusterSet);
             hibSession.update(storedCluster);
@@ -1382,7 +1382,7 @@ public class DataAccessObject {
 //        return fac.openSession();
 //    }
 
-    public void updateNodeSet(HttpServletRequest request) throws WTFException, ConflictException {
+    public void updateNodeSet(HttpServletRequest request) throws WTFException, RoutineException {
         
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -1397,7 +1397,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         try {
@@ -1414,7 +1414,7 @@ public class DataAccessObject {
             if (cachedNodeSet == null) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateNodeSet, desired NodeSet not found");
-                throw new ConflictException("While using updateNodeSet, desired NodeSet not found");
+                throw new RoutineException("While using updateNodeSet, desired NodeSet not found");
             }
             Long cachedNodeSetVersion = cachedNodeSet.getVersion();
 
@@ -1424,7 +1424,7 @@ public class DataAccessObject {
             if (storedNodeSet == null) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateNodeSet, desired NodeSet  not found");
-                throw new ConflictException("While using updateNodeSet, desired NodeSet  not found");
+                throw new RoutineException("While using updateNodeSet, desired NodeSet  not found");
             }
             // Possibly altered during long conversation
 
@@ -1433,7 +1433,7 @@ public class DataAccessObject {
             if (!storedNodeSetVersion.equals(cachedNodeSetVersion)) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateNodeSet, desired NodeSet was altered by another user ");
-                throw new ConflictException("While using updateNodeSet, desired NodeSet was altered by another user ");
+                throw new RoutineException("While using updateNodeSet, desired NodeSet was altered by another user ");
             }
 
             // Both the same. Safe to update
@@ -1447,7 +1447,7 @@ public class DataAccessObject {
                 // Possibly deleted during long conversation
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateNodeSet, desired Cluster  not found");
-                throw new ConflictException("While using updateNodeSet, desired Cluster not found");
+                throw new RoutineException("While using updateNodeSet, desired Cluster not found");
             }
             storedNodeSet.setCluster(cluster);
 
@@ -1457,7 +1457,7 @@ public class DataAccessObject {
                 // Possibly deleted during long conversation
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateNodeSet, desired NodeType  not found");
-                throw new ConflictException("While using updateNodeSet, desired NodeType not found");
+                throw new RoutineException("While using updateNodeSet, desired NodeType not found");
             }
             storedNodeSet.setNodeType(nodeType);
 
@@ -1473,7 +1473,7 @@ public class DataAccessObject {
         }
     }
 
-    public void updateNode(HttpServletRequest request) throws WTFException, ConflictException {
+    public void updateNode(HttpServletRequest request) throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -1488,7 +1488,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         try {
@@ -1505,7 +1505,7 @@ public class DataAccessObject {
             if (cachedNode == null) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateNode, desired Node not found");
-                throw new ConflictException("While using updateNode, desired Node not found");
+                throw new RoutineException("While using updateNode, desired Node not found");
             }
             Long cachedNodeVersion = cachedNode.getVersion();
 
@@ -1516,7 +1516,7 @@ public class DataAccessObject {
             if (storedNode == null) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateNode, desired Node  not found");
-                throw new ConflictException("While using updateNode, desired Node  not found");
+                throw new RoutineException("While using updateNode, desired Node  not found");
             }
             // Possibly altered during long conversation
             Long storedNodeVersion = storedNode.getVersion();
@@ -1524,7 +1524,7 @@ public class DataAccessObject {
             if (!storedNodeVersion.equals(cachedNodeVersion)) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateNode, desired Node was altered by another user ");
-                throw new ConflictException("While using updateNode, desired Node was altered by another user ");
+                throw new RoutineException("While using updateNode, desired Node was altered by another user ");
             }
 
             // Both the same. Safe to update
@@ -1537,7 +1537,7 @@ public class DataAccessObject {
                 // Possibly deleted during long conversation
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateNode, desired nodeSet  not found");
-                throw new ConflictException("While using updateNode, desired nodeSet not found");
+                throw new RoutineException("While using updateNode, desired nodeSet not found");
             }
             storedNode.setNodeSet(nodeSet);
 
@@ -1547,7 +1547,7 @@ public class DataAccessObject {
                 // Possibly deleted during long conversation
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateNode, desired nodeState not found");
-                throw new ConflictException("While using updateNode, desired nodeState not found");
+                throw new RoutineException("While using updateNode, desired nodeState not found");
             }
             storedNode.setNodeState(nodeState);
 
@@ -1563,7 +1563,7 @@ public class DataAccessObject {
         }
     }
 
-    public void updateNodeType(HttpServletRequest request) throws WTFException, ConflictException {
+    public void updateNodeType(HttpServletRequest request) throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -1578,7 +1578,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         try {
@@ -1594,7 +1594,7 @@ public class DataAccessObject {
             if (cachedNodeType == null) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateNodeType, desired NodeType not found");
-                throw new ConflictException("While using updateNodeType, desired NodeType not found");
+                throw new RoutineException("While using updateNodeType, desired NodeType not found");
             }
             Long cachedNodeTypeVersion = cachedNodeType.getVersion();
 
@@ -1604,7 +1604,7 @@ public class DataAccessObject {
             if (storedNodeType == null) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateNodeType, desired NodeType  not found");
-                throw new ConflictException("While using updateNodeType, desired NodeType  not found");
+                throw new RoutineException("While using updateNodeType, desired NodeType  not found");
             }
             // Possibly altered during long conversation
 
@@ -1613,7 +1613,7 @@ public class DataAccessObject {
             if (!storedNodeTypeVersion.equals(cachedNodeTypeVersion)) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateNodeType, desired NodeType was altered by another user ");
-                throw new ConflictException(
+                throw new RoutineException(
                         "While using updateNodeType, desired NodeType was altered by another user ");
             }
 
@@ -1636,7 +1636,7 @@ public class DataAccessObject {
         }
     }
 
-    public void updateClusterSet(HttpServletRequest request) throws WTFException, ConflictException {
+    public void updateClusterSet(HttpServletRequest request) throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -1651,7 +1651,7 @@ public class DataAccessObject {
         }
         if (hibSession == null) {
             logger.error("WTF error, hibernate session unavailable");
-            throw new WTFException("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
         }
 
         try {
@@ -1669,7 +1669,7 @@ public class DataAccessObject {
             if (cachedClusterSet == null) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateClusterSet, desired ClusterSet not found");
-                throw new ConflictException("While using updateClusterSet, desired ClusterSet not found");
+                throw new RoutineException("While using updateClusterSet, desired ClusterSet not found");
             }
             Long cachedClusterSetVersion = cachedClusterSet.getVersion();
 
@@ -1679,7 +1679,7 @@ public class DataAccessObject {
             if (storedClusterSet == null) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateClusterSet, desired ClusterSet  not found");
-                throw new ConflictException("While using updateClusterSet, desired ClusterSet  not found");
+                throw new RoutineException("While using updateClusterSet, desired ClusterSet  not found");
             }
             // Possibly altered during long conversation
 
@@ -1688,7 +1688,7 @@ public class DataAccessObject {
             if (!storedClusterSetVersion.equals(cachedClusterSetVersion)) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateClusterSet, desired ClusterSet was altered by another user ");
-                throw new ConflictException(
+                throw new RoutineException(
                         "While using updateClusterSet, desired ClusterSet was altered by another user ");
             }
 

@@ -1,6 +1,6 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-import com.basingwerk.sldb.mvc.exceptions.ConflictException;
+import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
 import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import java.io.IOException;
@@ -29,7 +29,7 @@ public class NewNodeTypeController extends HttpServlet {
 
         try {
             dao.addNodeType(request);
-        } catch (ConflictException e) {
+        } catch (RoutineException e) {
             request.setAttribute("theMessage", "The node type could not be added. Please try again." + e.getMessage());
             request.setAttribute("theJsp", "main_screen.jsp");
             rd = request.getRequestDispatcher("/recoverable_message.jsp");
@@ -43,10 +43,16 @@ public class NewNodeTypeController extends HttpServlet {
         }
 
         try {
-            dao.loadNodeTypes(request, "nodeTypeName", "ASC");
+           
+                dao.loadNodeTypes(request, "nodeTypeName", "ASC");
+           
         } catch (WTFException e) {
             logger.error("WTF! Error using refreshNodeTypes.");
             rd = request.getRequestDispatcher("/error.jsp");
+            rd.forward(request, response);
+            return;
+        } catch (RoutineException e) {
+            rd = request.getRequestDispatcher("/login.jsp");
             rd.forward(request, response);
             return;
         }

@@ -1,6 +1,6 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-import com.basingwerk.sldb.mvc.exceptions.ConflictException;
+import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
 import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import java.io.IOException;
@@ -39,10 +39,14 @@ public class NodeTypeController extends HttpServlet {
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
-                dao.loadNodeTypes(request, "nodeTypeName", "ASC");
+                    dao.loadNodeTypes(request, "nodeTypeName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using loadNodeTypes");
                 rd = request.getRequestDispatcher("/error.jsp");
+                rd.forward(request, response);
+                return;
+            } catch (RoutineException e) {
+                rd = request.getRequestDispatcher("/login.jsp");
                 rd.forward(request, response);
                 return;
             }
@@ -79,6 +83,10 @@ public class NodeTypeController extends HttpServlet {
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
+                } catch (RoutineException e) {
+                    rd = request.getRequestDispatcher("/login.jsp");
+                    rd.forward(request, response);
+                    return;
                 }
                 String next = "/nodetype.jsp";
                 rd = request.getRequestDispatcher(next);
@@ -96,7 +104,7 @@ public class NodeTypeController extends HttpServlet {
                 }
                 try {
                     dao.deleteNodeType(request, nodeType);
-                } catch (ConflictException e) {
+                } catch (RoutineException e) {
                     request.setAttribute("theMessage", "The node type could not be deleted. Please try again.");
                     request.setAttribute("theJsp", "main_screen.jsp");
                     rd = request.getRequestDispatcher("/recoverable_message.jsp");
@@ -116,6 +124,10 @@ public class NodeTypeController extends HttpServlet {
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
+                } catch (RoutineException e) {
+                    rd = request.getRequestDispatcher("/login.jsp");
+                    rd.forward(request, response);
+                    return;
                 }
                 String next = "/nodetype.jsp";
                 rd = request.getRequestDispatcher(next);
@@ -128,7 +140,7 @@ public class NodeTypeController extends HttpServlet {
                 Integer index = Integer.parseInt(nodeType);
                 try {
                     dao.loadIndexedNodeType(request, index);
-                } catch (ConflictException e) {
+                } catch (RoutineException e) {
                     request.setAttribute("theMessage",
                             "Could not edit that nodeType at this time. Please try again. " + e.getMessage());
                     request.setAttribute("theJsp", "main_screen.jsp");

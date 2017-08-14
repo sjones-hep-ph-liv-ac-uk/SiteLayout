@@ -1,6 +1,6 @@
 package com.basingwerk.sldb.mvc.controllers;
 
-import com.basingwerk.sldb.mvc.exceptions.ConflictException;
+import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
 import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import java.io.IOException;
@@ -47,6 +47,10 @@ public class NodeController extends HttpServlet {
                 rd = request.getRequestDispatcher("/error.jsp");
                 rd.forward(request, response);
                 return;
+            } catch (RoutineException e) {
+                rd = request.getRequestDispatcher("/login.jsp");
+                rd.forward(request, response);
+                return;
             }
             rd = request.getRequestDispatcher("/node.jsp");
             rd.forward(request, response);
@@ -64,6 +68,10 @@ public class NodeController extends HttpServlet {
                 rd = request.getRequestDispatcher("/error.jsp");
                 rd.forward(request, response);
                 return;
+            } catch (RoutineException e) {
+                rd = request.getRequestDispatcher("/login.jsp");
+                rd.forward(request, response);
+                return;
             }
             rd = request.getRequestDispatcher("/node.jsp");
             rd.forward(request, response);
@@ -79,6 +87,10 @@ public class NodeController extends HttpServlet {
             } catch (WTFException e) {
                 logger.error("WTF! Error preparing data, ", e);
                 rd = request.getRequestDispatcher("/error.jsp");
+                rd.forward(request, response);
+                return;
+            } catch (RoutineException e) {
+                rd = request.getRequestDispatcher("/login.jsp");
                 rd.forward(request, response);
                 return;
             }
@@ -112,6 +124,10 @@ public class NodeController extends HttpServlet {
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
+                } catch (RoutineException e) {
+                    rd = request.getRequestDispatcher("/login.jsp");
+                    rd.forward(request, response);
+                    return;
                 }
                 String next = "/node.jsp";
                 rd = request.getRequestDispatcher(next);
@@ -123,7 +139,7 @@ public class NodeController extends HttpServlet {
                 String node = key.substring(4, key.length());
                 try {
                     dao.deleteNode(request, node);
-                } catch (ConflictException e) {
+                } catch (RoutineException e) {
                     logger.error("WTF! Error deleting a node, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
@@ -141,6 +157,10 @@ public class NodeController extends HttpServlet {
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
+                } catch (RoutineException e) {
+                    rd = request.getRequestDispatcher("/login.jsp");
+                    rd.forward(request, response);
+                    return;
                 }
                 String next = "/node.jsp";
                 rd = request.getRequestDispatcher(next);
@@ -152,7 +172,7 @@ public class NodeController extends HttpServlet {
                 Integer index = Integer.parseInt(node);
                 try {
                     dao.loadIndexedNode(request, index);
-                } catch (ConflictException e) {
+                } catch (RoutineException e) {
                     request.setAttribute("theMessage",
                             "Could not edit that node at this time. Please try again. " + e.getMessage());
                     request.setAttribute("theJsp", "main_screen.jsp");
@@ -174,6 +194,10 @@ public class NodeController extends HttpServlet {
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
+                } catch (RoutineException e) {
+                    rd = request.getRequestDispatcher("/login.jsp");
+                    rd.forward(request, response);
+                    return;
                 }
 
                 String next = "/edit_node.jsp";
@@ -190,6 +214,10 @@ public class NodeController extends HttpServlet {
                 } catch (WTFException e) {
                     logger.error("WTF! Error using loadNodes");
                     rd = request.getRequestDispatcher("/error.jsp");
+                    rd.forward(request, response);
+                    return;
+                } catch (RoutineException e) {
+                    rd = request.getRequestDispatcher("/login.jsp");
                     rd.forward(request, response);
                     return;
                 }

@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import org.apache.log4j.Logger;
-import com.basingwerk.sldb.mvc.exceptions.ConflictException;
+import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
 import com.basingwerk.sldb.mvc.model.DataAccessObject;
 
@@ -46,6 +46,10 @@ public class ClusterController extends HttpServlet {
                 rd = request.getRequestDispatcher("/error.jsp");
                 rd.forward(request, response);
                 return;
+            } catch (RoutineException e) {
+                rd = request.getRequestDispatcher("/login.jsp");
+                rd.forward(request, response);
+                return;
             }
             rd = request.getRequestDispatcher("/cluster.jsp");
             rd.forward(request, response);
@@ -60,6 +64,10 @@ public class ClusterController extends HttpServlet {
             } catch (WTFException e) {
                 logger.error("WTF! Error while using loadClusterSets, ", e);
                 rd = request.getRequestDispatcher("/error.jsp");
+                rd.forward(request, response);
+                return;
+            } catch (RoutineException e) {
+                rd = request.getRequestDispatcher("/login.jsp");
                 rd.forward(request, response);
                 return;
             }
@@ -92,6 +100,10 @@ public class ClusterController extends HttpServlet {
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
+                } catch (RoutineException e) {
+                    rd = request.getRequestDispatcher("/login.jsp");
+                    rd.forward(request, response);
+                    return;
                 }
                 String next = "/cluster.jsp";
                 rd = request.getRequestDispatcher(next);
@@ -103,7 +115,7 @@ public class ClusterController extends HttpServlet {
                 String cluster = key.substring(4, key.length());
                 try {
                     dao.deleteCluster(request, cluster);
-                } catch (ConflictException e) {
+                } catch (RoutineException e) {
                     request.setAttribute("theMessage",
                             "Could not delete that cluster at this time. Please try again. " + e.getMessage());
                     request.setAttribute("theJsp", "main_screen.jsp");
@@ -124,6 +136,10 @@ public class ClusterController extends HttpServlet {
                     rd = request.getRequestDispatcher("/error.jsp");
                     rd.forward(request, response);
                     return;
+                } catch (RoutineException e) {
+                    rd = request.getRequestDispatcher("/login.jsp");
+                    rd.forward(request, response);
+                    return;
                 }
                 String next = "/cluster.jsp";
                 rd = request.getRequestDispatcher(next);
@@ -136,7 +152,7 @@ public class ClusterController extends HttpServlet {
                 try {
                     dao.loadIndexedCluster(request, index);
                     dao.loadClusterSets(request, "clusterSetName", "ASC");
-                } catch (ConflictException e) {
+                } catch (RoutineException e) {
 
                     request.setAttribute("theMessage",
                             "Could not edit that cluster at this time. Please try again." + e.getMessage());
