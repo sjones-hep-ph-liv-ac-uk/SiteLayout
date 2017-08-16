@@ -2,6 +2,9 @@ package com.basingwerk.sldb.mvc.controllers;
 
 import com.basingwerk.sldb.mvc.model.User;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -77,7 +80,10 @@ public class LoginController extends HttpServlet {
             rd.forward(request, response);
             return;
         } catch (HibernateException e) {
-            msg = "HibernateException when trying to connect to database" + e.getStackTrace();
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            String exceptionAsString = sw.toString();         
+            msg = "HibernateException when trying to connect to database: " + exceptionAsString;
         }
         logger.error(msg);
 

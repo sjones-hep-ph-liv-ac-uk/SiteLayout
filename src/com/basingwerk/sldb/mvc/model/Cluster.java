@@ -31,6 +31,19 @@ public class Cluster {
     private String clusterName;
 
     private String descr;
+    
+    @OneToMany(mappedBy = "cluster", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @MapKey(name="hostname")
+    private Map<String,ServiceNode> serviceNodes = new HashMap<String,ServiceNode>();
+
+    public Map<String,ServiceNode> getServiceNodes() {
+        return serviceNodes;
+    }
+
+    public void setServiceNodes(Map<String,ServiceNode> serviceNodes) {
+        this.serviceNodes = serviceNodes;
+    }
+    
 
     @OneToMany(mappedBy = "cluster", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @MapKey(name="nodeSetName")

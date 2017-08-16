@@ -54,6 +54,8 @@
 <mapping class="com.basingwerk.sldb.mvc.model.NodeType"/>
 <mapping class="com.basingwerk.sldb.mvc.model.Node"/>
 <mapping class="com.basingwerk.sldb.mvc.model.NodeState"/>
+<mapping class="com.basingwerk.sldb.mvc.model.ServiceNode"/>
+<mapping class="com.basingwerk.sldb.mvc.model.HostSystem"/>
  
     </session-factory>
 </hibernate-configuration>

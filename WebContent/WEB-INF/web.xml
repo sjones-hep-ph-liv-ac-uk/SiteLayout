@@ -26,9 +26,10 @@
 
   <display-name>SiteLayout</display-name>
 
-<servlet>
+  <servlet>
     <servlet-name>NodeSetController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.NodeSetController </servlet-class> </servlet>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.NodeSetController </servlet-class> 
+  </servlet>
   <servlet-mapping>
     <servlet-name>NodeSetController</servlet-name>
     <url-pattern>/NodeSetController</url-pattern> 
@@ -184,7 +185,36 @@
     <servlet-name>NewNodeController</servlet-name>
     <url-pattern>/NewNodeController</url-pattern>
   </servlet-mapping> 
+<!-- XXXXXXXXXXXXXXXXXXXXXX -->
 
+  <servlet>
+    <servlet-name>ServiceNodeController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.ServiceNodeController </servlet-class> 
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ServiceNodeController</servlet-name>
+    <url-pattern>/ServiceNodeController</url-pattern> 
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>EditServiceNodeController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.EditServiceNodeController </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>EditServiceNodeController</servlet-name>
+    <url-pattern>/EditServiceNodeController</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>NewServiceNodeController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.NewServiceNodeController </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>NewServiceNodeController</servlet-name>
+    <url-pattern>/NewServiceNodeController</url-pattern>
+  </servlet-mapping>
+
+<!-- XXXXXXXXXXXXXXXXXXXXXX -->
 
   <welcome-file-list>
     <welcome-file>login.jsp</welcome-file>

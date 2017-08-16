@@ -66,7 +66,6 @@ public class MainScreenController extends HttpServlet {
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
                 return;
-
             }
             if (act.equals("Edit nodes")) {
                 dao.loadNodes(request, "nodeName", "ASC");
@@ -74,7 +73,13 @@ public class MainScreenController extends HttpServlet {
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
                 return;
-
+            }
+            if (act.equals("Edit service nodes")) {
+                dao.loadServiceNodes(request, "hostname", "ASC");
+                next = "/service_node.jsp";
+                rd = request.getRequestDispatcher(next);
+                rd.forward(request, response);
+                return;
             }
             if (act.equals("Reports")) {
                 dao.loadClusterSets(request, "clusterSetName", "ASC");

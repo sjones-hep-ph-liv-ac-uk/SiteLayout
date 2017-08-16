@@ -1,16 +1,12 @@
 <%@ page import="com.basingwerk.sldb.mvc.model.Node"%>
 <%@ page import="java.util.List"%>
 
-<% List nodeSetList = (List) request.getAttribute("nodeSetList");
-	List nodeStateList = (List) request.getAttribute("nodeStateList");
-%>
-
 <html>
   <link rel="stylesheet" href="${pageContext.request.contextPath}/SiteLayout.css">
 
 <head>
 <title>New Node</title>
-<!-- <script src="valfuncs.js"></script> -->
+
 <script>
 function isNumber(value) {
   return !isNaN(value) ;
@@ -41,7 +37,8 @@ function validateForm() {
 			<c:forEach items="${nodeSetList}" var="ns">
  			  <option value="${ns.nodeSetName}">${ns.nodeSetName}</option>
 			</c:forEach>
-		</select> </select><BR> State : <select name='nodeStateList'>
+		</select> </select><BR> 
+		State : <select name='nodeStateList'>
 			<c:forEach items="${nodeStateList}" var="st">
 				<option value="${st.state}">${st.state}</option>
 			</c:forEach>

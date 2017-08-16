@@ -3,15 +3,15 @@
 <%@page import="com.basingwerk.sldb.mvc.model.NodeSet"%>
 
 <%	Node  node = (Node) request.getAttribute("node"); %>
-<%	NodeSet nodeSet = (NodeSet) request.getAttribute("nodeSet"); %>
-<%	NodeState nodeState = (NodeState) request.getAttribute("nodeState"); %>
+<%--	NodeSet nodeSet = (NodeSet) request.getAttribute("nodeSet"); --%>
+<%--	NodeState nodeState = (NodeState) request.getAttribute("nodeState"); --%>
 
 <html>
   <link rel="stylesheet" href="${pageContext.request.contextPath}/SiteLayout.css">
 
 <head>
 <title>Edit Node</title>
-<!-- <script src="valfuncs.js"></script> -->
+
 <script>
 function isNumber(value) {
   return !isNaN(value) ;
@@ -34,17 +34,19 @@ function validateForm() {
 </head>
 
 <body>
-<%-- node is <%= node %> --%>
+<!-- <br> -->
+<%--   nodeState.state -- ${nodeState.state}<br> --%>
+<%--   ns.nodeSetName -- ${ns.nodeSetName}<br> --%>
+<!-- <br> -->
 
 	<form name="EditNodeForm" action="EditNodeController" method="post" onsubmit="return validateForm()">
-		Node  name : 
-		   <input type="text" name="nodeName" readonly value="${node.nodeName}"> <BR> 
+		Node  name : <input type="text" name="nodeName" readonly value="${node.nodeName}"> <BR> 
 		Node description : 
 		   <input type="text" name="nodeDescription" value="${node.description}"> <BR>
 		Node set : <select name='nodeSetList'>
 			<c:forEach items="${nodeSetList}" var="ns">
 				<option value="${ns.nodeSetName}"
-					${ns.nodeSetName == node.nodeSet.nodeSetName  ? 'selected="selected"' : ''}>${ns.nodeSetName}</option>
+  					${ns.nodeSetName == node.nodeSet.nodeSetName  ? 'selected="selected"' : ''} >${ns.nodeSetName}</option>
 			</c:forEach>
 		</select><BR> 
 		State : <select name='nodeStateList'>

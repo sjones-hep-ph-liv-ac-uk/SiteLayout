@@ -78,7 +78,6 @@ INSERT INTO `NodeState` (`state`,version) VALUES
 ('OFFLINE',4);
 
 DROP TABLE Node;
-#SET FOREIGN_KEY_CHECKS = 0;
 CREATE TABLE Node (
   nodeName varchar(10),
   nodeSetName varchar(10),
@@ -86,14 +85,49 @@ CREATE TABLE Node (
   state    varchar(10),
   version   bigint(20),
   PRIMARY KEY( nodeName )
-# , FOREIGN KEY (nodeSetName) REFERENCES NodeSet(nodeSetName)
-#  FOREIGN KEY (state ) REFERENCES NodeState(state)
 ) TYPE = INNODB;
 
 ALTER TABLE Node ADD FOREIGN KEY (nodeSetName) REFERENCES NodeSet(nodeSetName);
 ALTER TABLE Node ADD FOREIGN KEY (state) REFERENCES NodeState(state);
-ALTER TABLE Node ADD FOREIGN KEY (state) REFERENCES NodeSet(nodeSetName);
 
+DROP TABLE HostSystem;
+CREATE TABLE HostSystem (
+  hostname    varchar(50),
+  cpu       bigint(20),
+  mem       bigint(20),
+  os        varchar(50),
+  kernel    varchar(50),
+  disk      bigint(20),
+  comment   varchar(50),
+  version   bigint(20),
+  PRIMARY KEY( hostname    )
+) TYPE = INNODB;
+
+# Static data
+INSERT INTO HostSystem (hostname,cpu,mem,os,kernel,comment,version) VALUES
+('PHYSICAL',0 , 0,'     ',null ,null,0),
+('hepvm1.ph.liv.ac.uk',24,50,'sl6.4','2.6',null,0),
+('hepvm2.ph.liv.ac.uk',12, 0,'c7','2.6',null,0),
+('hepgridvm1.ph.liv.ac.uk',8 ,16,'c7','2.6',null,0),
+('hepvm3.ph.liv.ac.uk',24,50,'sl6.4','2.6',null,0);
+
+DROP TABLE ServiceNode;
+CREATE TABLE ServiceNode (
+  hostname       varchar(50),
+  hostSystemName varchar(50),
+  clusterName  varchar(20),
+  cpu       bigint(20),
+  mem       bigint(20),
+  os        varchar(50),
+  kernel    varchar(50),
+  service   varchar(50),
+  comment   varchar(50),
+  version   bigint(20),
+  PRIMARY KEY( hostname )
+) TYPE = INNODB;
+
+ALTER TABLE ServiceNode ADD FOREIGN KEY (clusterName) REFERENCES Cluster (clusterName);
+ALTER TABLE ServiceNode ADD FOREIGN KEY (hostSystemName) REFERENCES HostSystem(hostname);
 
 
 #SET FOREIGN_KEY_CHECKS = 1;

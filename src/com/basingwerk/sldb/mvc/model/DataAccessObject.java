@@ -36,6 +36,8 @@ public class DataAccessObject {
     ArrayList<NodeSet> nodeSetList = new ArrayList<NodeSet>();
     ArrayList<NodeType> nodeTypeList = new ArrayList<NodeType>();
     ArrayList<Node> nodeList = new ArrayList<Node>();
+    ArrayList<ServiceNode> serviceNodeList = new ArrayList<ServiceNode>();
+    ArrayList<HostSystem> hostSystemList = new ArrayList<HostSystem>();
     ArrayList<NodeState> nodeStateList = new ArrayList<NodeState>();
 
     Cluster cachedCluster = null;
@@ -43,11 +45,12 @@ public class DataAccessObject {
     NodeSet cachedNodeSet = null;
     NodeType cachedNodeType = null;
     Node cachedNode = null;
+    ServiceNode cachedServiceNode = null;
 
     // Helper functions
     public ArrayList<NodeSetNodeTypeJoin> getJoinForCluster(HttpServletRequest request, String clusterName)
             throws RoutineException, WTFException {
-        
+
         HttpSession httpSession = null;
         SessionFactory fac = null;
         Session hibSession = null;
@@ -87,8 +90,8 @@ public class DataAccessObject {
     }
 
     public ArrayList<String> listClustersOfClusterSet(HttpServletRequest request, String clusterSetName)
-            throws RoutineException,WTFException {
-        
+            throws RoutineException, WTFException {
+
         HttpSession httpSession = null;
         SessionFactory fac = null;
         Session hibSession = null;
@@ -123,7 +126,7 @@ public class DataAccessObject {
         return cl;
     }
 
-    public void setBaselineNodeType(HttpServletRequest request) throws RoutineException,WTFException {
+    public void setBaselineNodeType(HttpServletRequest request) throws RoutineException, WTFException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -163,8 +166,8 @@ public class DataAccessObject {
         }
     }
 
-
-    public void loadClusters(HttpServletRequest request, String col, String order) throws RoutineException,WTFException {
+    public void loadClusters(HttpServletRequest request, String col, String order)
+            throws RoutineException, WTFException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -204,7 +207,49 @@ public class DataAccessObject {
 
     }
 
-    public void loadNodeStates(HttpServletRequest request, String col, String order) throws RoutineException,WTFException {
+    public void loadHostSystems(HttpServletRequest request, String col, String order)
+            throws RoutineException, WTFException {
+
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
+        }
+
+        Order ord = org.hibernate.criterion.Order.desc(col);
+        if (order.equalsIgnoreCase("ASC")) {
+            ord = org.hibernate.criterion.Order.asc(col);
+        }
+
+        hostSystemList = null;
+        try {
+
+            hibSession.beginTransaction();
+            hostSystemList = (ArrayList<HostSystem>) hibSession.createCriteria(HostSystem.class).addOrder(ord).list();
+        } catch (HibernateException ex) {
+            hibSession.getTransaction().rollback();
+            logger.error("WTF error using loadHostSystems, ", ex);
+            throw new WTFException("WTF error using loadHostSystems");
+        } finally {
+            hibSession.close();
+        }
+
+        request.setAttribute("hostSystemList", hostSystemList);
+
+    }
+
+    public void loadNodeStates(HttpServletRequest request, String col, String order)
+            throws RoutineException, WTFException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -243,7 +288,8 @@ public class DataAccessObject {
         request.setAttribute("nodeStateList", nodeStateList);
     }
 
-    public void loadClusterSets(HttpServletRequest request, String col, String order) throws RoutineException,WTFException {
+    public void loadClusterSets(HttpServletRequest request, String col, String order)
+            throws RoutineException, WTFException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -284,7 +330,8 @@ public class DataAccessObject {
 
     }
 
-    public void loadNodeSets(HttpServletRequest request, String col, String order) throws RoutineException,WTFException {
+    public void loadNodeSets(HttpServletRequest request, String col, String order)
+            throws RoutineException, WTFException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -324,7 +371,7 @@ public class DataAccessObject {
 
     }
 
-    public void loadNodes(HttpServletRequest request, String col, String order) throws RoutineException,WTFException {
+    public void loadNodes(HttpServletRequest request, String col, String order) throws RoutineException, WTFException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -363,7 +410,49 @@ public class DataAccessObject {
         httpSession.setAttribute("nodeList", nodeList);
     }
 
-    public void loadNodeTypes(HttpServletRequest request, String col, String order) throws RoutineException,WTFException {
+    public void loadServiceNodes(HttpServletRequest request, String col, String order)
+            throws RoutineException, WTFException {
+
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
+        }
+
+        Order ord = org.hibernate.criterion.Order.desc(col);
+        if (order.equalsIgnoreCase("ASC")) {
+            ord = org.hibernate.criterion.Order.asc(col);
+        }
+
+        serviceNodeList = null;
+        try {
+
+            hibSession.beginTransaction();
+            serviceNodeList = (ArrayList<ServiceNode>) hibSession.createCriteria(ServiceNode.class).addOrder(ord)
+                    .list();
+            hibSession.getTransaction().commit();
+        } catch (HibernateException ex) {
+            hibSession.getTransaction().rollback();
+            logger.error("Had an error using loadServiceNodes, ", ex);
+            throw new WTFException("Had an error using loadServiceNodes");
+        } finally {
+            hibSession.close();
+        }
+        httpSession.setAttribute("serviceNodeList", serviceNodeList);
+    }
+
+    public void loadNodeTypes(HttpServletRequest request, String col, String order)
+            throws RoutineException, WTFException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -407,7 +496,7 @@ public class DataAccessObject {
 
     public void loadIndexedCluster(HttpServletRequest request, Integer clusterIndex)
             throws WTFException, RoutineException {
-        
+
         HttpSession httpSession = null;
         SessionFactory fac = null;
         Session hibSession = null;
@@ -718,8 +807,9 @@ public class DataAccessObject {
         cachedNode = storedNode;
         return;
     }
-
-    public void toggleCheckedNodes(HttpServletRequest request) throws RoutineException,WTFException {
+    
+    
+    public void loadIndexedServiceNode(HttpServletRequest request, Integer nodeIndex) throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -736,7 +826,69 @@ public class DataAccessObject {
             logger.error("WTF error, hibernate session unavailable");
             throw new RoutineException("Hibernate session unavailable");
         }
-        
+
+        cachedServiceNode = null;
+        ServiceNode storedServiceNode = null;
+        try {
+            hibSession.beginTransaction();
+
+            cachedServiceNode = serviceNodeList.get(nodeIndex);
+            if (cachedServiceNode == null) {
+                logger.error("While using loadIndexedServiceNode, desired ServiceNode not found");
+                throw new RoutineException("While using loadIndexedServiceNode, desired ServiceNode not found");
+            }
+
+            Long cachedVersion = cachedServiceNode.getVersion();
+            storedServiceNode = (ServiceNode) hibSession.createCriteria(ServiceNode.class)
+                    .add(Restrictions.eq("hostname", cachedServiceNode.getHostname())).uniqueResult();
+            // Possibly deleted during long conversation
+            if (storedServiceNode == null) {
+                hibSession.getTransaction().rollback();
+                logger.error("While using loadIndexedServiceNode, desired ServiceNode not found");
+                throw new RoutineException("While using loadIndexedServiceNode, desired ServiceNode not found");
+            }
+
+            Long storedVersion = storedServiceNode.getVersion();
+            if (!storedVersion.equals(cachedVersion)) {
+                hibSession.getTransaction().rollback();
+                logger.error("While using loadIndexedServiceNode, desired ServiceNode was altered by another user ");
+                throw new RoutineException("While using loadIndexedServiceNode, desired ServiceNode was altered by another user ");
+            }
+
+            hibSession.getTransaction().commit();
+
+        } catch (HibernateException ex) {
+            hibSession.getTransaction().rollback();
+            logger.error("WTF error using loadIndexedServiceNode, ", ex);
+            throw new WTFException("WTF error using loadIndexedServiceNode");
+        } finally {
+            hibSession.close();
+        }
+        httpSession.setAttribute("sericeNodeVersion", storedServiceNode.getVersion());
+        request.setAttribute("serviceNode", storedServiceNode);
+        cachedServiceNode = storedServiceNode;
+        return;
+    }
+    
+
+    public void toggleCheckedNodes(HttpServletRequest request) throws RoutineException, WTFException {
+
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
+        }
+
         try {
             hibSession = ((SessionFactory) httpSession.getAttribute("sessionFactory")).openSession();
             String[] choices = request.getParameterValues("choices");
@@ -769,7 +921,7 @@ public class DataAccessObject {
         return;
     }
 
-    public void toggleIndexedNode(HttpServletRequest request, Integer nodeIndex) throws RoutineException,WTFException {
+    public void toggleIndexedNode(HttpServletRequest request, Integer nodeIndex) throws RoutineException, WTFException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -1101,6 +1253,82 @@ public class DataAccessObject {
         }
     }
 
+    public void addServiceNode(HttpServletRequest request) throws WTFException, RoutineException {
+
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
+        }
+
+        String hostname = request.getParameter("hostname");
+        String cluster = request.getParameter("clusterList");
+        String hostSystem = request.getParameter("hostSystemList");
+        String cpu = request.getParameter("cpu");
+        String mem = request.getParameter("mem");
+        String os = request.getParameter("os");
+        String kernel = request.getParameter("kernel");
+        String service = request.getParameter("service");
+        String comment = request.getParameter("comment");
+
+        ServiceNode sn = new ServiceNode();
+
+        try {
+            hibSession.beginTransaction();
+
+            Cluster cl = (Cluster) hibSession.createCriteria(Cluster.class).add(Restrictions.eq("clusterName", cluster))
+                    .uniqueResult();
+            if (cl == null) {
+                // Possibly deleted during long conversation
+                hibSession.getTransaction().rollback();
+                logger.error("While using addServiceNode, desired Cluster not found");
+                throw new RoutineException("While using addServiceNode, desired Cluster not found");
+            }
+            HostSystem hs = (HostSystem) hibSession.createCriteria(HostSystem.class)
+                    .add(Restrictions.eq("hostname", hostSystem)).uniqueResult();
+            if (hs == null) {
+                // Possibly deleted during long conversation
+                hibSession.getTransaction().rollback();
+                logger.error("While using addServiceNode, desired HostSystem not found");
+                throw new RoutineException("While using addServiceNode, desired HostSystem not found");
+            }
+
+            sn.setHostname(hostname);
+            sn.setCluster(cl);
+            sn.setHostSystem(hs);
+            sn.setCpu(Integer.parseInt(cpu));
+            sn.setMem(Integer.parseInt(mem));
+            sn.setOs(os);
+            sn.setKernel(kernel);
+            sn.setService(service);
+            sn.setComment(comment);
+
+            hibSession.save(sn);
+            hibSession.getTransaction().commit();
+        } catch (ConstraintViolationException e) {
+            hibSession.getTransaction().rollback();
+            logger.error("While using addServiceNode, the hostname conflicted with an existing service node");
+            throw new RoutineException(
+                    "While using addServiceNode, the hostname conflicted with an existing service node");
+        } catch (HibernateException e) {
+            hibSession.getTransaction().rollback();
+            logger.error("WTF error using addServiceNode, ", e);
+            throw new WTFException("WTF error using addServiceNode");
+        } finally {
+            hibSession.close();
+        }
+    }
+
     public void deleteCluster(HttpServletRequest request, String clusterName) throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
@@ -1251,6 +1479,47 @@ public class DataAccessObject {
             hibSession.close();
         }
     }
+    
+    
+    public void deleteServiceNode(HttpServletRequest request, String hostname) throws WTFException, RoutineException {
+
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
+        } 
+        // logger.error("SJDEBUG: hostname: |" + hostname + "|");
+        ServiceNode serviceNode = (ServiceNode) hibSession.createCriteria(ServiceNode.class).add(Restrictions.eq("hostname", hostname))
+                .uniqueResult();
+
+        if (serviceNode == null) {
+            logger.error("While using deleteServiceNode, desired ServiceNode not found");
+            throw new RoutineException("While using deleteServiceNode, desired ServiceNodenot found");
+        }
+        try {
+            hibSession.beginTransaction();
+            hibSession.delete(serviceNode);
+            hibSession.getTransaction().commit();
+        } catch (HibernateException ex) {
+            // Possibly deleted during long conversation
+            hibSession.getTransaction().rollback();
+            logger.error("While using deleteServiceNode, desired ServiceNode not found");
+            throw new RoutineException("While using deleteServiceNode , desired ServiceNodenot found");
+        } finally {
+            hibSession.close();
+        }
+    }
+    
 
     public void deleteNodeType(HttpServletRequest request, String nodeTypeName) throws WTFException, RoutineException {
 
@@ -1367,23 +1636,10 @@ public class DataAccessObject {
             hibSession.close();
         }
     }
-    
-//    private static Session getSession(HttpServletRequest request) {
-//        HttpSession httpSession = request.getSession();
-//        if (httpSession == null) {
-//            logger.error("WTF error, no HttpSession");
-//            return null;
-//        }
-//        SessionFactory fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
-//        if (fac == null) {
-//            logger.error("WTF error, no SessionFactory");
-//            return null;
-//        }
-//        return fac.openSession();
-//    }
+
 
     public void updateNodeSet(HttpServletRequest request) throws WTFException, RoutineException {
-        
+
         HttpSession httpSession = null;
         SessionFactory fac = null;
         Session hibSession = null;
@@ -1613,8 +1869,7 @@ public class DataAccessObject {
             if (!storedNodeTypeVersion.equals(cachedNodeTypeVersion)) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateNodeType, desired NodeType was altered by another user ");
-                throw new RoutineException(
-                        "While using updateNodeType, desired NodeType was altered by another user ");
+                throw new RoutineException("While using updateNodeType, desired NodeType was altered by another user ");
             }
 
             // Both the same. Safe to update
@@ -1711,6 +1966,108 @@ public class DataAccessObject {
             hibSession.close();
         }
     }
+    
+    public void updateServiceNode(HttpServletRequest request) throws WTFException, RoutineException {
+
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
+        }
+
+        try {
+            hibSession.beginTransaction();
+
+            // We assume it is updated, whether it is or is not
+            
+            String updatedHostname = request.getParameter("hostname");
+            String updatedCluster = request.getParameter("clusterList");
+            String updatedHostSystem = request.getParameter("hostSystemList");
+            String updatedCpu = request.getParameter("cpu");
+            String updatedMem = request.getParameter("mem");
+            String updatedOs = request.getParameter("os");
+            String updatedKernel = request.getParameter("kernel");
+            String updatedService = request.getParameter("service");
+            String updatedComment = request.getParameter("comment");
+            
+            ServiceNode storedServiceNode = null;
+
+            if (cachedServiceNode == null) {
+                hibSession.getTransaction().rollback();
+                logger.error("While using updateServiceNode, desired ServiceNode not found");
+                throw new RoutineException("While using updateServiceNode, desired ServiceNode not found");
+            }
+            Long cachedServiceNodeVersion = cachedServiceNode.getVersion();
+
+            storedServiceNode = (ServiceNode) hibSession.createCriteria(ServiceNode.class).add(Restrictions.eq("hostname", updatedHostname))
+                    .uniqueResult();
+
+            // Possibly deleted during long conversation
+            if (storedServiceNode == null) {
+                hibSession.getTransaction().rollback();
+                logger.error("While using updateServiceNode, desired ServiceNode  not found");
+                throw new RoutineException("While using updateServiceNode, desired ServiceNode  not found");
+            }
+            // Possibly altered during long conversation
+            Long storedServiceNodeVersion = storedServiceNode.getVersion();
+
+            if (!storedServiceNodeVersion.equals(cachedServiceNodeVersion)) {
+                hibSession.getTransaction().rollback();
+                logger.error("While using updateServiceNode, desired ServiceNode was altered by another user ");
+                throw new RoutineException("While using updateServiceNode, desired ServiceNode was altered by another user ");
+            }
+
+            // Both the same. Safe to update
+            storedServiceNode.setHostname(updatedHostname);
+            storedServiceNode.setCpu(Integer.parseInt(updatedCpu));
+            storedServiceNode.setMem(Integer.parseInt(updatedMem));
+            storedServiceNode.setOs(updatedOs);
+            storedServiceNode.setKernel(updatedKernel);
+            storedServiceNode.setService(updatedService);
+            storedServiceNode.setComment(updatedComment);
+
+            Cluster cluster = (Cluster) hibSession.createCriteria(Cluster.class)
+                    .add(Restrictions.eq("clusterName", updatedCluster)).uniqueResult();
+            if (cluster == null) {
+                // Possibly deleted during long conversation
+                hibSession.getTransaction().rollback();
+                logger.error("While using updateServiceNode, desired Cluster  not found");
+                throw new RoutineException("While using updateServiceNode, desired Cluster not found");
+            }
+            storedServiceNode.setCluster(cluster);
+
+            HostSystem hostSystem = (HostSystem) hibSession.createCriteria(HostSystem.class)
+                    .add(Restrictions.eq("hostname", updatedHostSystem)).uniqueResult();
+            if (hostSystem == null) {
+                // Possibly deleted during long conversation
+                hibSession.getTransaction().rollback();
+                logger.error("While using updateServiceNode, desired HostSystem not found");
+                throw new RoutineException("While using updateServiceNode, desired HostSystem not found");
+            }
+            storedServiceNode.setHostSystem(hostSystem);
+
+            hibSession.update(storedServiceNode);
+            hibSession.getTransaction().commit();
+
+        } catch (HibernateException e) {
+            hibSession.getTransaction().rollback();
+            logger.error("WTF error using updateServiceNode, ", e);
+            throw new WTFException("WTF error using updateServiceNode");
+        } finally {
+            hibSession.close();
+        }
+    }
+    
 
     public void logout(HttpServletRequest request) {
         HttpSession httpSession = null;

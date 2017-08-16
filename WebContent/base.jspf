@@ -5,6 +5,8 @@
 <%-- <%@ page import="com.basingwerk.sldb.mvc.model.NodeSetNodeTypeJoin"%> --%>
 <%-- <%@ page import="com.basingwerk.sldb.mvc.model.NodeState"%> --%>
 <%-- <%@ page import="com.basingwerk.sldb.mvc.model.NodeType"%> --%>
+<%-- <%@ page import="com.basingwerk.sldb.mvc.model.ServiceNode"%> --%>
+<%-- <%@ page import="com.basingwerk.sldb.mvc.model.HostSystem"%> --%>
 <%-- <%@ page import="java.util.HashMap"%> --%>
 <%-- <%@ page import="java.util.List"%> --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
