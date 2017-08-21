@@ -31,21 +31,6 @@ public class DataAccessObject {
         return instance;
     }
 
-    ArrayList<Cluster> clusterList = new ArrayList<Cluster>();
-    ArrayList<ClusterSet> clusterSetList = new ArrayList<ClusterSet>();
-    ArrayList<NodeSet> nodeSetList = new ArrayList<NodeSet>();
-    ArrayList<NodeType> nodeTypeList = new ArrayList<NodeType>();
-    ArrayList<Node> nodeList = new ArrayList<Node>();
-    ArrayList<ServiceNode> serviceNodeList = new ArrayList<ServiceNode>();
-    ArrayList<HostSystem> hostSystemList = new ArrayList<HostSystem>();
-    ArrayList<NodeState> nodeStateList = new ArrayList<NodeState>();
-
-    Cluster cachedCluster = null;
-    ClusterSet cachedClusterSet = null;
-    NodeSet cachedNodeSet = null;
-    NodeType cachedNodeType = null;
-    Node cachedNode = null;
-    ServiceNode cachedServiceNode = null;
 
     // Helper functions
     public ArrayList<NodeSetNodeTypeJoin> getJoinForCluster(HttpServletRequest request, String clusterName)
@@ -172,6 +157,9 @@ public class DataAccessObject {
         HttpSession httpSession = null;
         SessionFactory fac = null;
         Session hibSession = null;
+        
+        ArrayList<Cluster> clusterList = new ArrayList<Cluster>();
+        
 
         httpSession = request.getSession();
         if (httpSession != null) {
@@ -202,13 +190,16 @@ public class DataAccessObject {
         } finally {
             hibSession.close();
         }
-
-        request.setAttribute("clusterList", clusterList);
+        httpSession.setAttribute("clusterList", clusterList);
+        // request.setAttribute("clusterList", clusterList);
 
     }
 
     public void loadHostSystems(HttpServletRequest request, String col, String order)
             throws RoutineException, WTFException {
+        
+        ArrayList<HostSystem> hostSystemList = new ArrayList<HostSystem>();
+        
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -243,13 +234,16 @@ public class DataAccessObject {
         } finally {
             hibSession.close();
         }
-
-        request.setAttribute("hostSystemList", hostSystemList);
+        httpSession.setAttribute("hostSystemList", hostSystemList);
+        // request.setAttribute("hostSystemList", hostSystemList);
 
     }
 
     public void loadNodeStates(HttpServletRequest request, String col, String order)
             throws RoutineException, WTFException {
+        
+        ArrayList<NodeState> nodeStateList = new ArrayList<NodeState>();
+        
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -284,13 +278,15 @@ public class DataAccessObject {
         } finally {
             hibSession.close();
         }
-
-        request.setAttribute("nodeStateList", nodeStateList);
+        httpSession.setAttribute("nodeStateList", nodeStateList);
+        // request.setAttribute("nodeStateList", nodeStateList);
     }
 
     public void loadClusterSets(HttpServletRequest request, String col, String order)
             throws RoutineException, WTFException {
 
+        ArrayList<ClusterSet> clusterSetList = new ArrayList<ClusterSet>();
+        
         HttpSession httpSession = null;
         SessionFactory fac = null;
         Session hibSession = null;
@@ -326,12 +322,16 @@ public class DataAccessObject {
             hibSession.close();
         }
 
-        request.setAttribute("clusterSetList", clusterSetList);
+        httpSession.setAttribute("clusterSetList", clusterSetList);
+        // request.setAttribute("clusterSetList", clusterSetList);
 
     }
 
     public void loadNodeSets(HttpServletRequest request, String col, String order)
             throws RoutineException, WTFException {
+        
+        ArrayList<NodeSet> nodeSetList = new ArrayList<NodeSet>();
+        
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -367,11 +367,14 @@ public class DataAccessObject {
         } finally {
             hibSession.close();
         }
+
         httpSession.setAttribute("nodeSetList", nodeSetList);
+        // request.setAttribute("nodeSetList", nodeSetList);
 
     }
 
     public void loadNodes(HttpServletRequest request, String col, String order) throws RoutineException, WTFException {
+        ArrayList<Node> nodeList = new ArrayList<Node>();
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -407,11 +410,17 @@ public class DataAccessObject {
         } finally {
             hibSession.close();
         }
+
         httpSession.setAttribute("nodeList", nodeList);
+        // request.setAttribute("nodeList", nodeList);
     }
 
     public void loadServiceNodes(HttpServletRequest request, String col, String order)
             throws RoutineException, WTFException {
+        
+
+        ArrayList<ServiceNode> serviceNodeList = new ArrayList<ServiceNode>();
+        
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -448,7 +457,9 @@ public class DataAccessObject {
         } finally {
             hibSession.close();
         }
+
         httpSession.setAttribute("serviceNodeList", serviceNodeList);
+        // request.setAttribute("serviceNodeList", serviceNodeList);
     }
 
     public void loadNodeTypes(HttpServletRequest request, String col, String order)
@@ -490,7 +501,7 @@ public class DataAccessObject {
         }
 
         httpSession.setAttribute("nodeTypeList", nodeTypeList);
-        request.setAttribute("nodeTypeList", nodeTypeList);
+        // request.setAttribute("nodeTypeList", nodeTypeList);
 
     }
 
@@ -513,13 +524,13 @@ public class DataAccessObject {
             throw new RoutineException("Hibernate session unavailable");
         }
 
-        cachedCluster = null;
+        Cluster cachedCluster = null;
         Cluster storedCluster = null;
 
         try {
             hibSession.beginTransaction();
 
-            cachedCluster = clusterList.get(clusterIndex);
+            cachedCluster = ((ArrayList<Cluster>)httpSession.getAttribute("clusterList")).get(clusterIndex); 
             if (cachedCluster == null) {
                 logger.error("While using loadIndexedCluster, desired Cluster not found");
                 throw new RoutineException("While using loadIndexedCluster, desired Cluster not found");
@@ -551,10 +562,8 @@ public class DataAccessObject {
         } finally {
             hibSession.close();
         }
-
-        httpSession.setAttribute("clusterVersion", storedCluster.getVersion());
-        request.setAttribute("cluster", storedCluster);
-        cachedCluster = storedCluster;
+        httpSession.setAttribute("cluster", storedCluster);
+        // request.setAttribute("cluster", storedCluster);
         return;
     }
 
@@ -577,12 +586,13 @@ public class DataAccessObject {
             throw new RoutineException("Hibernate session unavailable");
         }
 
-        cachedClusterSet = null;
+        ClusterSet cachedClusterSet = null;
 
         ClusterSet storedClusterSet = null;
         try {
             hibSession.beginTransaction();
-            cachedClusterSet = clusterSetList.get(clusterSetIndex);
+            cachedClusterSet  = ((ArrayList<ClusterSet>)httpSession.getAttribute("clusterSetList")).get(clusterSetIndex); 
+
             if (cachedClusterSet == null) {
                 logger.error("While using loadIndexedClusterSet, desired ClusterSet not found");
                 throw new RoutineException("While using loadIndexedClusterSet, desired ClusterSet not found");
@@ -615,9 +625,8 @@ public class DataAccessObject {
         } finally {
             hibSession.close();
         }
-        httpSession.setAttribute("clusterSetVersion", storedClusterSet.getVersion());
-        request.setAttribute("clusterSet", storedClusterSet);
-        cachedClusterSet = storedClusterSet;
+        httpSession.setAttribute("clusterSet", storedClusterSet);
+        // request.setAttribute("clusterSet", storedClusterSet);
 
         return;
     }
@@ -641,12 +650,13 @@ public class DataAccessObject {
             throw new RoutineException("Hibernate session unavailable");
         }
 
-        cachedNodeSet = null;
+        NodeSet cachedNodeSet = null;
         NodeSet storedNodeSet = null;
         try {
             hibSession.beginTransaction();
 
-            cachedNodeSet = nodeSetList.get(nodeSetIndex);
+            cachedNodeSet  = ((ArrayList<NodeSet>)httpSession.getAttribute("nodeSetList")).get(nodeSetIndex); 
+            
             if (cachedNodeSet == null) {
                 logger.error("While using loadIndexedNodeSet, desired NodeSet not found");
                 throw new RoutineException("While using loadIndexedNodeSet, desired NodeSet not found");
@@ -679,9 +689,8 @@ public class DataAccessObject {
         } finally {
             hibSession.close();
         }
-        httpSession.setAttribute("nodeSetVersion", storedNodeSet.getVersion());
-        request.setAttribute("nodeSet", storedNodeSet);
-        cachedNodeSet = storedNodeSet;
+        httpSession.setAttribute("nodeSet", storedNodeSet);
+        // request.setAttribute("nodeSet", storedNodeSet);
         return;
     }
 
@@ -704,11 +713,11 @@ public class DataAccessObject {
             throw new RoutineException("Hibernate session unavailable");
         }
 
-        cachedNodeType = null;
+        NodeType cachedNodeType = null;
         NodeType storedNodeType = null;
         try {
             hibSession.beginTransaction();
-            cachedNodeType = nodeTypeList.get(nodeTypeIndex);
+            cachedNodeType  = ((ArrayList<NodeType>)httpSession.getAttribute("nodeTypeList")).get(nodeTypeIndex); 
             if (cachedNodeType == null) {
                 logger.error("While using loadIndexedNodeType, desired NodeType not found");
                 throw new RoutineException("While using loadIndexedNodeType, desired NodeType not found");
@@ -741,9 +750,8 @@ public class DataAccessObject {
         } finally {
             hibSession.close();
         }
-        httpSession.setAttribute("nodeTypeVersion", storedNodeType.getVersion());
-        request.setAttribute("nodeType", storedNodeType);
-        cachedNodeType = storedNodeType;
+        httpSession.setAttribute("nodeType", storedNodeType);
+        // request.setAttribute("nodeType", storedNodeType);
         return;
     }
 
@@ -765,12 +773,13 @@ public class DataAccessObject {
             throw new RoutineException("Hibernate session unavailable");
         }
 
-        cachedNode = null;
+        Node cachedNode = null;
         Node storedNode = null;
         try {
             hibSession.beginTransaction();
 
-            cachedNode = nodeList.get(nodeIndex);
+            cachedNode  = ((ArrayList<Node>)httpSession.getAttribute("nodeList")).get(nodeIndex); 
+            
             if (cachedNode == null) {
                 logger.error("While using loadIndexedNode, desired Node not found");
                 throw new RoutineException("While using loadIndexedNode, desired Node not found");
@@ -802,14 +811,13 @@ public class DataAccessObject {
         } finally {
             hibSession.close();
         }
-        httpSession.setAttribute("nodeVersion", storedNode.getVersion());
-        request.setAttribute("node", storedNode);
-        cachedNode = storedNode;
+        httpSession.setAttribute("node", storedNode);
+        // request.setAttribute("node", storedNode);
         return;
     }
     
     
-    public void loadIndexedServiceNode(HttpServletRequest request, Integer nodeIndex) throws WTFException, RoutineException {
+    public void loadIndexedServiceNode(HttpServletRequest request, Integer serviceNodeIndex) throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -827,12 +835,15 @@ public class DataAccessObject {
             throw new RoutineException("Hibernate session unavailable");
         }
 
-        cachedServiceNode = null;
+        ServiceNode cachedServiceNode = null;
         ServiceNode storedServiceNode = null;
         try {
             hibSession.beginTransaction();
-
-            cachedServiceNode = serviceNodeList.get(nodeIndex);
+            logger.error("SJDEBUG: serviceNodeIndex -- " + serviceNodeIndex);
+            logger.error("SJDEBUG: serviceNode -- " + httpSession.getAttribute("serviceNodeList"));
+            
+            cachedServiceNode  = ((ArrayList<ServiceNode >)httpSession.getAttribute("serviceNodeList")).get(serviceNodeIndex); 
+            
             if (cachedServiceNode == null) {
                 logger.error("While using loadIndexedServiceNode, desired ServiceNode not found");
                 throw new RoutineException("While using loadIndexedServiceNode, desired ServiceNode not found");
@@ -864,9 +875,8 @@ public class DataAccessObject {
         } finally {
             hibSession.close();
         }
-        httpSession.setAttribute("sericeNodeVersion", storedServiceNode.getVersion());
-        request.setAttribute("serviceNode", storedServiceNode);
-        cachedServiceNode = storedServiceNode;
+        httpSession.setAttribute("serviceNode", storedServiceNode);
+        // request.setAttribute("serviceNode", storedServiceNode);
         return;
     }
     
@@ -941,7 +951,8 @@ public class DataAccessObject {
 
         try {
             hibSession.beginTransaction();
-            Node cn = nodeList.get(nodeIndex);
+            Node cn = ((ArrayList<Node >)httpSession.getAttribute("node")).get(nodeIndex); 
+            
             if (cn.getNodeState().getState().equalsIgnoreCase("ONLINE")) {
                 NodeState s = (NodeState) hibSession.createCriteria(NodeState.class)
                         .add(Restrictions.eq("state", "OFFLINE")).uniqueResult();
@@ -1586,7 +1597,7 @@ public class DataAccessObject {
             String updatedClusterSetName = request.getParameter("clusterSetList");
 
             Cluster storedCluster = null;
-
+            Cluster cachedCluster = (Cluster) httpSession.getAttribute("cluster");
             if (cachedCluster == null) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateCluster, desired Cluster not found");
@@ -1666,6 +1677,7 @@ public class DataAccessObject {
             String updatedClusterName = request.getParameter("clusterList");
 
             NodeSet storedNodeSet = null;
+            NodeSet cachedNodeSet = (NodeSet) httpSession.getAttribute("nodeSet");
 
             if (cachedNodeSet == null) {
                 hibSession.getTransaction().rollback();
@@ -1757,6 +1769,7 @@ public class DataAccessObject {
             String updatedNodeState = request.getParameter("nodeStateList");
 
             Node storedNode = null;
+            Node cachedNode = (Node) httpSession.getAttribute("node");
 
             if (cachedNode == null) {
                 hibSession.getTransaction().rollback();
@@ -1847,6 +1860,8 @@ public class DataAccessObject {
 
             NodeType storedNodeType = null;
 
+            NodeType cachedNodeType = (NodeType) httpSession.getAttribute("nodeType");
+
             if (cachedNodeType == null) {
                 hibSession.getTransaction().rollback();
                 logger.error("While using updateNodeType, desired NodeType not found");
@@ -1920,6 +1935,7 @@ public class DataAccessObject {
             String updatedAdmin = request.getParameter("admin");
 
             ClusterSet storedClusterSet = null;
+            ClusterSet cachedClusterSet = (ClusterSet) httpSession.getAttribute("clusterSet");
 
             if (cachedClusterSet == null) {
                 hibSession.getTransaction().rollback();
@@ -2001,6 +2017,7 @@ public class DataAccessObject {
             String updatedComment = request.getParameter("comment");
             
             ServiceNode storedServiceNode = null;
+            ServiceNode cachedServiceNode = (ServiceNode) httpSession.getAttribute("serviceNode");
 
             if (cachedServiceNode == null) {
                 hibSession.getTransaction().rollback();

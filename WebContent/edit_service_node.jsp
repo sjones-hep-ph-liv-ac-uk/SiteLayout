@@ -1,7 +1,7 @@
 <%@ page import="com.basingwerk.sldb.mvc.model.ServiceNode"%>
 <%@ page import="java.util.List"%>
 
-ServiceNode serviceNode = (ServiceNode) request.getAttribute("serviceNode"); %>
+
 
 <html>
   <link rel="stylesheet" href="${pageContext.request.contextPath}/SiteLayout.css">
