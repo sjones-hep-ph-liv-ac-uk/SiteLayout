@@ -1,10 +1,6 @@
 package com.basingwerk.sldb.mvc.model;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
@@ -18,6 +14,8 @@ import javax.persistence.Version;
 @Table(name = "Installation")
 public class Installation {
 
+    private String softwareVersion;
+    
     public ServiceNode getServiceNode() {
         return serviceNode;
     }
@@ -44,16 +42,6 @@ public class Installation {
     @JoinColumn(name = "serviceName")
     private Service service;
     
-    // private KeyOfInstallation keyOfInstallation;
-
-//    public KeyOfInstallation getKey() {
-//        return keyOfInstallation;
-//    }
-//
-//    public void setKeyOfInstallation(KeyOfInstallation k) {
-//        this.keyOfInstallation = k;
-//    }
-        
     @Version
     @Column(name = "version")
     private long version;
@@ -67,11 +55,6 @@ public class Installation {
         this.softwareVersion = softwareVersion;
     }
 
-    private String softwareVersion;
-
-    public Installation() {
-    }
-
     public long getVersion() {
         return version;
     }
@@ -79,6 +62,11 @@ public class Installation {
     public void setVersion(long version) {
         this.version = version;
     }
+
+    public Installation() {
+    }
+
 }
+
 
 
