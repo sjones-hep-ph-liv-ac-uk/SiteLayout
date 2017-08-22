@@ -185,7 +185,6 @@
     <servlet-name>NewNodeController</servlet-name>
     <url-pattern>/NewNodeController</url-pattern>
   </servlet-mapping> 
-<!-- XXXXXXXXXXXXXXXXXXXXXX -->
 
   <servlet>
     <servlet-name>ServiceNodeController</servlet-name>
@@ -214,7 +213,33 @@
     <url-pattern>/NewServiceNodeController</url-pattern>
   </servlet-mapping>
 
-<!-- XXXXXXXXXXXXXXXXXXXXXX -->
+  <servlet>
+    <servlet-name>InstallationController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.InstallationController </servlet-class> 
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>InstallationController</servlet-name>
+    <url-pattern>/InstallationController</url-pattern> 
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>EditInstallationController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.EditInstallationController </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>EditInstallationController</servlet-name>
+    <url-pattern>/EditInstallationController</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>NewInstallationController</servlet-name>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.NewInstallationController </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>NewInstallationController</servlet-name>
+    <url-pattern>/NewInstallationController</url-pattern>
+  </servlet-mapping>
+
 
   <welcome-file-list>
     <welcome-file>login.jsp</welcome-file>

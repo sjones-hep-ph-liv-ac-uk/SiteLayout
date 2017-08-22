@@ -1,5 +1,4 @@
 <%@ page import="com.basingwerk.sldb.mvc.model.ClusterSet"%>
-
 <% ClusterSet clusterSet = (ClusterSet) request.getAttribute("clusterSet"); %>
 
 <html>
@@ -54,16 +53,16 @@ function validateForm() {
 
 </head>
 <body>
-	Edit ClusterSet
-	<form name="EditClusterSetForm" action="EditClusterSetController" method="post" onsubmit="return validateForm()">
-		ClusterSet name : <input type="text" name="clusterSetName" readonly value="${clusterSet.clusterSetName}"> <BR> 
-        Description : <input type="text" name="description" value="${clusterSet.description}"> <BR>
-        Location : <input type="text" name="location" value="${clusterSet.location}"> <BR>
-        Longitude : <input type="text" name="longitude" value="${clusterSet.longitude}"> <BR>
-        Latitude : <input type="text" name="latitude" value="${clusterSet.latitude}"> <BR>
-        Admin : <input type="text" name="admin" value="${clusterSet.admin}"> <BR>
+  Edit ClusterSet
+  <form name="EditClusterSetForm" action="EditClusterSetController" method="post" onsubmit="return validateForm()">
+    ClusterSet name : <input type="text" name="clusterSetName" readonly value="${clusterSet.clusterSetName}"> <br> 
+        Description : <input type="text" name="description" value="${clusterSet.description}"> <br>
+        Location : <input type="text" name="location" value="${clusterSet.location}"> <br>
+        Longitude : <input type="text" name="longitude" value="${clusterSet.longitude}"> <br>
+        Latitude : <input type="text" name="latitude" value="${clusterSet.latitude}"> <br>
+        Admin : <input type="text" name="admin" value="${clusterSet.admin}"> <br>
                 <input type="submit" value="Submit" />
-	</form>
+  </form>
 </body>
 </html>
 

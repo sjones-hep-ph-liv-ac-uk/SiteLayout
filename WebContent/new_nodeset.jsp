@@ -36,23 +36,23 @@ function validateForm() {
 </script>
 </head>
 <body>
-	New Node Set
-	<form name="NewNodeSetForm" action="NewNodeSetController"
-		method="post" onsubmit="return validateForm()">
+  New Node Set
+  <form name="NewNodeSetForm" action="NewNodeSetController"
+    method="post" onsubmit="return validateForm()">
 
-		Node set name : <input type="text" name="nodeSetName"> <BR>
-		Node count : <input type="text" name="nodeCount"> <BR>
-		Node type : <select name='nodeTypeList'>
-			<c:forEach items="${nodeTypeList}" var="nt">
-				<c:if test="${nt.nodeTypeName != 'BASELINE'}">
-					<option value="${nt.nodeTypeName}">${nt.nodeTypeName}</option>
-				</c:if>
-			</c:forEach>
-		</select> </select><BR> Cluster : <select name='clusterList'>
-			<c:forEach items="${clusterList}" var="cn">
-				<option value="${cn.clusterName}">${cn.clusterName}</option>
-			</c:forEach>
-		</select><BR> <input type="submit" value="Submit" />
-	</form>
+    Node set name : <input type="text" name="nodeSetName"> <br>
+    Node count : <input type="text" name="nodeCount"> <br>
+    Node type : <select name='nodeTypeList'>
+      <c:forEach items="${nodeTypeList}" var="nt">
+        <c:if test="${nt.nodeTypeName != 'BASELINE'}">
+          <option value="${nt.nodeTypeName}">${nt.nodeTypeName}</option>
+        </c:if>
+      </c:forEach>
+    </select> </select><br> Cluster : <select name='clusterList'>
+      <c:forEach items="${clusterList}" var="cn">
+        <option value="${cn.clusterName}">${cn.clusterName}</option>
+      </c:forEach>
+    </select><br> <input type="submit" value="Submit" />
+  </form>
 </body>
 </html>

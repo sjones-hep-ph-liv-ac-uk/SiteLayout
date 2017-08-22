@@ -38,13 +38,13 @@ function validateForm() {
 
 </head>
 <body>
-	Login
-	
-	<form name="LoginForm" action="LoginController" method="post" onsubmit="return validateForm()">
-		Database name : <input type="text" name="database"> <BR>
-		User name : <input type="text" name="username"> <BR>
-		Password : <input type="password" name="password"> <BR> <input type="submit" value="Submit" />
-	</form>
+  Login
+  
+  <form name="LoginForm" action="LoginController" method="post" onsubmit="return validateForm()">
+    Database name : <input type="text" name="database"> <br>
+    User name : <input type="text" name="username"> <br>
+    Password : <input type="password" name="password"> <br> <input type="submit" value="Submit" />
+  </form>
 </body>
 </html>
 

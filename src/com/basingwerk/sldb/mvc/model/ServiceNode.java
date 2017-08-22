@@ -1,10 +1,17 @@
 package com.basingwerk.sldb.mvc.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKey;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -14,14 +21,17 @@ public class ServiceNode {
 
     public ServiceNode() {
     }
-    
-    private long cpu; 
-    private long mem ;
-    private String os ;            
-    private String kernel;         
-    private String service;        
-    private String comment ;       
-    
+
+    private long cpu;
+    private long mem;
+    private String os;
+    private String kernel;
+    private String service;
+    private String comment;
+
+    @OneToMany(mappedBy = "serviceNode", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @MapKey(name = "serviceNode")
+    private Map<String, Installation> installation = new HashMap<String, Installation>();
 
     @Version
     @Column(name = "version")
@@ -34,8 +44,6 @@ public class ServiceNode {
     @Id
     private String hostname;
 
-    
-    
     @ManyToOne
     @JoinColumn(name = "clusterName")
     private Cluster cluster;
@@ -47,7 +55,7 @@ public class ServiceNode {
     public void setCluster(Cluster cluster) {
         this.cluster = cluster;
     }
-    
+
     @ManyToOne
     @JoinColumn(name = "hostSystemName")
     private HostSystem hostSystem;
@@ -67,60 +75,65 @@ public class ServiceNode {
     public void setHostname(String hostname) {
         this.hostname = hostname;
     }
-    
-public long getCpu() {
-    return cpu;
-}
 
-public void setCpu(long cpu) {
-    this.cpu = cpu;
-}
+    public long getCpu() {
+        return cpu;
+    }
 
-public long getMem() {
-    return mem;
-}
+    public void setCpu(long cpu) {
+        this.cpu = cpu;
+    }
 
-public void setMem(long mem) {
-    this.mem = mem;
-}
+    public long getMem() {
+        return mem;
+    }
 
-public String getOs() {
-    return os;
-}
+    public void setMem(long mem) {
+        this.mem = mem;
+    }
 
-public void setOs(String os) {
-    this.os = os;
-}
+    public String getOs() {
+        return os;
+    }
 
-public String getKernel() {
-    return kernel;
-}
+    public void setOs(String os) {
+        this.os = os;
+    }
 
-public void setKernel(String kernel) {
-    this.kernel = kernel;
-}
+    public String getKernel() {
+        return kernel;
+    }
 
-public String getService() {
-    return service;
-}
+    public void setKernel(String kernel) {
+        this.kernel = kernel;
+    }
 
-public void setService(String service) {
-    this.service = service;
-}
+    public String getService() {
+        return service;
+    }
 
-public String getComment() {
-    return comment;
-}
+    public void setService(String service) {
+        this.service = service;
+    }
 
-public void setComment(String comment) {
-    this.comment = comment;
-}
+    public String getComment() {
+        return comment;
+    }
 
-public void setVersion(long version) {
-    this.version = version;
-}
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
+    public void setVersion(long version) {
+        this.version = version;
+    }
 
+    public Map<String, Installation> getInstallation() {
+        return installation;
+    }
 
+    public void setInstallation(Map<String, Installation> installation) {
+        this.installation = installation;
+    }
 
 }

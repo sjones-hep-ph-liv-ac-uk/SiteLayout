@@ -129,9 +129,35 @@ CREATE TABLE ServiceNode (
 ALTER TABLE ServiceNode ADD FOREIGN KEY (clusterName) REFERENCES Cluster (clusterName);
 ALTER TABLE ServiceNode ADD FOREIGN KEY (hostSystemName) REFERENCES HostSystem(hostname);
 
+DROP TABLE Installation;
+DROP TABLE Service;
+CREATE TABLE Service (
+  serviceName     varchar(50),
+  provider        varchar(50),
+  version         bigint(20),
+  PRIMARY KEY( serviceName )
+) TYPE = INNODB;
 
-#SET FOREIGN_KEY_CHECKS = 1;
+CREATE TABLE Installation (
+  serviceName       varchar(50),
+  hostname          varchar(50),
+  softwareVersion   varchar(20),
+  version           bigint(20),
+  PRIMARY KEY( serviceName, hostname  )
+) TYPE = INNODB;
+
+ALTER TABLE Installation ADD FOREIGN KEY (serviceName) REFERENCES Service (serviceName);
+ALTER TABLE Installation ADD FOREIGN KEY (hostname) REFERENCES ServiceNode (hostname);
 
 
+# Static data
+INSERT INTO Service (serviceName,provider,version) VALUES
+('HTCondor','University of Wisconsin',0),
+('ARC-CE','NorduGrid',0),
+('APEL','UMD',0),
+('BDII','UMD',0),
+('ARGUS','UMD',0),
+('DPM-HEAD','UMD',0),
+('DPM-DATA','UMD',0);
 
 

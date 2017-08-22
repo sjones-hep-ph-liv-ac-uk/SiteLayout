@@ -2,8 +2,8 @@
 <%@ page import="com.basingwerk.sldb.mvc.model.ClusterSet"%>
 <%@ page import="java.util.List"%>
 
-<% 	List clusterSetList = (List) request.getAttribute("clusterSetList"); %>
-<%	Cluster cluster = (Cluster) request.getAttribute("cluster"); %>
+<%   List clusterSetList = (List) request.getAttribute("clusterSetList"); %>
+<%  Cluster cluster = (Cluster) request.getAttribute("cluster"); %>
 
 <html>
   <link rel="stylesheet" href="${pageContext.request.contextPath}/SiteLayout.css">
@@ -37,19 +37,19 @@ function validateForm() {
 
 </head>
 <body>
-	Edit Cluster
-	<form name="EditClusterForm" action="EditClusterController" method="post" onsubmit="return validateForm()">
-		Cluster Name : <input type="text" name="clusterName" readonly
-			value="${cluster.clusterName}"> <BR> 
-		Cluster Description : <input type="text" name="descr" value="${cluster.descr}"> <BR>
-		Cluster set : <select name='clusterSetList'>
-			<c:forEach items="${clusterSetList}" var="s">
-				<option value="${s.clusterSetName}"
-					${s.clusterSetName == cluster.clusterSet.clusterSetName ? 'selected="selected"' : ''}>${s.clusterSetName}</option>
-			</c:forEach>
-		</select>
-		<BR>
-		<input type="submit" value="Submit" />
-	</form>
+  Edit Cluster
+  <form name="EditClusterForm" action="EditClusterController" method="post" onsubmit="return validateForm()">
+    Cluster Name : <input type="text" name="clusterName" readonly
+      value="${cluster.clusterName}"> <br> 
+    Cluster Description : <input type="text" name="descr" value="${cluster.descr}"> <br>
+    Cluster set : <select name='clusterSetList'>
+      <c:forEach items="${clusterSetList}" var="s">
+        <option value="${s.clusterSetName}"
+          ${s.clusterSetName == cluster.clusterSet.clusterSetName ? 'selected="selected"' : ''}>${s.clusterSetName}</option>
+      </c:forEach>
+    </select>
+    <br>
+    <input type="submit" value="Submit" />
+  </form>
 </body>
 </html>

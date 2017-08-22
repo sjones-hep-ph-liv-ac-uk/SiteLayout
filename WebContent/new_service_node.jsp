@@ -57,29 +57,29 @@ function validateForm() {
 </script>
 </head>
 <body>
-	New Service Node
-	
-	<form name="NewServiceNodeForm" action="NewServiceNodeController"
-		method="post" onsubmit="return validateForm()">
+  New Service Node
+  
+  <form name="NewServiceNodeForm" action="NewServiceNodeController"
+    method="post" onsubmit="return validateForm()">
 
-		hostname : <input type="text" name="hostname"><br>
-		hostSystemName : <select name='hostSystemList'>
-			<c:forEach items="${hostSystemList}" var="hostSystem">
- 			  <option value="${hostSystem.hostname}">${hostSystem.hostname}</option>
-			</c:forEach>
-		</select><br>
-		clusterName : <select name='clusterList'>
-			<c:forEach items="${clusterList}" var="cluster">
- 			  <option value="${cluster.clusterName}">${cluster.clusterName}</option>
-			</c:forEach>
-		</select><br>
-		cpu : <input type="text" name="cpu"> <br>
-		mem : <input type="text" name="mem"> <br>
-		os : <input type="text" name="os"> <br>
-		kernel : <input type="text" name="kernel"> <br>
-		service : <input type="text" name="service"> <br>
-		comment : <input type="text" name="comment"> <br>
-		<br> <input type="submit" value="Submit" />
-	</form>
+    hostname : <input type="text" name="hostname"><br>
+    hostSystemName : <select name='hostSystemList'>
+      <c:forEach items="${hostSystemList}" var="hostSystem">
+         <option value="${hostSystem.hostname}">${hostSystem.hostname}</option>
+      </c:forEach>
+    </select><br>
+    clusterName : <select name='clusterList'>
+      <c:forEach items="${clusterList}" var="cluster">
+         <option value="${cluster.clusterName}">${cluster.clusterName}</option>
+      </c:forEach>
+    </select><br>
+    cpu : <input type="text" name="cpu"> <br>
+    mem : <input type="text" name="mem"> <br>
+    os : <input type="text" name="os"> <br>
+    kernel : <input type="text" name="kernel"> <br>
+    service : <input type="text" name="service"> <br>
+    comment : <input type="text" name="comment"> <br>
+    <br> <input type="submit" value="Submit" />
+  </form>
 </body>
 </html>

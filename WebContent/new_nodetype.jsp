@@ -49,16 +49,16 @@ function validateForm() {
 
 </head>
 <body>
-	New Nodetype
+  New Nodetype
 
         <form name="NewNodeTypeForm" action="NewNodeTypeController" method="post" onsubmit="return validateForm()">
-		Nodetype name : <input type="text" name="nodeTypeName"> <BR>
-		CPUs per node : <input type="text" name="cpu"> <BR> 
-                Slots per node : <input type="text" name="slot"> <BR> 
-                HS06 per slot : <input type="text" name="hs06PerSlot"> <BR> 
-                GBs per node : <input type="text" name="memPerNode"> <BR> 
+    Nodetype name : <input type="text" name="nodeTypeName"> <br>
+    CPUs per node : <input type="text" name="cpu"> <br> 
+                Slots per node : <input type="text" name="slot"> <br> 
+                HS06 per slot : <input type="text" name="hs06PerSlot"> <br> 
+                GBs per node : <input type="text" name="memPerNode"> <br> 
                                <input type="submit" value="Submit" />
-	</form>
+  </form>
 </body>
 </html>
 

@@ -3,13 +3,13 @@
 <%@ page import="com.basingwerk.sldb.mvc.model.NodeType"%>
 
 <%
-	List nodeTypeList = (List) request.getAttribute("nodeTypeList");
+  List nodeTypeList = (List) request.getAttribute("nodeTypeList");
 %>
 <%
-	List clusterList = (List) request.getAttribute("clusterList");
+  List clusterList = (List) request.getAttribute("clusterList");
 %>
 <%
-	NodeSet nodeSet = (NodeSet) request.getAttribute("nodeSet");
+  NodeSet nodeSet = (NodeSet) request.getAttribute("nodeSet");
 %>
 
 <html>
@@ -45,24 +45,24 @@ function validateForm() {
 </head>
 
 <body>
-	<form name="EditNodeSetForm" action="EditNodeSetController" method="post" onsubmit="return validateForm()">
-		Node set name : 
-		   <input type="text" name="nodeSetName" readonly value="${nodeSet.nodeSetName}"> <BR> 
-		Node count : 
-		   <input type="text" name="nodeCount" value="${nodeSet.nodeCount}"> <BR>
-		Node type : <select name='nodeTypeList'>
-			<c:forEach items="${nodeTypeList}" var="nt">
-				
-				<option value="${nt.nodeTypeName}"
-					${nt.nodeTypeName == nodeSet.nodeType.nodeTypeName ? 'selected="selected"' : ''}>${nt.nodeTypeName}</option>
-			</c:forEach>
-		</select><BR> Cluster : <select name='clusterList'>
-			<c:forEach items="${clusterList}" var="cn">
-				<option value="${cn.clusterName}"
-					${cn.clusterName == nodeSet.cluster.clusterName ? 'selected="selected"' : ''}>${cn.clusterName}</option>
-			</c:forEach>
-		</select><BR> <input type="submit" value="Submit" />
-	</form>
+  <form name="EditNodeSetForm" action="EditNodeSetController" method="post" onsubmit="return validateForm()">
+    Node set name : 
+       <input type="text" name="nodeSetName" readonly value="${nodeSet.nodeSetName}"> <br> 
+    Node count : 
+       <input type="text" name="nodeCount" value="${nodeSet.nodeCount}"> <br>
+    Node type : <select name='nodeTypeList'>
+      <c:forEach items="${nodeTypeList}" var="nt">
+        
+        <option value="${nt.nodeTypeName}"
+          ${nt.nodeTypeName == nodeSet.nodeType.nodeTypeName ? 'selected="selected"' : ''}>${nt.nodeTypeName}</option>
+      </c:forEach>
+    </select><br> Cluster : <select name='clusterList'>
+      <c:forEach items="${clusterList}" var="cn">
+        <option value="${cn.clusterName}"
+          ${cn.clusterName == nodeSet.cluster.clusterName ? 'selected="selected"' : ''}>${cn.clusterName}</option>
+      </c:forEach>
+    </select><br> <input type="submit" value="Submit" />
+  </form>
 </body>
 </html>
 

@@ -1,6 +1,6 @@
 <html>
 <link rel="stylesheet"
-	href="${pageContext.request.contextPath}/SiteLayout.css">
+  href="${pageContext.request.contextPath}/SiteLayout.css">
 
 <head>
   <link rel="stylesheet" href="${pageContext.request.contextPath}/SiteLayout.css">
@@ -53,16 +53,16 @@ function validateForm() {
 
 </head>
 <body>
-	New Cluster Set
-	<form name="NewClusterSetForm" action="NewClusterSetController" method="post" onsubmit="return validateForm()">
-		Cluster set name : <input type="text" name="clusterSetName"> <BR>
-		Description : <input type="text" name="description"> <BR>
-		Location : <input type="text" name="location"> <BR>
-		Longitude : <input type="text" name="longitude"> <BR>
-		Latitude : <input type="text" name="latitude"> <BR>
-		Admin : <input type="text" name="admin"> <BR>
+  New Cluster Set
+  <form name="NewClusterSetForm" action="NewClusterSetController" method="post" onsubmit="return validateForm()">
+    Cluster set name : <input type="text" name="clusterSetName"> <br>
+    Description : <input type="text" name="description"> <br>
+    Location : <input type="text" name="location"> <br>
+    Longitude : <input type="text" name="longitude"> <br>
+    Latitude : <input type="text" name="latitude"> <br>
+    Admin : <input type="text" name="admin"> <br>
         <input type="submit" value="Submit" />
- 	</form>
+   </form>
 </body>
 </html>
 

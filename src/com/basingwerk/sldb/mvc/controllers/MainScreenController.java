@@ -81,6 +81,13 @@ public class MainScreenController extends HttpServlet {
                 rd.forward(request, response);
                 return;
             }
+            if (act.equals("Edit service installations")) {
+                dao.loadInstallations(request, "serviceNode", "ASC");
+                next = "/installation.jsp";
+                rd = request.getRequestDispatcher(next);
+                rd.forward(request, response);
+                return;
+            }
             if (act.equals("Reports")) {
                 dao.loadClusterSets(request, "clusterSetName", "ASC");
                 next = "/select_cluster_set.jsp";

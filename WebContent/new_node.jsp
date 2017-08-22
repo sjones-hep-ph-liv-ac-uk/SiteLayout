@@ -27,22 +27,22 @@ function validateForm() {
 </script>
 </head>
 <body>
-	New Node
-	<form name="NewNodeForm" action="NewNodeController"
-		method="post" onsubmit="return validateForm()">
+  New Node
+  <form name="NewNodeForm" action="NewNodeController"
+    method="post" onsubmit="return validateForm()">
 
-		Node name : <input type="text" name="nodeName"> <BR>
-		Node description : <input type="text" name="nodeDescription"> <BR>
-		Node set : <select name='nodeSetList'>
-			<c:forEach items="${nodeSetList}" var="ns">
- 			  <option value="${ns.nodeSetName}">${ns.nodeSetName}</option>
-			</c:forEach>
-		</select> </select><BR> 
-		State : <select name='nodeStateList'>
-			<c:forEach items="${nodeStateList}" var="st">
-				<option value="${st.state}">${st.state}</option>
-			</c:forEach>
-		</select><BR> <input type="submit" value="Submit" />
-	</form>
+    Node name : <input type="text" name="nodeName"> <br>
+    Node description : <input type="text" name="nodeDescription"> <br>
+    Node set : <select name='nodeSetList'>
+      <c:forEach items="${nodeSetList}" var="ns">
+         <option value="${ns.nodeSetName}">${ns.nodeSetName}</option>
+      </c:forEach>
+    </select> </select><br> 
+    State : <select name='nodeStateList'>
+      <c:forEach items="${nodeStateList}" var="st">
+        <option value="${st.state}">${st.state}</option>
+      </c:forEach>
+    </select><br> <input type="submit" value="Submit" />
+  </form>
 </body>
 </html>

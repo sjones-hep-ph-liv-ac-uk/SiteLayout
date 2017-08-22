@@ -1,13 +1,11 @@
 <%@ page import="com.basingwerk.sldb.mvc.model.ServiceNode"%>
 <%@ page import="java.util.List"%>
 
-
-
 <html>
   <link rel="stylesheet" href="${pageContext.request.contextPath}/SiteLayout.css">
 
 <head>
-<title>Edit Service Node</title>
+  <title>Edit Service Node</title>
 <script>
 function isNumber(value) {
   return !isNaN(value) ;
@@ -59,33 +57,33 @@ function validateForm() {
 </script>
 </head>
 <body>
-	Edit Service Node
-	
-	<form name="EditServiceNodeForm" action="EditServiceNodeController"
-		method="post" onsubmit="return validateForm()">
+  Edit Service Node
+  
+  <form name="EditServiceNodeForm" action="EditServiceNodeController"
+    method="post" onsubmit="return validateForm()">
 
-		hostname : <input type="text" name="hostname" readonly value="${serviceNode.hostname}"><br>
-		hostSystemName : <select name='hostSystemList'>
-			<c:forEach items="${hostSystemList}" var="hostSystem">
- 			  <option value="${hostSystem.hostname}"
- 			  ${hostSystem.hostname == serviceNode.hostSystem.hostname  ? 'selected="selected"' : ''}
-  			    >${hostSystem.hostname}</option>
-			</c:forEach>
-		</select><br>
-		clusterName : <select name='clusterList'>
-			<c:forEach items="${clusterList}" var="cluster">
- 			  <option value="${cluster.clusterName}"
-              ${cluster.clusterName == serviceNode.cluster.clusterName ? 'selected="selected"' : ''} 			  
- 			    >${cluster.clusterName}</option>
-			</c:forEach>
-		</select><br>
-		cpu : <input type="text" name="cpu" value="${serviceNode.cpu}"> <br>
-		mem : <input type="text" name="mem" value="${serviceNode.mem}"> <br>
-		os : <input type="text" name="os" value="${serviceNode.os}"> <br>
-		kernel : <input type="text" name="kernel" value="${serviceNode.kernel}"> <br>
-		service : <input type="text" name="service" value="${serviceNode.service}"> <br>
-		comment : <input type="text" name="comment" value="${serviceNode.comment}"> <br>
-		<br> <input type="submit" value="Submit" />
-	</form>
+    hostname : <input type="text" name="hostname" readonly value="${serviceNode.hostname}"><br>
+    hostSystemName : <select name='hostSystemList'>
+      <c:forEach items="${hostSystemList}" var="hostSystem">
+         <option value="${hostSystem.hostname}"
+         ${hostSystem.hostname == serviceNode.hostSystem.hostname  ? 'selected="selected"' : ''}
+            >${hostSystem.hostname}</option>
+      </c:forEach>
+    </select><br>
+    clusterName : <select name='clusterList'>
+      <c:forEach items="${clusterList}" var="cluster">
+         <option value="${cluster.clusterName}"
+              ${cluster.clusterName == serviceNode.cluster.clusterName ? 'selected="selected"' : ''}         
+           >${cluster.clusterName}</option>
+      </c:forEach>
+    </select><br>
+    cpu : <input type="text" name="cpu" value="${serviceNode.cpu}"> <br>
+    mem : <input type="text" name="mem" value="${serviceNode.mem}"> <br>
+    os : <input type="text" name="os" value="${serviceNode.os}"> <br>
+    kernel : <input type="text" name="kernel" value="${serviceNode.kernel}"> <br>
+    service : <input type="text" name="service" value="${serviceNode.service}"> <br>
+    comment : <input type="text" name="comment" value="${serviceNode.comment}"> <br>
+    <br> <input type="submit" value="Submit" />
+  </form>
 </body>
 </html>

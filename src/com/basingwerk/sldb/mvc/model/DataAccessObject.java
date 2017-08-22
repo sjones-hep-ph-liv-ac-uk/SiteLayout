@@ -1,5 +1,4 @@
 package com.basingwerk.sldb.mvc.model;
-
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
 import java.util.ArrayList;
@@ -372,6 +371,51 @@ public class DataAccessObject {
         // request.setAttribute("nodeSetList", nodeSetList);
 
     }
+    
+    public void loadInstallations(HttpServletRequest request, String col, String order)
+            throws RoutineException, WTFException {
+        
+        ArrayList<Installation> installationList = new ArrayList<Installation>();
+
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
+        }
+
+        Order ord = org.hibernate.criterion.Order.desc(col);
+        if (order.equalsIgnoreCase("ASC")) {
+            ord = org.hibernate.criterion.Order.asc(col);
+        }
+
+        installationList = null;
+        try {
+
+            hibSession.beginTransaction();
+            installationList = (ArrayList<Installation>) hibSession.createCriteria(Installation.class).addOrder(ord).list();
+            hibSession.getTransaction().commit();
+        } catch (HibernateException ex) {
+            hibSession.getTransaction().rollback();
+            logger.error("Had an error using loadInstallations", ex);
+            throw new WTFException("Had an error using loadInstallations");
+        } finally {
+            hibSession.close();
+        }
+
+        httpSession.setAttribute("installationList", installationList);
+        // request.setAttribute("installationList", installationList);
+    }
+    
 
     public void loadNodes(HttpServletRequest request, String col, String order) throws RoutineException, WTFException {
         ArrayList<Node> nodeList = new ArrayList<Node>();
@@ -461,6 +505,50 @@ public class DataAccessObject {
         httpSession.setAttribute("serviceNodeList", serviceNodeList);
         // request.setAttribute("serviceNodeList", serviceNodeList);
     }
+    
+    public void loadServices(HttpServletRequest request, String col, String order)
+            throws RoutineException, WTFException {
+        
+        ArrayList<Service> serviceList = new ArrayList<Service>();
+        
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
+        }
+
+        Order ord = org.hibernate.criterion.Order.desc(col);
+        if (order.equalsIgnoreCase("ASC")) {
+            ord = org.hibernate.criterion.Order.asc(col);
+        }
+
+        serviceList = null;
+        try {
+
+            hibSession.beginTransaction();
+            serviceList = (ArrayList<Service>) hibSession.createCriteria(Service.class).addOrder(ord).list();
+            hibSession.getTransaction().commit();
+        } catch (HibernateException ex) {
+            hibSession.getTransaction().rollback();
+            logger.error("Had an error using loadServices, ", ex);
+            throw new WTFException("Had an error using loadServices");
+        } finally {
+            hibSession.close();
+        }
+
+        httpSession.setAttribute("serviceList", serviceList);
+    }
+    
 
     public void loadNodeTypes(HttpServletRequest request, String col, String order)
             throws RoutineException, WTFException {
@@ -1339,6 +1427,70 @@ public class DataAccessObject {
             hibSession.close();
         }
     }
+    
+    
+    public void addInstallation(HttpServletRequest request) throws WTFException, RoutineException {
+
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
+        }
+
+        String hostname = request.getParameter("serviceNodeList");
+        String serviceName = request.getParameter("serviceList");
+        String softwareVersion = request.getParameter("softwareVersion");
+
+        Installation installation = new Installation();
+
+        try {
+            hibSession.beginTransaction();
+
+            ServiceNode sn = (ServiceNode) hibSession.createCriteria(ServiceNode.class).add(Restrictions.eq("hostname", hostname))
+                    .uniqueResult();
+            if (sn == null) {
+                // Possibly deleted during long conversation
+                hibSession.getTransaction().rollback();
+                logger.error("While using addInstallation, desired ServiceNode not found");
+                throw new RoutineException("While using addInstallation, desired ServiceNode not found");
+            }
+            Service s = (Service) hibSession.createCriteria(Service.class)
+                    .add(Restrictions.eq("serviceName", serviceName)).uniqueResult();
+            if (s == null) {
+                // Possibly deleted during long conversation
+                hibSession.getTransaction().rollback();
+                logger.error("While using addInstallation, desired Service not found");
+                throw new RoutineException("While using addInstallation, desired Service not found");
+            }
+            
+            installation.setService(s);
+            installation.setServiceNode(sn);
+            installation.setSoftwareVersion(softwareVersion);
+            hibSession.save(installation);
+            hibSession.getTransaction().commit();
+        } catch (ConstraintViolationException e) {
+            hibSession.getTransaction().rollback();
+            logger.error("While using addInstallation, the new object conflicted with an existing installation");
+            throw new RoutineException(
+                    "While using addInstallation, the new object conflicted with an existing installation");
+        } catch (HibernateException e) {
+            hibSession.getTransaction().rollback();
+            logger.error("WTF error using addInstallation, ", e);
+            throw new WTFException("WTF error using addInstallation");
+        } finally {
+            hibSession.close();
+        }
+    }
 
     public void deleteCluster(HttpServletRequest request, String clusterName) throws WTFException, RoutineException {
 
@@ -1367,8 +1519,8 @@ public class DataAccessObject {
         } catch (HibernateException ex) {
             // Possibly deleted during long conversation
             hibSession.getTransaction().rollback();
-            logger.error("While using deleteCluster, desired Cluster not found");
-            throw new RoutineException("While using deleteCluster, desired Cluster not found");
+            logger.error("While using deleteCluster, undesired Cluster not found");
+            throw new RoutineException("While using deleteCluster, undesired Cluster not found");
         } finally {
             hibSession.close();
         }
@@ -1396,8 +1548,8 @@ public class DataAccessObject {
         ClusterSet clusterSet = (ClusterSet) hibSession.createCriteria(ClusterSet.class)
                 .add(Restrictions.eq("clusterSetName", clusterSetName)).uniqueResult();
         if (clusterSet == null) {
-            logger.error("While using deleteCluster, desired Cluster not found");
-            throw new RoutineException("While using deleteCluster, desired Cluster not found");
+            logger.error("While using deleteCluster, undesired Cluster not found");
+            throw new RoutineException("While using deleteCluster, undesired Cluster not found");
         }
         try {
             hibSession.beginTransaction();
@@ -1406,8 +1558,8 @@ public class DataAccessObject {
         } catch (HibernateException ex) {
             // Possibly deleted during long conversation
             hibSession.getTransaction().rollback();
-            logger.error("While using deleteClusterSet, desired ClusterSet not found");
-            throw new RoutineException("While using deleteClusterSet, desired ClusterSet not found");
+            logger.error("While using deleteClusterSet, undesired ClusterSet not found");
+            throw new RoutineException("While using deleteClusterSet, undesired ClusterSet not found");
         } finally {
             hibSession.close();
         }
@@ -1435,8 +1587,8 @@ public class DataAccessObject {
                 .add(Restrictions.eq("nodeSetName", nodeSetName)).uniqueResult();
 
         if (nodeSet == null) {
-            logger.error("While using deleteNodeSet, desired NodeSet not found");
-            throw new RoutineException("While using deleteNodeSet, desired NodeSet not found");
+            logger.error("While using deleteNodeSet, undesired NodeSet not found");
+            throw new RoutineException("While using deleteNodeSet, undesired NodeSet not found");
         }
         try {
             hibSession.beginTransaction();
@@ -1445,13 +1597,53 @@ public class DataAccessObject {
         } catch (HibernateException ex) {
             // Possibly deleted during long conversation
             hibSession.getTransaction().rollback();
-            logger.error("While using deleteNodeSet, desired NodeSet not found");
-            throw new RoutineException("While using deleteNodeSet, desired NodeSet not found");
+            logger.error("While using deleteNodeSet, undesired NodeSet not found");
+            throw new RoutineException("While using deleteNodeSet, undesired NodeSet not found");
         } finally {
             hibSession.close();
         }
     }
+    
+    public void deleteInstallation(HttpServletRequest request, String serviceName, String hostname) throws WTFException, RoutineException {
 
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
+        }
+
+        Installation installation = (Installation) hibSession.createCriteria(Installation.class)
+                .add(Restrictions.eq("serviceName", serviceName))
+                .add(Restrictions.eq("hostname", hostname)).uniqueResult();
+
+        if (installation == null) {
+            logger.error("While using deleteInstallation, undesired Installation not found");
+            throw new RoutineException("While using deleteInstallation, undesired Installation not found");
+        }
+        try {
+            hibSession.beginTransaction();
+            hibSession.delete(installation);
+            hibSession.getTransaction().commit();
+        } catch (HibernateException ex) {
+            // Possibly deleted during long conversation
+            hibSession.getTransaction().rollback();
+            logger.error("While using deleteInstallation, undesired Installation not found");
+            throw new RoutineException("While using deleteInstallation, undesired Installation not found");
+        } finally {
+            hibSession.close();
+        }
+    }
+    
     public void deleteNode(HttpServletRequest request, String nodeName) throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
@@ -1740,6 +1932,10 @@ public class DataAccessObject {
             hibSession.close();
         }
     }
+    
+    
+    
+    
 
     public void updateNode(HttpServletRequest request) throws WTFException, RoutineException {
 
@@ -2080,6 +2276,213 @@ public class DataAccessObject {
             hibSession.getTransaction().rollback();
             logger.error("WTF error using updateServiceNode, ", e);
             throw new WTFException("WTF error using updateServiceNode");
+        } finally {
+            hibSession.close();
+        }
+    }
+    
+    public void deleteIndexedInstallation(HttpServletRequest request, Integer installationIndex)
+            throws WTFException, RoutineException {
+
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
+        }
+
+        Installation cachedInstallation = null;
+        Installation storedInstallation = null;
+        try {
+            hibSession.beginTransaction();
+
+            cachedInstallation  = ((ArrayList<Installation>)httpSession.getAttribute("installationList")).get(installationIndex); 
+            
+            if (cachedInstallation == null) {
+                logger.error("While using loadIndexedInstallation, undesired Installation not found");
+                throw new RoutineException("While using loadIndexedInstallation, undesired Installation not found");
+            }
+
+            Long cachedVersion = cachedInstallation.getVersion();
+            String serviceName = cachedInstallation.getService().getServiceName();
+            String hostname = cachedInstallation.getServiceNode().getHostname();
+            
+            storedInstallation = (Installation) hibSession.createCriteria(Installation.class)
+                    .add(Restrictions.eq("service.serviceName", serviceName))
+                    .add(Restrictions.eq("serviceNode.hostname", hostname)).uniqueResult();
+            
+            // Possibly deleted during long conversation
+            if (storedInstallation == null) {
+                hibSession.getTransaction().rollback();
+                logger.error("While using deleteIndexedInstallation, undesired Installation not found");
+                throw new RoutineException("While using deleteIndexedInstallation, undesired Installation not found");
+            }
+
+            Long storedVersion = storedInstallation.getVersion();
+            if (!storedVersion.equals(cachedVersion)) {
+                hibSession.getTransaction().rollback();
+                logger.error("While using deleteIndexedInstallation, undesired Installation was altered by another user ");
+                throw new RoutineException(
+                        "While using deleteIndexedInstallation, undesired Installation was altered by another user ");
+            }
+
+            hibSession.delete(storedInstallation);
+            hibSession.getTransaction().commit();
+
+        } catch (HibernateException ex) {
+            hibSession.getTransaction().rollback();
+            logger.error("WTF error using deleteIndexedInstallation, ", ex);
+            throw new WTFException("WTF error using deleteIndexedInstallation");
+        } finally {
+            hibSession.close();
+        }
+        return;
+    }
+    
+    public void loadIndexedInstallation(HttpServletRequest request, Integer installationIndex)
+            throws WTFException, RoutineException {
+
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
+        }
+
+        Installation cachedInstallation = null;
+        Installation storedInstallation = null;
+
+        try {
+            hibSession.beginTransaction();
+
+            cachedInstallation = ((ArrayList<Installation>)httpSession.getAttribute("installationList")).get(installationIndex); 
+            if (cachedInstallation == null) {
+                logger.error("While using loadIndexedInstallation, desired Installation not found");
+                throw new RoutineException("While using loadIndexedInstallation, desired Installation not found");
+            }
+            Long cachedVersion = cachedInstallation.getVersion();
+            String serviceName = cachedInstallation.getService().getServiceName();
+            String hostname = cachedInstallation.getServiceNode().getHostname();
+            
+            storedInstallation = (Installation) hibSession.createCriteria(Installation.class)
+                    .add(Restrictions.eq("service.serviceName", serviceName))
+                    .add(Restrictions.eq("serviceNode.hostname", hostname)).uniqueResult();
+            
+            // Possibly deleted during long conversation
+            if (storedInstallation == null) {
+                hibSession.getTransaction().rollback();
+                logger.error("While using loadIndexedInstallation, desired Installation not found");
+                throw new RoutineException("While using loadIndexedInstallation, desired Installation not found");
+            }
+            Long storedVersion = storedInstallation.getVersion();
+
+            if (!storedVersion.equals(cachedVersion)) {
+                hibSession.getTransaction().rollback();
+                logger.error("While using loadIndexedInstallation, desired Installation was altered by another user ");
+                throw new RoutineException(
+                        "While using loadIndexedInstallation, desired Installation was altered by another user ");
+            }
+
+            hibSession.getTransaction().commit();
+        } catch (HibernateException e) {
+            hibSession.getTransaction().rollback();
+            logger.error("WTF error using loadIndexedInstallation, ", e);
+            throw new WTFException("WTF error using loadIndexedInstallation");
+        } finally {
+            hibSession.close();
+        }
+        httpSession.setAttribute("installation", storedInstallation);
+        // request.setAttribute("cluster", storedInstallation);
+        return;
+    }
+    
+    public void updateInstallation(HttpServletRequest request) throws WTFException, RoutineException {
+
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
+        }
+
+        try {
+            hibSession.beginTransaction();
+
+            // We assume it is updated, whether it is or is not
+            String updatedService = request.getParameter("service");
+            String updatedServiceNode = request.getParameter("serviceNode");
+            String updatedSoftwareVersion = request.getParameter("softwareVersion");
+
+            Installation storedInstallation = null;
+            Installation cachedInstallation = (Installation) httpSession.getAttribute("installation");
+
+            if (cachedInstallation == null) {
+                hibSession.getTransaction().rollback();
+                logger.error("While using updateInstallation, desired Installation not found");
+                throw new RoutineException("While using updateInstallation, desired Installation not found");
+            }
+            Long cachedInstallationVersion = cachedInstallation.getVersion();
+            String serviceName = cachedInstallation.getService().getServiceName();
+            String hostname = cachedInstallation.getServiceNode().getHostname();
+
+            storedInstallation = (Installation) hibSession.createCriteria(Installation.class)
+                    .add(Restrictions.eq("service.serviceName", serviceName))
+                    .add(Restrictions.eq("serviceNode.hostname", hostname)).uniqueResult();
+            
+            // Possibly deleted during long conversation
+            if (storedInstallation == null) {
+                hibSession.getTransaction().rollback();
+                logger.error("While using updateInstallation, desired Installation  not found");
+                throw new RoutineException("While using updateInstallation, desired Installation  not found");
+            }
+            // Possibly altered during long conversation
+
+            Long storedInstallationVersion = storedInstallation.getVersion();
+
+            if (!storedInstallationVersion.equals(cachedInstallationVersion)) {
+                hibSession.getTransaction().rollback();
+                logger.error("While using updateInstallation, desired Installation was altered by another user ");
+                throw new RoutineException("While using updateInstallation, desired Installation was altered by another user ");
+            }
+
+            // Both the same. Safe to update
+
+            storedInstallation.setSoftwareVersion(updatedSoftwareVersion);
+
+            hibSession.update(storedInstallation);
+            hibSession.getTransaction().commit();
+
+        } catch (HibernateException e) {
+            hibSession.getTransaction().rollback();
+            logger.error("WTF error using updateInstallation, ", e);
+            throw new WTFException("WTF error using updateInstallation");
         } finally {
             hibSession.close();
         }

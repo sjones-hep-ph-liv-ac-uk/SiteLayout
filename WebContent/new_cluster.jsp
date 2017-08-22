@@ -34,17 +34,17 @@ function validateForm() {
 
 </head>
 <body>
-	New Cluster
-	<form name="NewClusterForm" action="NewClusterController" method="post" onsubmit="return validateForm()">
-		Cluster Name : <input type="text" name="clusterName"> <BR>
-		Cluster Description : <input type="text" name="descr"> <BR>
-		Cluster set : <select name='clusterSetList'>
-			<c:forEach items="${clusterSetList}" var="s">
-			  <option value="${s.clusterSetName}">${s.clusterSetName}</option>
-			</c:forEach>
-		</select>
-		<BR>
-		<input type="submit" value="Submit" />
-	</form>
+  New Cluster
+  <form name="NewClusterForm" action="NewClusterController" method="post" onsubmit="return validateForm()">
+    Cluster Name : <input type="text" name="clusterName"> <br>
+    Cluster Description : <input type="text" name="descr"> <br>
+    Cluster set : <select name='clusterSetList'>
+      <c:forEach items="${clusterSetList}" var="s">
+        <option value="${s.clusterSetName}">${s.clusterSetName}</option>
+      </c:forEach>
+    </select>
+    <br>
+    <input type="submit" value="Submit" />
+  </form>
 </body>
 </html>
