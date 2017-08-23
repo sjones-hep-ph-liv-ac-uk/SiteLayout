@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -54,9 +55,9 @@ public class DataAccessObject {
         ArrayList<NodeSetNodeTypeJoin> nsntj = new ArrayList<NodeSetNodeTypeJoin>();
         try {
             hibSession.beginTransaction();
-            List<NodeSet> ns = hibSession.createCriteria(NodeSet.class)
-                    .add(Restrictions.eq("cluster.clusterName", clusterName)).list();
+            List<NodeSet> ns = hibSession.createCriteria(NodeSet.class).add(Restrictions.eq("cluster.clusterName", clusterName)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
             for (NodeSet n : ns) {
+                
                 Float nodeSetHs06 = (float) (n.getNodeType().getHs06PerSlot() * n.getNodeCount());
                 NodeSetNodeTypeJoin j = new NodeSetNodeTypeJoin(n.getNodeSetName(), n.getNodeType().getNodeTypeName(),
                         n.getNodeCount(), new Integer(n.getNodeType().getCpu()), new Integer(n.getNodeType().getSlot()),
@@ -73,42 +74,42 @@ public class DataAccessObject {
         return nsntj;
     }
 
-    public ArrayList<String> listClustersOfClusterSet(HttpServletRequest request, String clusterSetName)
-            throws RoutineException, WTFException {
-
-        HttpSession httpSession = null;
-        SessionFactory fac = null;
-        Session hibSession = null;
-
-        httpSession = request.getSession();
-        if (httpSession != null) {
-            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
-            if (fac != null) {
-                hibSession = fac.openSession();
-            }
-        }
-        if (hibSession == null) {
-            logger.error("WTF error, hibernate session unavailable");
-            throw new RoutineException("Hibernate session unavailable");
-        }
-
-        ArrayList<String> cl = new ArrayList<String>();
-        try {
-            hibSession.beginTransaction();
-            Query query = hibSession
-                    .createQuery("select clusterName from Cluster where clusterSetName ='" + clusterSetName + "'");
-            cl = (ArrayList) query.list();
-            hibSession.getTransaction().commit();
-        } catch (HibernateException ex) {
-            hibSession.getTransaction().rollback();
-            logger.error("Error using listClustersOfClusterSet, ", ex);
-            throw new WTFException("Error using listClustersOfClusterSet");
-        } finally {
-            hibSession.close();
-        }
-
-        return cl;
-    }
+//    public ArrayList<String> listClustersOfClusterSet(HttpServletRequest request, String clusterSetName)
+//            throws RoutineException, WTFException {
+//
+//        HttpSession httpSession = null;
+//        SessionFactory fac = null;
+//        Session hibSession = null;
+//
+//        httpSession = request.getSession();
+//        if (httpSession != null) {
+//            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+//            if (fac != null) {
+//                hibSession = fac.openSession();
+//            }
+//        }
+//        if (hibSession == null) {
+//            logger.error("WTF error, hibernate session unavailable");
+//            throw new RoutineException("Hibernate session unavailable");
+//        }
+//
+//        ArrayList<String> cl = new ArrayList<String>();
+//        try {
+//            hibSession.beginTransaction();
+//            Query query = hibSession
+//                    .createQuery("select clusterName from Cluster where clusterSetName ='" + clusterSetName + "'");
+//            cl = (ArrayList) query . list();
+//            hibSession.getTransaction().commit();
+//        } catch (HibernateException ex) {
+//            hibSession.getTransaction().rollback();
+//            logger.error("Error using listClustersOfClusterSet, ", ex);
+//            throw new WTFException("Error using listClustersOfClusterSet");
+//        } finally {
+//            hibSession.close();
+//        }
+//
+//        return cl;
+//    }
 
     public void setBaselineNodeType(HttpServletRequest request) throws RoutineException, WTFException {
 
@@ -131,7 +132,7 @@ public class DataAccessObject {
         ArrayList<NodeType> nodeTypes = null;
         try {
             hibSession.beginTransaction();
-            nodeTypes = (ArrayList<NodeType>) hibSession.createCriteria(NodeType.class).list();
+            nodeTypes = (ArrayList<NodeType>) hibSession.createCriteria(NodeType.class).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
             hibSession.getTransaction().commit();
 
         } catch (HibernateException ex) {
@@ -181,7 +182,7 @@ public class DataAccessObject {
         try {
 
             hibSession.beginTransaction();
-            clusterList = (ArrayList<Cluster>) hibSession.createCriteria(Cluster.class).addOrder(ord).list();
+            clusterList = (ArrayList<Cluster>) hibSession.createCriteria(Cluster.class).addOrder(ord).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
         } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
             logger.error("WTF error using loadClusters, ", ex);
@@ -225,7 +226,7 @@ public class DataAccessObject {
         try {
 
             hibSession.beginTransaction();
-            hostSystemList = (ArrayList<HostSystem>) hibSession.createCriteria(HostSystem.class).addOrder(ord).list();
+            hostSystemList = (ArrayList<HostSystem>) hibSession.createCriteria(HostSystem.class).addOrder(ord).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
         } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
             logger.error("WTF error using loadHostSystems, ", ex);
@@ -269,7 +270,7 @@ public class DataAccessObject {
         try {
 
             hibSession.beginTransaction();
-            nodeStateList = (ArrayList<NodeState>) hibSession.createCriteria(NodeState.class).addOrder(ord).list();
+            nodeStateList = (ArrayList<NodeState>) hibSession.createCriteria(NodeState.class).addOrder(ord).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
         } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
             logger.error("WTF error using loadNodeStates, ", ex);
@@ -310,7 +311,7 @@ public class DataAccessObject {
         try {
 
             hibSession.beginTransaction();
-            clusterSetList = (ArrayList<ClusterSet>) hibSession.createCriteria(ClusterSet.class).addOrder(ord).list();
+            clusterSetList = (ArrayList<ClusterSet>) hibSession.createCriteria(ClusterSet.class).addOrder(ord).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
             hibSession.getTransaction().commit();
 
         } catch (HibernateException ex) {
@@ -357,7 +358,7 @@ public class DataAccessObject {
         try {
 
             hibSession.beginTransaction();
-            nodeSetList = (ArrayList<NodeSet>) hibSession.createCriteria(NodeSet.class).addOrder(ord).list();
+            nodeSetList = (ArrayList<NodeSet>) hibSession.createCriteria(NodeSet.class).addOrder(ord).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
             hibSession.getTransaction().commit();
         } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
@@ -402,7 +403,7 @@ public class DataAccessObject {
         try {
 
             hibSession.beginTransaction();
-            installationList = (ArrayList<Installation>) hibSession.createCriteria(Installation.class).addOrder(ord).list();
+            installationList = (ArrayList<Installation>) hibSession.createCriteria(Installation.class).addOrder(ord).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
             hibSession.getTransaction().commit();
         } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
@@ -445,7 +446,7 @@ public class DataAccessObject {
         try {
 
             hibSession.beginTransaction();
-            nodeList = (ArrayList<Node>) hibSession.createCriteria(Node.class).addOrder(ord).list();
+            nodeList = (ArrayList<Node>) hibSession.createCriteria(Node.class).addOrder(ord).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
             hibSession.getTransaction().commit();
         } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
@@ -492,7 +493,7 @@ public class DataAccessObject {
 
             hibSession.beginTransaction();
             serviceNodeList = (ArrayList<ServiceNode>) hibSession.createCriteria(ServiceNode.class).addOrder(ord)
-                    .list();
+                    .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
             hibSession.getTransaction().commit();
         } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
@@ -536,7 +537,7 @@ public class DataAccessObject {
         try {
 
             hibSession.beginTransaction();
-            serviceList = (ArrayList<Service>) hibSession.createCriteria(Service.class).addOrder(ord).list();
+            serviceList = (ArrayList<Service>) hibSession.createCriteria(Service.class).addOrder(ord).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
             hibSession.getTransaction().commit();
         } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
@@ -578,7 +579,7 @@ public class DataAccessObject {
         try {
 
             hibSession.beginTransaction();
-            nodeTypeList = (ArrayList<NodeType>) hibSession.createCriteria(NodeType.class).addOrder(ord).list();
+            nodeTypeList = (ArrayList<NodeType>) hibSession.createCriteria(NodeType.class).addOrder(ord).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
             hibSession.getTransaction().commit();
         } catch (HibernateException ex) {
             hibSession.getTransaction().rollback();
@@ -2487,7 +2488,52 @@ public class DataAccessObject {
             hibSession.close();
         }
     }
-    
+
+    public void loadClustersOfClusterSet(HttpServletRequest request, String clusterSetName, String col, String order)
+            throws RoutineException, WTFException {
+
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+        
+        httpSession = request.getSession();
+        if (httpSession != null) {
+            fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+            if (fac != null) {
+                hibSession = fac.openSession();
+            }
+        }
+        if (hibSession == null) {
+            logger.error("WTF error, hibernate session unavailable");
+            throw new RoutineException("Hibernate session unavailable");
+        }
+
+        Order ord = org.hibernate.criterion.Order.desc(col);
+        if (order.equalsIgnoreCase("ASC")) {
+            ord = org.hibernate.criterion.Order.asc(col);
+        }
+        
+        ArrayList<Cluster> clusterList = new ArrayList<Cluster>();
+
+        clusterList = null;
+        try {
+
+            hibSession.beginTransaction();
+            clusterList = (ArrayList<Cluster>) hibSession.createCriteria(Cluster.class)
+                    .add(Restrictions.eq("clusterSet.clusterSetName",clusterSetName )).addOrder(ord)
+                    .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
+        } catch (HibernateException ex) {
+            hibSession.getTransaction().rollback();
+            logger.error("WTF error using loadClustersOfClusterSet, ", ex);
+            throw new WTFException("WTF error using loadClustersOfClusterSet");
+        } finally {
+            hibSession.close();
+        }
+        for (Cluster c: clusterList) {
+            logger.error("SJDEBUG CLUSTER FROM CLUSTERLIST " + c);
+        }
+        httpSession.setAttribute("clusterList", clusterList);
+    }
 
     public void logout(HttpServletRequest request) {
         HttpSession httpSession = null;

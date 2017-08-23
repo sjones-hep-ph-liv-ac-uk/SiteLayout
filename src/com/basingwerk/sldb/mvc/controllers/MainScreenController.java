@@ -89,8 +89,8 @@ public class MainScreenController extends HttpServlet {
                 return;
             }
             if (act.equals("Reports")) {
-                dao.loadClusterSets(request, "clusterSetName", "ASC");
-                next = "/select_cluster_set.jsp";
+                // dao.loadClusterSets(request, "clusterSetName", "ASC");
+                next = "/select_report.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
                 return;

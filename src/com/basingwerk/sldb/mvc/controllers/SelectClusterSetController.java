@@ -35,20 +35,22 @@ public class SelectClusterSetController extends HttpServlet {
         ArrayList<String> clusters = null;
         try {
             dao.loadNodeTypes(request, "nodeTypeName", "ASC");
-            dao.loadClusters(request, "clusterName", "ASC");
+            dao.loadClustersOfClusterSet(request, clusterSetName, "clusterName", "ASC");
             dao.setBaselineNodeType(request);
 
-            clusters = dao.listClustersOfClusterSet(request, clusterSetName);
-            java.util.HashMap<String, ArrayList> joinMap = new java.util.HashMap<String, ArrayList>();
-
-            Iterator<String> c = clusters.iterator();
-            while (c.hasNext()) {
-                String cluster = c.next();
-                ArrayList<NodeSetNodeTypeJoin> nsntj = dao.getJoinForCluster(request, cluster);
-                joinMap.put(cluster, nsntj);
-            }
-            request.setAttribute("joinMap", joinMap);
-            rd = request.getRequestDispatcher("/reports.jsp");
+//            clusters = dao.listClustersOfClusterSet(request, clusterSetName);
+//            java.util.HashMap<String, ArrayList> joinMap = new java.util.HashMap<String, ArrayList>();
+//
+//            Iterator<String> c = clusters.iterator();
+//            while (c.hasNext()) {
+//                String cluster = c.next();
+//                // logger.error("SJDEBUG CLUSTER " + cluster);
+//                ArrayList<NodeSetNodeTypeJoin> nsntj = dao.getJoinForCluster(request, cluster);
+//                joinMap.put(cluster, nsntj);
+//            }
+//            request.setAttribute("clusters", clusters);
+            rd = request.getRequestDispatcher("/clusters_report.jsp");
+            
             rd.forward(request, response);
             return;
         } catch (WTFException e) {

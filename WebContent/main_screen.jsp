@@ -1,6 +1,4 @@
 <html>
-  <link rel="stylesheet"  href="${pageContext.request.contextPath}/SiteLayout.css">
-
 <head>
   <link rel="stylesheet" href="${pageContext.request.contextPath}/SiteLayout.css">
   <title>Site Layout Database</title>

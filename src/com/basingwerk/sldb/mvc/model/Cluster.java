@@ -44,8 +44,7 @@ public class Cluster {
         this.serviceNodes = serviceNodes;
     }
     
-
-    @OneToMany(mappedBy = "cluster", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "cluster", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @MapKey(name="nodeSetName")
     private Map<String,NodeSet> nodeSets = new HashMap<String,NodeSet>();
 
