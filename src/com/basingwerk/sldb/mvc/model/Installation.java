@@ -66,6 +66,10 @@ public class Installation {
     public Installation() {
     }
 
+    public String toString() {
+        return "Installation [softwareVersion=" + softwareVersion + ", serviceNode=" + serviceNode + ", service="
+                + service + ", version=" + version + "]";
+    }
 }
 
 
