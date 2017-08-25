@@ -58,7 +58,7 @@ public class Cluster {
 
     @ManyToOne
     @JoinColumn(name = "clusterSetName")
-    private ClusterSet clusterSet;
+    public ClusterSet clusterSet;
 
     public ClusterSet getClusterSet() {
         return clusterSet;
