@@ -26,9 +26,9 @@
 
   <display-name>SiteLayout</display-name>
 
-  <servlet>
+  <!-- <servlet>
     <servlet-name>NodeSetController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.NodeSetController </servlet-class> 
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.NodeSetController</servlet-class> 
   </servlet>
   <servlet-mapping>
     <servlet-name>NodeSetController</servlet-name>
@@ -38,7 +38,7 @@
  
   <servlet>
     <servlet-name>NewClusterController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.NewClusterController </servlet-class>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.NewClusterController</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>NewClusterController</servlet-name>
@@ -47,7 +47,7 @@
 
   <servlet>
     <servlet-name>SelectClusterSetController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.SelectClusterSetController </servlet-class>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.SelectClusterSetController</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>SelectClusterSetController</servlet-name>
@@ -56,7 +56,7 @@
  
   <servlet>
     <servlet-name>EditNodeSetController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.EditNodeSetController </servlet-class>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.EditNodeSetController</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>EditNodeSetController</servlet-name>
@@ -65,7 +65,7 @@
  
   <servlet>
     <servlet-name>LoginController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.LoginController </servlet-class>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.LoginController</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>LoginController</servlet-name>
@@ -74,7 +74,7 @@
  
   <servlet>
     <servlet-name>ClusterController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.ClusterController </servlet-class>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.ClusterController</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>ClusterController</servlet-name>
@@ -84,7 +84,7 @@
  
   <servlet>
     <servlet-name>NewNodeSetController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.NewNodeSetController </servlet-class>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.NewNodeSetController</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>NewNodeSetController</servlet-name>
@@ -93,7 +93,7 @@
  
   <servlet>
     <servlet-name>MainScreenController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.MainScreenController </servlet-class>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.MainScreenController</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>MainScreenController</servlet-name>
@@ -102,7 +102,7 @@
  
   <servlet>
     <servlet-name>EditClusterController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.EditClusterController </servlet-class>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.EditClusterController</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>EditClusterController</servlet-name>
@@ -111,7 +111,7 @@
 
   <servlet>
     <servlet-name>NodeTypeController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.NodeTypeController </servlet-class>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.NodeTypeController</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>NodeTypeController</servlet-name>
@@ -120,7 +120,7 @@
  
   <servlet>
     <servlet-name>NewNodeTypeController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.NewNodeTypeController </servlet-class>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.NewNodeTypeController</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>NewNodeTypeController</servlet-name>
@@ -129,7 +129,8 @@
 
   <servlet>
     <servlet-name>EditNodeTypeController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.EditNodeTypeController </servlet-class> </servlet>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.EditNodeTypeController</servlet-class> 
+  </servlet>
   <servlet-mapping>
     <servlet-name>EditNodeTypeController</servlet-name>
     <url-pattern>/EditNodeTypeController</url-pattern>
@@ -137,7 +138,7 @@
 
   <servlet>
     <servlet-name>ClusterSetController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.ClusterSetController </servlet-class>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.ClusterSetController</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>ClusterSetController</servlet-name>
@@ -146,7 +147,7 @@
  
   <servlet>
     <servlet-name>NewClusterSetController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.NewClusterSetController </servlet-class>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.NewClusterSetController</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>NewClusterSetController</servlet-name>
@@ -155,7 +156,8 @@
 
   <servlet>
     <servlet-name>EditClusterSetController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.EditClusterSetController </servlet-class> </servlet>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.EditClusterSetController</servlet-class> 
+  </servlet>
   <servlet-mapping>
     <servlet-name>EditClusterSetController</servlet-name>
     <url-pattern>/EditClusterSetController</url-pattern>
@@ -163,14 +165,15 @@
 
   <servlet>
     <servlet-name>NodeController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.NodeController </servlet-class> </servlet>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.NodeController</servlet-class> 
+  </servlet>
   <servlet-mapping>
     <servlet-name>NodeController</servlet-name>
     <url-pattern>/NodeController</url-pattern> 
   </servlet-mapping>
   <servlet>
     <servlet-name>EditNodeController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.EditNodeController </servlet-class>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.EditNodeController</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>EditNodeController</servlet-name>
@@ -179,7 +182,7 @@
  
   <servlet>
     <servlet-name>NewNodeController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.NewNodeController </servlet-class>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.NewNodeController</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>NewNodeController</servlet-name>
@@ -188,7 +191,7 @@
 
   <servlet>
     <servlet-name>ServiceNodeController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.ServiceNodeController </servlet-class> 
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.ServiceNodeController</servlet-class> 
   </servlet>
   <servlet-mapping>
     <servlet-name>ServiceNodeController</servlet-name>
@@ -197,7 +200,7 @@
 
   <servlet>
     <servlet-name>EditServiceNodeController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.EditServiceNodeController </servlet-class>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.EditServiceNodeController</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>EditServiceNodeController</servlet-name>
@@ -206,7 +209,7 @@
 
   <servlet>
     <servlet-name>NewServiceNodeController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.NewServiceNodeController </servlet-class>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.NewServiceNodeController</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>NewServiceNodeController</servlet-name>
@@ -215,7 +218,7 @@
 
   <servlet>
     <servlet-name>InstallationController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.InstallationController </servlet-class> 
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.InstallationController</servlet-class> 
   </servlet>
   <servlet-mapping>
     <servlet-name>InstallationController</servlet-name>
@@ -224,7 +227,7 @@
 
   <servlet>
     <servlet-name>EditInstallationController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.EditInstallationController </servlet-class>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.EditInstallationController</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>EditInstallationController</servlet-name>
@@ -233,7 +236,7 @@
 
   <servlet>
     <servlet-name>NewInstallationController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.NewInstallationController </servlet-class>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.NewInstallationController</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>NewInstallationController</servlet-name>
@@ -242,12 +245,12 @@
 
   <servlet>
     <servlet-name>SelectReportController</servlet-name>
-    <servlet-class>com.basingwerk.sldb.mvc.controllers.SelectReportController </servlet-class>
+    <servlet-class>com.basingwerk.sldb.mvc.controllers.SelectReportController</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>SelectReportController</servlet-name>
     <url-pattern>/SelectReportController</url-pattern>
-  </servlet-mapping>
+  </servlet-mapping> -->
 
 
   <welcome-file-list>
