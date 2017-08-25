@@ -19,6 +19,7 @@ import javax.persistence.Version;
 @Table(name = "Service")
 public class Service {
 
+
     @Id
     private String serviceName;
 
@@ -50,14 +51,6 @@ public class Service {
         this.provider = provider;
     }
 
-//    public String getSoftwareVersion() {
-//        return softwareVersion;
-//    }
-//
-//    public void setSoftwareVersion(String softwareVersion) {
-//        this.softwareVersion = softwareVersion;
-//    }
-
     public long getVersion() {
         return version;
     }
@@ -76,4 +69,11 @@ public class Service {
 
     public Service() {
     }
+    @Override
+    public String toString() {
+        return "Service [serviceName=" + serviceName + ", provider=" + provider + ", version=" + version
+                + ", installations=" + installations + "]";
+    }
+
+
 }
