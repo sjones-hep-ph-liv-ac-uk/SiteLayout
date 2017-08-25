@@ -95,7 +95,7 @@
 								maxFractionDigits="4"
 								value="${nodeset.nodeType.hs06PerSlot * nodeset.nodeType.slot * nodeset.nodeCount}" /></td>
 
-						<c:set var="clusterHs06"value="${clusterHs06 +  nodeset.nodeType.hs06PerSlot * nodeset.nodeType.slot * nodeset.nodeCount}" />
+						<c:set var="clusterHs06" value="${clusterHs06 +  nodeset.nodeType.hs06PerSlot * nodeset.nodeType.slot * nodeset.nodeCount}" />
 						<c:set var="clusterPhysicalCpus" value="${clusterPhysicalCpus + nodeset.nodeType.cpu * nodeset.nodeCount}" />
 						<c:set var="clusterLogicalCpus" value="${ clusterLogicalCpus + nodeset.nodeType.slot * nodeset.nodeCount}" />
 					</tr>
