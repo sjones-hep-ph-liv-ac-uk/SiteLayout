@@ -12,7 +12,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import org.apache.log4j.Logger;
 
-@WebServlet("/NewNodeSetController")
+@WebServlet("/NewServiceNodeController")
 
 public class NewServiceNodeController extends HttpServlet {
     private static final long serialVersionUID = 1L;
