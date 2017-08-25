@@ -13,32 +13,36 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="lib" path="/root/jars/javax.servlet.jar">
+	<classpathentry kind="lib" path="/Users/sjones/jars/javax.servlet.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/root/jars/taglibs-standard-impl-1.2.5.jar">
+	<classpathentry kind="lib" path="/Users/sjones/jars/taglibs-standard-impl-1.2.5.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/root/jars/aspectjweaver-1.6.2.jar">
+	<classpathentry kind="lib" path="/Users/sjones/jars/aspectjweaver-1.6.2.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/root/jars/mysql-connector-java-5.1.40-bin.jar">
+	<classpathentry kind="lib" path="/Users/sjones/jars/mysql-connector-java-5.1.40-bin.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/root/jars/jstl-1.2.jar">
+	<classpathentry kind="lib" path="/Users/sjones/jars/jstl-1.2.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/root/jars/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="/Users/sjones/jars/log4j-1.2.17.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Hibernate"/>
+	<classpathentry kind="lib" path="/Users/sjones/jars/hibernate-release-5.2.10.Final.zip"/>
+	<classpathentry kind="lib" path="/Users/sjones/jars/hibernate-release-5.2.10.Final/lib/required/hibernate-core-5.2.10.Final.jar"/>
+	<classpathentry kind="lib" path="/Users/sjones/jars/hibernate-release-5.2.10.Final/lib/required/hibernate-commons-annotations-5.0.1.Final.jar"/>
+	<classpathentry kind="lib" path="/Users/sjones/jars/hibernate-release-5.2.10.Final/lib/required/hibernate-jpa-2.1-api-1.0.0.Final.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
