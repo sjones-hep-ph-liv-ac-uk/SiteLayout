@@ -136,4 +136,11 @@ public class ServiceNode {
         this.installation = installation;
     }
 
+    @Override
+    public String toString() {
+        return "ServiceNode [cpu=" + cpu + ", mem=" + mem + ", os=" + os + ", kernel=" + kernel + ", service=" + service
+                + ", comment=" + comment + ", installation=" + installation + ", version=" + version + ", hostname="
+                + hostname + ", cluster=" + cluster + ", hostSystem=" + hostSystem + "]";
+    }
+
 }
