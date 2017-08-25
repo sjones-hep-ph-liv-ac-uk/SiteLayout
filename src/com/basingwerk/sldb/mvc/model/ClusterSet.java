@@ -25,7 +25,11 @@ public class ClusterSet {
     }
 
     @Id
-    private String clusterSetName;
+    public String clusterSetName;
+    public void setVersion(long version) {
+        this.version = version;
+    }
+
     private String description;
     private String location;
     private double longitude;
