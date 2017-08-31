@@ -1,8 +1,13 @@
 package com.basingwerk.sldb.mvc.controllers;
 
+import com.basingwerk.sldb.mvc.dao.ClusterDao;
+import com.basingwerk.sldb.mvc.dao.ClusterImpl;
+import com.basingwerk.sldb.mvc.dao.NodeSetDao;
+import com.basingwerk.sldb.mvc.dao.NodeSetImpl;
+import com.basingwerk.sldb.mvc.dao.NodeTypeDao;
+import com.basingwerk.sldb.mvc.dao.NodeTypeImpl;
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
-import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
@@ -27,7 +32,7 @@ public class NodeSetController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
-        DataAccessObject dao = DataAccessObject.getInstance();
+        //DataAccessObject dao = DataAccessObject.getInstance();
         String act = null;
 
         act = request.getParameter("Back");
@@ -39,7 +44,8 @@ public class NodeSetController extends HttpServlet {
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
-                dao.loadNodeSets(request, "nodeSetName", "ASC");
+                NodeSetDao nodeSetDao = NodeSetImpl.getInstance();
+                nodeSetDao.loadNodeSets(request, "nodeSetName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using refreshNodeSets");
                 rd = request.getRequestDispatcher("/error.jsp");
@@ -59,8 +65,10 @@ public class NodeSetController extends HttpServlet {
         if (act != null) {
 
             try {
-                dao.loadClusters(request, "clusterName", "ASC");
-                dao.loadNodeTypes(request, "nodeTypeName", "ASC");
+                ClusterDao clusterDao = ClusterImpl.getInstance();
+                clusterDao.loadClusters(request, "clusterName", "ASC");
+                NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+                nodeTypeDao.loadNodeTypes(request, "nodeTypeName", "ASC");
 
             } catch (WTFException e) {
                 logger.error("WTF! Error preparing data, ", e);
@@ -95,7 +103,8 @@ public class NodeSetController extends HttpServlet {
                 }
 
                 try {
-                    dao.loadNodeSets(request, c, order);
+                    NodeSetDao nodeSetDao = NodeSetImpl.getInstance();
+                    nodeSetDao.loadNodeSets(request, c, order);
                 } catch (WTFException e) {
                     logger.error("WTF! Error using refreshNodeSets, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -115,7 +124,8 @@ public class NodeSetController extends HttpServlet {
             if (key.startsWith("DEL.")) {
                 String nodeSetName = key.substring(4, key.length());
                 try {
-                    dao.deleteNodeSet(request, nodeSetName);
+                    NodeSetDao nodeSetDao = NodeSetImpl.getInstance();
+                    nodeSetDao.deleteNodeSet(request, nodeSetName);
                 } catch (RoutineException e) {
                     logger.error("WTF! Error deleting a node set, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -128,7 +138,8 @@ public class NodeSetController extends HttpServlet {
                     return;
                 }
                 try {
-                    dao.loadNodeSets(request, "nodeSetName", "ASC");
+                    NodeSetDao nodeSetDao = NodeSetImpl.getInstance();
+                    nodeSetDao.loadNodeSets(request, "nodeSetName", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error using refreshNodeSets.");
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -148,7 +159,8 @@ public class NodeSetController extends HttpServlet {
                 String nodeSet = key.substring(3, key.length());
                 Integer index = Integer.parseInt(nodeSet);
                 try {
-                    dao.loadIndexedNodeSet(request, index);
+                    NodeSetDao nodeSetDao = NodeSetImpl.getInstance();
+                    nodeSetDao.loadIndexedNodeSet(request, index);
                 } catch (RoutineException e) {
                     request.setAttribute("theMessage",
                             "Could not edit that nodeSet at this time. Please try again. " + e.getMessage());
@@ -164,8 +176,10 @@ public class NodeSetController extends HttpServlet {
                 }
 
                 try {
-                    dao.loadClusters(request, "clusterName", "ASC");
-                    dao.loadNodeTypes(request, "nodeTypeName", "ASC");
+                    ClusterDao clusterDao = ClusterImpl.getInstance();
+                    clusterDao.loadClusters(request, "clusterName", "ASC");
+                    NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+                    nodeTypeDao.loadNodeTypes(request, "nodeTypeName", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error preparing data, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");

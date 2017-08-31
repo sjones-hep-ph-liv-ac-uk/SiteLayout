@@ -1,8 +1,11 @@
 package com.basingwerk.sldb.mvc.controllers;
 
+import com.basingwerk.sldb.mvc.dao.ClusterSetDao;
+import com.basingwerk.sldb.mvc.dao.ClusterSetImpl;
+import com.basingwerk.sldb.mvc.dao.NodeDao;
+import com.basingwerk.sldb.mvc.dao.NodeImpl;
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
-import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,10 +28,11 @@ public class NewNodeController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
-        DataAccessObject dao = DataAccessObject.getInstance();
+        //DataAccessObject dao = DataAccessObject.getInstance();
 
         try {
-            dao.addNode(request);
+            NodeDao nodeDao = NodeImpl.getInstance();
+            nodeDao.addNode(request);
         } catch (RoutineException e) {
             request.setAttribute("theMessage",
                     "Could not add that data at this time. Please try again. " + e.getMessage());
@@ -44,7 +48,8 @@ public class NewNodeController extends HttpServlet {
         }
 
         try {
-                dao.loadNodes(request, "nodeName", "ASC");
+            NodeDao nodeDao = NodeImpl.getInstance();
+            nodeDao.loadNodes(request, "nodeName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error using loadNodes, ", e);
             rd = request.getRequestDispatcher("/error.jsp");

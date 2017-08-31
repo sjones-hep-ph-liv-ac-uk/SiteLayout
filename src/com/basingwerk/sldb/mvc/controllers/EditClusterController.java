@@ -2,7 +2,6 @@ package com.basingwerk.sldb.mvc.controllers;
 
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
-import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import org.apache.log4j.Logger;
+import com.basingwerk.sldb.mvc.dao.*;
 
 @WebServlet("/EditClusterController")
 
@@ -25,10 +25,12 @@ public class EditClusterController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
-        DataAccessObject dao = DataAccessObject.getInstance();
+        //DataAccessObject dao = DataAccessObject.getInstance();
 
         try {
-            dao.updateCluster(request);
+            ClusterDao clusterDao = ClusterImpl.getInstance();
+            
+            clusterDao.updateCluster(request);
         } catch (WTFException e) {
             logger.error("WTF! Cannot update that cluster, ", e);
             rd = request.getRequestDispatcher("/error.jsp");
@@ -44,7 +46,8 @@ public class EditClusterController extends HttpServlet {
             return;
         }
         try {
-            dao.loadClusters(request, "clusterName", "ASC");
+            ClusterDao clusterDao = ClusterImpl.getInstance();
+            clusterDao.loadClusters(request, "clusterName", "ASC");
             String next = "/cluster.jsp";
             rd = request.getRequestDispatcher(next);
             rd.forward(request, response);

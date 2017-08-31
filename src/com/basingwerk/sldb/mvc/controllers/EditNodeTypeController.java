@@ -2,7 +2,6 @@ package com.basingwerk.sldb.mvc.controllers;
 
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
-import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import org.apache.log4j.Logger;
+import com.basingwerk.sldb.mvc.dao.*;
 
 @WebServlet("/EditNodeTypeController")
 
@@ -25,10 +25,10 @@ public class EditNodeTypeController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
-        DataAccessObject dao = DataAccessObject.getInstance();
 
         try {
-            dao.updateNodeType(request);
+            NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+            nodeTypeDao.updateNodeType(request);
             
         } catch (RoutineException e) {
             request.setAttribute("theMessage", "The task could not be done. Please try again.");
@@ -43,7 +43,8 @@ public class EditNodeTypeController extends HttpServlet {
             return;
         }
         try {
-            dao.loadNodeTypes(request, "nodeTypeName", "ASC");
+            NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+            nodeTypeDao.loadNodeTypes(request, "nodeTypeName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error when using updateNodeType, ", e);
             rd = request.getRequestDispatcher("/error.jsp");

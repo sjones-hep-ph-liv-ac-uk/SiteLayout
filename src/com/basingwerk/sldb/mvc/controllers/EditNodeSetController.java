@@ -2,7 +2,6 @@ package com.basingwerk.sldb.mvc.controllers;
 
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
-import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import org.apache.log4j.Logger;
+import com.basingwerk.sldb.mvc.dao.*;
 
 @WebServlet("/EditNodeSetController")
 
@@ -25,10 +25,12 @@ public class EditNodeSetController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
-        DataAccessObject dao = DataAccessObject.getInstance();
+        //DataAccessObject dao = DataAccessObject.getInstance();
 
         try {
-            dao.updateNodeSet(request);
+            NodeSetDao nodeSetDao = NodeSetImpl.getInstance(); 
+
+            nodeSetDao.updateNodeSet(request);
             
         } catch (WTFException e) {
             logger.error("WTF! Cannot update node set.");
@@ -43,7 +45,8 @@ public class EditNodeSetController extends HttpServlet {
             return;
         }            
         try {
-            dao.loadNodeSets(request, "nodeSetName", "ASC");
+            NodeSetDao nodeSetDao = NodeSetImpl.getInstance(); 
+            nodeSetDao.loadNodeSets(request, "nodeSetName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error using refreshNodeSets");
             rd = request.getRequestDispatcher("/error.jsp");

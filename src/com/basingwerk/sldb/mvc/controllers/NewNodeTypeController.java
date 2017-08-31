@@ -1,8 +1,9 @@
 package com.basingwerk.sldb.mvc.controllers;
 
+import com.basingwerk.sldb.mvc.dao.NodeTypeDao;
+import com.basingwerk.sldb.mvc.dao.NodeTypeImpl;
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
-import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,10 +26,11 @@ public class NewNodeTypeController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
-        DataAccessObject dao = DataAccessObject.getInstance();
+        //DataAccessObject dao = DataAccessObject.getInstance();
 
         try {
-            dao.addNodeType(request);
+            NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+            nodeTypeDao.addNodeType(request);
         } catch (RoutineException e) {
             request.setAttribute("theMessage", "The node type could not be added. Please try again." + e.getMessage());
             request.setAttribute("theJsp", "main_screen.jsp");
@@ -44,7 +46,8 @@ public class NewNodeTypeController extends HttpServlet {
 
         try {
            
-                dao.loadNodeTypes(request, "nodeTypeName", "ASC");
+            NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+            nodeTypeDao.loadNodeTypes(request, "nodeTypeName", "ASC");
            
         } catch (WTFException e) {
             logger.error("WTF! Error using refreshNodeTypes.");

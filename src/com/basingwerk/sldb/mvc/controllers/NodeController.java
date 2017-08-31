@@ -1,8 +1,13 @@
 package com.basingwerk.sldb.mvc.controllers;
 
+import com.basingwerk.sldb.mvc.dao.NodeDao;
+import com.basingwerk.sldb.mvc.dao.NodeImpl;
+import com.basingwerk.sldb.mvc.dao.NodeSetDao;
+import com.basingwerk.sldb.mvc.dao.NodeSetImpl;
+import com.basingwerk.sldb.mvc.dao.NodeStateDao;
+import com.basingwerk.sldb.mvc.dao.NodeStateImpl;
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
-import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
@@ -27,7 +32,6 @@ public class NodeController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
-        DataAccessObject dao = DataAccessObject.getInstance();
         
         String act = null;
 
@@ -41,7 +45,8 @@ public class NodeController extends HttpServlet {
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
-                dao.loadNodes(request, "nodeName", "ASC");
+                NodeDao nodeDao = NodeImpl.getInstance(); 
+                nodeDao.loadNodes(request, "nodeName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using refreshNodes");
                 rd = request.getRequestDispatcher("/error.jsp");
@@ -61,8 +66,9 @@ public class NodeController extends HttpServlet {
         if (act != null) {
 
             try {
-                dao.toggleCheckedNodes(request);
-                dao.loadNodes(request, "nodeName", "ASC");
+                NodeDao nodeDao = NodeImpl.getInstance(); 
+                nodeDao.toggleCheckedNodes(request);
+                nodeDao.loadNodes(request, "nodeName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using refreshNodes");
                 rd = request.getRequestDispatcher("/error.jsp");
@@ -82,8 +88,10 @@ public class NodeController extends HttpServlet {
         if (act != null) {
 
             try {
-                dao.loadNodeSets(request, "nodeSetName", "ASC");
-                dao.loadNodeStates(request, "state", "ASC");
+                NodeSetDao nodeSetDao = NodeSetImpl.getInstance(); 
+                nodeSetDao.loadNodeSets(request, "nodeSetName", "ASC");
+                NodeStateDao nodeStateDao = NodeStateImpl.getInstance(); 
+                nodeStateDao.loadNodeStates(request, "state", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error preparing data, ", e);
                 rd = request.getRequestDispatcher("/error.jsp");
@@ -118,7 +126,8 @@ public class NodeController extends HttpServlet {
                 }
 
                 try {
-                    dao.loadNodes(request, c, order);
+                    NodeDao nodeDao = NodeImpl.getInstance(); 
+                    nodeDao.loadNodes(request, c, order);
                 } catch (WTFException e) {
                     logger.error("WTF! Error using loadNodes, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -138,7 +147,8 @@ public class NodeController extends HttpServlet {
             if (key.startsWith("DEL.")) {
                 String node = key.substring(4, key.length());
                 try {
-                    dao.deleteNode(request, node);
+                    NodeDao nodeDao = NodeImpl.getInstance(); 
+                    nodeDao.deleteNode(request, node);
                 } catch (RoutineException e) {
                     logger.error("WTF! Error deleting a node, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -151,7 +161,8 @@ public class NodeController extends HttpServlet {
                     return;
                 }
                 try {
-                    dao.loadNodes(request, "nodeName", "ASC");
+                    NodeDao nodeDao = NodeImpl.getInstance(); 
+                    nodeDao.loadNodes(request, "nodeName", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error using loadNodes.");
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -171,7 +182,8 @@ public class NodeController extends HttpServlet {
                 String node = key.substring(3, key.length());
                 Integer index = Integer.parseInt(node);
                 try {
-                    dao.loadIndexedNode(request, index);
+                    NodeDao nodeDao = NodeImpl.getInstance(); 
+                    nodeDao.loadIndexedNode(request, index);
                 } catch (RoutineException e) {
                     request.setAttribute("theMessage",
                             "Could not edit that node at this time. Please try again. " + e.getMessage());
@@ -187,8 +199,10 @@ public class NodeController extends HttpServlet {
                 }
 
                 try {
-                    dao.loadNodeSets(request, "nodeSetName", "ASC");
-                    dao.loadNodeStates(request, "state", "ASC");
+                    NodeSetDao nodeSetDao = NodeSetImpl.getInstance(); 
+                    nodeSetDao.loadNodeSets(request, "nodeSetName", "ASC");
+                    NodeStateDao nodeStateDao = NodeStateImpl.getInstance(); 
+                    nodeStateDao.loadNodeStates(request, "state", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error preparing data, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -210,7 +224,9 @@ public class NodeController extends HttpServlet {
                 String node = key.substring(4, key.length());
                 Integer index = Integer.parseInt(node);
                 try {
-                    dao.toggleIndexedNode(request, index);
+                    NodeDao nodeDao = NodeImpl.getInstance(); 
+                    nodeDao.loadIndexedNode(request, index);
+                    nodeDao.toggleIndexedNode(request, index);
                 } catch (WTFException e) {
                     logger.error("WTF! Error using loadNodes");
                     rd = request.getRequestDispatcher("/error.jsp");

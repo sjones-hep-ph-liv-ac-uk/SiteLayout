@@ -1,8 +1,17 @@
 package com.basingwerk.sldb.mvc.controllers;
 
+import com.basingwerk.sldb.mvc.dao.ClusterDao;
+import com.basingwerk.sldb.mvc.dao.ClusterImpl;
+import com.basingwerk.sldb.mvc.dao.InstallationDao;
+import com.basingwerk.sldb.mvc.dao.InstallationImpl;
+import com.basingwerk.sldb.mvc.dao.NodeTypeDao;
+import com.basingwerk.sldb.mvc.dao.NodeTypeImpl;
+import com.basingwerk.sldb.mvc.dao.ServiceDao;
+import com.basingwerk.sldb.mvc.dao.ServiceImpl;
+import com.basingwerk.sldb.mvc.dao.ServiceNodeDao;
+import com.basingwerk.sldb.mvc.dao.ServiceNodeImpl;
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
-import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
@@ -27,7 +36,7 @@ public class InstallationController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
-        DataAccessObject dao = DataAccessObject.getInstance();
+        //DataAccessObject dao = DataAccessObject.getInstance();
         String act = null;
 
         act = request.getParameter("Back");
@@ -39,7 +48,8 @@ public class InstallationController extends HttpServlet {
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
-                dao.loadInstallations(request, "serviceNode", "ASC");
+                InstallationDao installationDao = InstallationImpl.getInstance(); 
+                installationDao.loadInstallations(request, "serviceNode", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using refreshInstallations");
                 rd = request.getRequestDispatcher("/error.jsp");
@@ -59,8 +69,10 @@ public class InstallationController extends HttpServlet {
         if (act != null) {
 
             try {
-                dao.loadServices(request, "serviceName", "ASC");
-                dao.loadServiceNodes(request, "hostname", "ASC");
+                ServiceDao serviceDao = ServiceImpl.getInstance();
+                serviceDao .loadServices(request, "serviceName", "ASC");
+                ServiceNodeDao serviceNodeDao = ServiceNodeImpl.getInstance();
+                serviceNodeDao.loadServiceNodes(request, "hostname", "ASC");
 
             } catch (WTFException e) {
                 logger.error("WTF! Error preparing data, ", e);
@@ -95,7 +107,8 @@ public class InstallationController extends HttpServlet {
                 }
 
                 try {
-                    dao.loadInstallations(request, c, order);
+                    InstallationDao installationDao = InstallationImpl.getInstance(); 
+                    installationDao.loadInstallations(request, c, order);
                 } catch (WTFException e) {
                     logger.error("WTF! Error using refreshInstallations, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -117,7 +130,8 @@ public class InstallationController extends HttpServlet {
                 String installation = key.substring(4, key.length());
                 Integer index = Integer.parseInt(installation);
                 try {
-                    dao.deleteIndexedInstallation(request, index);
+                    InstallationDao installationDao = InstallationImpl.getInstance(); 
+                    installationDao.deleteIndexedInstallation(request, index);
                 } catch (RoutineException e) {
                     request.setAttribute("theMessage",
                             "Could not delete that installation at this time. Please try again. " + e.getMessage());
@@ -133,7 +147,8 @@ public class InstallationController extends HttpServlet {
                 }
 
                 try {
-                    dao.loadInstallations(request, "serviceNode", "ASC");
+                    InstallationDao installationDao = InstallationImpl.getInstance(); 
+                    installationDao.loadInstallations(request, "serviceNode", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error using loadInstallations.");
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -154,7 +169,8 @@ public class InstallationController extends HttpServlet {
                 String installation = key.substring(3, key.length());
                 Integer index = Integer.parseInt(installation);
                 try {
-                    dao.loadIndexedInstallation(request, index);
+                    InstallationDao installationDao = InstallationImpl.getInstance(); 
+                    installationDao.loadIndexedInstallation(request, index);
                 } catch (RoutineException e) {
                     request.setAttribute("theMessage",
                             "Could not edit that installation at this time. Please try again. " + e.getMessage());
@@ -170,8 +186,10 @@ public class InstallationController extends HttpServlet {
                 }
 
                 try {
-                    dao.loadClusters(request, "clusterName", "ASC");
-                    dao.loadNodeTypes(request, "nodeTypeName", "ASC");
+                    ClusterDao clusterDao = ClusterImpl.getInstance();
+                    clusterDao.loadClusters(request, "clusterName", "ASC");
+                    NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+                    nodeTypeDao.loadNodeTypes(request, "nodeTypeName", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error preparing data, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");

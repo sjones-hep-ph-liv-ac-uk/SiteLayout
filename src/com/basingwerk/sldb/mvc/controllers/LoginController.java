@@ -98,4 +98,13 @@ public class LoginController extends HttpServlet {
             throws ServletException, IOException {
         doGet(request, response);
     }
+    
+    public static void logout(HttpServletRequest request) {
+        HttpSession httpSession = null;
+
+        httpSession = request.getSession();
+        httpSession.invalidate();
+        return;
+    }
+    
 }

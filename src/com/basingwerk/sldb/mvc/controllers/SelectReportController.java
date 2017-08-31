@@ -1,8 +1,11 @@
 package com.basingwerk.sldb.mvc.controllers;
 
+import com.basingwerk.sldb.mvc.dao.ClusterSetDao;
+import com.basingwerk.sldb.mvc.dao.ClusterSetImpl;
+import com.basingwerk.sldb.mvc.dao.InstallationDao;
+import com.basingwerk.sldb.mvc.dao.InstallationImpl;
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
-import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,7 +28,7 @@ public class SelectReportController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
-        DataAccessObject dao = DataAccessObject.getInstance();
+        //DataAccessObject dao = DataAccessObject.getInstance();
 
         try {
             
@@ -39,7 +42,8 @@ public class SelectReportController extends HttpServlet {
             String next = "";
             
             if (act.equals("Worker node, cluster and node type report")) {
-                dao.loadClusterSets(request, "clusterSetName", "ASC");
+                ClusterSetDao clusterSetDao = ClusterSetImpl.getInstance();
+                clusterSetDao.loadClusterSets(request, "clusterSetName", "ASC");
                 next = "/select_cluster_set.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -48,7 +52,8 @@ public class SelectReportController extends HttpServlet {
             }
             
             if (act.equals("Service node and services report")) {
-                dao.loadInstallations(request, "serviceNode", "ASC");
+                InstallationDao installationDao = InstallationImpl.getInstance(); 
+                installationDao.loadInstallations(request, "serviceNode", "ASC");
                 next = "/services_report.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);

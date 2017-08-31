@@ -2,7 +2,6 @@ package com.basingwerk.sldb.mvc.controllers;
 
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
-import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import org.apache.log4j.Logger;
+import com.basingwerk.sldb.mvc.dao.*;
+
 
 @WebServlet("/NewInstallationController")
 
@@ -25,10 +26,11 @@ public class NewInstallationController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
-        DataAccessObject dao = DataAccessObject.getInstance();
+        //DataAccessObject dao = DataAccessObject.getInstance();
 
         try {
-            dao.addInstallation(request);
+            InstallationDao installationDao = InstallationImpl.getInstance(); 
+            installationDao.addInstallation(request);
         } catch (RoutineException e) {
             request.setAttribute("theMessage",
                     "Could not add that data at this time. Please try again. " + e.getMessage());
@@ -44,7 +46,8 @@ public class NewInstallationController extends HttpServlet {
         }
 
         try {
-                dao.loadInstallations(request, "serviceNode", "ASC");
+            InstallationDao installationDao = InstallationImpl.getInstance(); 
+            installationDao.loadInstallations(request, "serviceNode", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error using refreshInstallations, ", e);
             rd = request.getRequestDispatcher("/error.jsp");

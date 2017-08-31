@@ -1,8 +1,11 @@
 package com.basingwerk.sldb.mvc.controllers;
 
+import com.basingwerk.sldb.mvc.dao.ClusterDao;
+import com.basingwerk.sldb.mvc.dao.ClusterImpl;
+import com.basingwerk.sldb.mvc.dao.NodeTypeDao;
+import com.basingwerk.sldb.mvc.dao.NodeTypeImpl;
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
-import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import com.basingwerk.sldb.mvc.model.NodeSetNodeTypeJoin;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,27 +31,18 @@ public class SelectClusterSetController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
-        DataAccessObject dao = DataAccessObject.getInstance();
+        //DataAccessObject dao = DataAccessObject.getInstance();
 
         String clusterSetName = request.getParameter("clusterSetList");
 
         ArrayList<String> clusters = null;
         try {
-            dao.loadNodeTypes(request, "nodeTypeName", "ASC");
-            dao.loadClustersOfClusterSet(request, clusterSetName, "clusterName", "ASC");
-            dao.setBaselineNodeType(request);
+            NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+            nodeTypeDao.loadNodeTypes(request, "nodeTypeName", "ASC");
+            ClusterDao clusterDao = ClusterImpl.getInstance();
+            clusterDao.loadClustersOfClusterSet(request, clusterSetName, "clusterName", "ASC");
+            nodeTypeDao.setBaselineNodeType(request);
 
-//            clusters = dao.listClustersOfClusterSet(request, clusterSetName);
-//            java.util.HashMap<String, ArrayList> joinMap = new java.util.HashMap<String, ArrayList>();
-//
-//            Iterator<String> c = clusters.iterator();
-//            while (c.hasNext()) {
-//                String cluster = c.next();
-//                // logger.error("SJDEBUG CLUSTER " + cluster);
-//                ArrayList<NodeSetNodeTypeJoin> nsntj = dao.getJoinForCluster(request, cluster);
-//                joinMap.put(cluster, nsntj);
-//            }
-//            request.setAttribute("clusters", clusters);
             rd = request.getRequestDispatcher("/clusters_report.jsp");
             
             rd.forward(request, response);

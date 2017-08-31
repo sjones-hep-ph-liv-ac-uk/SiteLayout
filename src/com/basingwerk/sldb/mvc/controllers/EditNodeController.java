@@ -2,7 +2,6 @@ package com.basingwerk.sldb.mvc.controllers;
 
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
-import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import org.apache.log4j.Logger;
+import com.basingwerk.sldb.mvc.dao.*;
 
 @WebServlet("/EditNodeController")
 
@@ -25,10 +25,11 @@ public class EditNodeController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
-        DataAccessObject dao = DataAccessObject.getInstance();
+        //DataAccessObject dao = DataAccessObject.getInstance();
 
         try {
-            dao.updateNode(request);
+            NodeDao nodeDao = NodeImpl.getInstance(); 
+            nodeDao.updateNode(request);
             
         } catch (WTFException e) {
             logger.error("WTF! Cannot update node.");
@@ -43,7 +44,8 @@ public class EditNodeController extends HttpServlet {
             return;
         }            
         try {
-            dao.loadNodes(request, "nodeName", "ASC");
+            NodeDao nodeDao = NodeImpl.getInstance(); 
+            nodeDao.loadNodes(request, "nodeName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error using loadNodes");
             rd = request.getRequestDispatcher("/error.jsp");

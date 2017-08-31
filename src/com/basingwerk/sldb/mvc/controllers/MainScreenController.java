@@ -1,8 +1,21 @@
 package com.basingwerk.sldb.mvc.controllers;
 
+import com.basingwerk.sldb.mvc.dao.ClusterDao;
+import com.basingwerk.sldb.mvc.dao.ClusterImpl;
+import com.basingwerk.sldb.mvc.dao.ClusterSetDao;
+import com.basingwerk.sldb.mvc.dao.ClusterSetImpl;
+import com.basingwerk.sldb.mvc.dao.InstallationDao;
+import com.basingwerk.sldb.mvc.dao.InstallationImpl;
+import com.basingwerk.sldb.mvc.dao.NodeDao;
+import com.basingwerk.sldb.mvc.dao.NodeImpl;
+import com.basingwerk.sldb.mvc.dao.NodeSetDao;
+import com.basingwerk.sldb.mvc.dao.NodeSetImpl;
+import com.basingwerk.sldb.mvc.dao.NodeTypeDao;
+import com.basingwerk.sldb.mvc.dao.NodeTypeImpl;
+import com.basingwerk.sldb.mvc.dao.ServiceNodeDao;
+import com.basingwerk.sldb.mvc.dao.ServiceNodeImpl;
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
-import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,7 +38,7 @@ public class MainScreenController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
-        DataAccessObject dao = DataAccessObject.getInstance();
+        //DataAccessObject dao = DataAccessObject.getInstance();
 
         try {
             
@@ -38,7 +51,8 @@ public class MainScreenController extends HttpServlet {
             }
             String next = "";
             if (act.equals("Edit cluster sets")) {
-                dao.loadClusterSets(request, "clusterSetName", "ASC");
+                ClusterSetDao clusterSetDao = ClusterSetImpl.getInstance();
+                clusterSetDao.loadClusterSets(request, "clusterSetName", "ASC");
                 next = "/cluster_set.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -46,7 +60,8 @@ public class MainScreenController extends HttpServlet {
             }
 
             if (act.equals("Edit node types")) {
-                dao.loadNodeTypes(request, "nodeTypeName", "ASC");
+                NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+                nodeTypeDao.loadNodeTypes(request, "nodeTypeName", "ASC");
                 next = "/nodetype.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -54,42 +69,46 @@ public class MainScreenController extends HttpServlet {
             }
 
             if (act.equals("Edit clusters")) {
-                dao.loadClusters(request, "clusterName", "ASC");
+                ClusterDao clusterDao = ClusterImpl.getInstance();
+                clusterDao.loadClusters(request, "clusterName", "ASC");
                 next = "/cluster.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
                 return;
             }
             if (act.equals("Edit node sets")) {
-                dao.loadNodeSets(request, "nodeSetName", "ASC");
+                NodeSetDao nodeSetDao = NodeSetImpl.getInstance();            
+                nodeSetDao.loadNodeSets(request, "nodeSetName", "ASC");
                 next = "/nodeset.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
                 return;
             }
             if (act.equals("Edit nodes")) {
-                dao.loadNodes(request, "nodeName", "ASC");
+                NodeDao nodeDao = NodeImpl.getInstance();            
+                nodeDao.loadNodes(request, "nodeName", "ASC");
                 next = "/node.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
                 return;
             }
             if (act.equals("Edit service nodes")) {
-                dao.loadServiceNodes(request, "hostname", "ASC");
+                ServiceNodeDao serviceNodeDao = ServiceNodeImpl.getInstance();            
+                serviceNodeDao.loadServiceNodes(request, "hostname", "ASC");
                 next = "/service_node.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
                 return;
             }
             if (act.equals("Edit service installations")) {
-                dao.loadInstallations(request, "serviceNode", "ASC");
+                InstallationDao installationDao = InstallationImpl.getInstance(); 
+                installationDao.loadInstallations(request, "serviceNode", "ASC");
                 next = "/installation.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
                 return;
             }
             if (act.equals("Reports")) {
-                // dao.loadClusterSets(request, "clusterSetName", "ASC");
                 next = "/select_report.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);
@@ -97,8 +116,7 @@ public class MainScreenController extends HttpServlet {
 
             }
             if (act.equals("Logout")) {
-                
-                dao.logout(request);
+                LoginController.logout(request);
                 next = "/login.jsp";
                 rd = request.getRequestDispatcher(next);
                 rd.forward(request, response);

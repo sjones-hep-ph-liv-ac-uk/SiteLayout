@@ -1,8 +1,13 @@
 package com.basingwerk.sldb.mvc.controllers;
 
+import com.basingwerk.sldb.mvc.dao.ClusterDao;
+import com.basingwerk.sldb.mvc.dao.ClusterImpl;
+import com.basingwerk.sldb.mvc.dao.HostSystemDao;
+import com.basingwerk.sldb.mvc.dao.HostSystemImpl;
+import com.basingwerk.sldb.mvc.dao.ServiceNodeDao;
+import com.basingwerk.sldb.mvc.dao.ServiceNodeImpl;
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
-import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
@@ -27,7 +32,7 @@ public class ServiceNodeController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
-        DataAccessObject dao = DataAccessObject.getInstance();
+        //DataAccessObject dao = DataAccessObject.getInstance();
 
         String act = null;
 
@@ -42,7 +47,9 @@ public class ServiceNodeController extends HttpServlet {
         if (act != null) {
 
             try {
-                dao.loadServiceNodes(request, "hostname", "ASC");
+                ServiceNodeDao serviceNodeDao = ServiceNodeImpl.getInstance(); 
+                
+                serviceNodeDao.loadServiceNodes(request, "hostname", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using loadServiceNodes");
                 rd = request.getRequestDispatcher("/error.jsp");
@@ -62,8 +69,10 @@ public class ServiceNodeController extends HttpServlet {
         if (act != null) {
 
             try {
-                dao.loadClusters(request, "clusterName", "ASC");
-                dao.loadHostSystems(request, "hostname", "ASC");
+                ClusterDao clusterDao = ClusterImpl.getInstance();
+                clusterDao.loadClusters(request, "clusterName", "ASC");
+                HostSystemDao hostSystemDao = HostSystemImpl.getInstance();
+                hostSystemDao.loadHostSystems(request, "hostname", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error preparing data, ", e);
                 rd = request.getRequestDispatcher("/error.jsp");
@@ -97,7 +106,8 @@ public class ServiceNodeController extends HttpServlet {
                 }
 
                 try {
-                    dao.loadServiceNodes(request, c, order);
+                    ServiceNodeDao serviceNodeDao = ServiceNodeImpl.getInstance(); 
+                    serviceNodeDao.loadServiceNodes(request, c, order);
                 } catch (WTFException e) {
                     logger.error("WTF! Error using loadServiceNodes, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -119,7 +129,8 @@ public class ServiceNodeController extends HttpServlet {
                 //logger.error("SJDEBUG: ");
                 
                 try {
-                    dao.deleteServiceNode(request, serviceNode);
+                    ServiceNodeDao serviceNodeDao = ServiceNodeImpl.getInstance(); 
+                    serviceNodeDao.deleteServiceNode(request, serviceNode);
                 } catch (RoutineException e) {
                     logger.error("WTF! Error deleting a serviceNode, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -132,7 +143,8 @@ public class ServiceNodeController extends HttpServlet {
                     return;
                 }
                 try {
-                    dao.loadServiceNodes(request, "hostname", "ASC");
+                    ServiceNodeDao serviceNodeDao = ServiceNodeImpl.getInstance(); 
+                    serviceNodeDao.loadServiceNodes(request, "hostname", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error using loadServiceNodes.");
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -152,7 +164,8 @@ public class ServiceNodeController extends HttpServlet {
                 String serviceNode = key.substring(3, key.length());
                 Integer index = Integer.parseInt(serviceNode);
                 try {
-                    dao.loadIndexedServiceNode(request, index);
+                    ServiceNodeDao serviceNodeDao = ServiceNodeImpl.getInstance(); 
+                    serviceNodeDao.loadIndexedServiceNode(request, index);
                 } catch (RoutineException e) {
                     request.setAttribute("theMessage",
                             "Could not edit that service node at this time. Please try again. " + e.getMessage());
@@ -168,8 +181,10 @@ public class ServiceNodeController extends HttpServlet {
                 }
 
                 try {
-                    dao.loadClusters(request, "clusterName", "ASC");
-                    dao.loadHostSystems(request, "hostname", "ASC");
+                    ClusterDao clusterDao = ClusterImpl.getInstance();
+                    clusterDao.loadClusters(request, "clusterName", "ASC");
+                    HostSystemDao hostSystemDao = HostSystemImpl.getInstance();
+                    hostSystemDao.loadHostSystems(request, "hostname", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error preparing data, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");

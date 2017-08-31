@@ -1,8 +1,9 @@
 package com.basingwerk.sldb.mvc.controllers;
 
+import com.basingwerk.sldb.mvc.dao.NodeTypeDao;
+import com.basingwerk.sldb.mvc.dao.NodeTypeImpl;
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
-import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
@@ -27,7 +28,7 @@ public class NodeTypeController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
-        DataAccessObject dao = DataAccessObject.getInstance();
+        //DataAccessObject dao = DataAccessObject.getInstance();
 
         String act = null;
         act = request.getParameter("Back");
@@ -39,7 +40,8 @@ public class NodeTypeController extends HttpServlet {
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
-                    dao.loadNodeTypes(request, "nodeTypeName", "ASC");
+                NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+                nodeTypeDao.loadNodeTypes(request, "nodeTypeName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using loadNodeTypes");
                 rd = request.getRequestDispatcher("/error.jsp");
@@ -77,7 +79,8 @@ public class NodeTypeController extends HttpServlet {
                     c = sortCmd.substring(5, sortCmd.length()).trim();
                 }
                 try {
-                    dao.loadNodeTypes(request, c, order);
+                    NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+                    nodeTypeDao.loadNodeTypes(request, c, order);
                 } catch (WTFException e) {
                     logger.error("WTF! Error refreshing node types, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -103,7 +106,8 @@ public class NodeTypeController extends HttpServlet {
                     return;
                 }
                 try {
-                    dao.deleteNodeType(request, nodeType);
+                    NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+                    nodeTypeDao.deleteNodeType(request, nodeType);
                 } catch (RoutineException e) {
                     request.setAttribute("theMessage", "The node type could not be deleted. Please try again.");
                     request.setAttribute("theJsp", "main_screen.jsp");
@@ -118,7 +122,8 @@ public class NodeTypeController extends HttpServlet {
                     return;
                 }
                 try {
-                    dao.loadNodeTypes(request, "nodeTypeName", "ASC");
+                    NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+                    nodeTypeDao.loadNodeTypes(request, "nodeTypeName", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error when using refreshNodeTypes, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -139,7 +144,8 @@ public class NodeTypeController extends HttpServlet {
                 String nodeType = key.substring(3, key.length());
                 Integer index = Integer.parseInt(nodeType);
                 try {
-                    dao.loadIndexedNodeType(request, index);
+                    NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+                    nodeTypeDao.loadIndexedNodeType(request, index);
                 } catch (RoutineException e) {
                     request.setAttribute("theMessage",
                             "Could not edit that nodeType at this time. Please try again. " + e.getMessage());

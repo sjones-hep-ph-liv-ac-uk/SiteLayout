@@ -8,7 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
-import com.basingwerk.sldb.mvc.model.DataAccessObject;
+import com.basingwerk.sldb.mvc.dao.ClusterImpl;
+import com.basingwerk.sldb.mvc.dao.ClusterSetDao;
+import com.basingwerk.sldb.mvc.dao.ClusterSetImpl;
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import org.apache.log4j.Logger;
 
@@ -25,10 +27,11 @@ public class NewClusterSetController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
-        DataAccessObject dao = DataAccessObject.getInstance();
+        //DataAccessObject dao = DataAccessObject.getInstance();
 
         try {
-            dao.addClusterSet(request);
+            ClusterSetDao clusterSetDao = ClusterSetImpl.getInstance();
+            clusterSetDao.addClusterSet(request);
         } catch (RoutineException e) {
             request.setAttribute("theMessage",
                     "The cluster set could not be added. Please try again. " + e.getMessage());
@@ -44,7 +47,8 @@ public class NewClusterSetController extends HttpServlet {
         }
 
         try {
-            dao.loadClusterSets(request, "clusterSetName", "ASC");
+            ClusterSetDao clusterSetDao = ClusterSetImpl.getInstance();
+            clusterSetDao.loadClusterSets(request, "clusterSetName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error when using queryClusterSetList");
             rd = request.getRequestDispatcher("/error.jsp");

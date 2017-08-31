@@ -1,8 +1,9 @@
 package com.basingwerk.sldb.mvc.controllers;
 
+import com.basingwerk.sldb.mvc.dao.ClusterImpl;
+import com.basingwerk.sldb.mvc.dao.ClusterSetImpl;
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
-import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import org.apache.log4j.Logger;
+import com.basingwerk.sldb.mvc.dao.*;
 
 @WebServlet("/ClusterSetController")
 
@@ -27,7 +29,7 @@ public class ClusterSetController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
-        DataAccessObject dao = DataAccessObject.getInstance();
+        //DataAccessObject dao = DataAccessObject.getInstance();
 
         String act = null;
         act = request.getParameter("Back");
@@ -39,7 +41,8 @@ public class ClusterSetController extends HttpServlet {
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
-               dao.loadClusterSets(request, "clusterSetName", "ASC");
+                ClusterSetDao clusterSetDao = ClusterSetImpl.getInstance();
+                clusterSetDao.loadClusterSets(request, "clusterSetName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using loadClusterSets");
                 rd = request.getRequestDispatcher("/error.jsp");
@@ -79,7 +82,8 @@ public class ClusterSetController extends HttpServlet {
 
                 try {
 
-                   dao.loadClusterSets(request, c, order);
+                    ClusterSetDao clusterSetDao = ClusterSetImpl.getInstance();
+                    clusterSetDao.loadClusterSets(request, c, order);
                 } catch (WTFException e) {
                     logger.error("WTF! Error while using loadClusterSets");
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -98,7 +102,8 @@ public class ClusterSetController extends HttpServlet {
             if (key.startsWith("DEL.")) {
                 String clusterSet = key.substring(4, key.length());
                 try {
-                   dao.deleteClusterSet(request, clusterSet);
+                    ClusterSetDao clusterSetDao = ClusterSetImpl.getInstance();
+                    clusterSetDao.deleteClusterSet(request, clusterSet);
                 } catch (RoutineException e) {
                     request.setAttribute("theMessage",
                             "Could not update that cluster set at this time. Please try again. " + e.getMessage());
@@ -113,7 +118,8 @@ public class ClusterSetController extends HttpServlet {
                     return;
                 }
                 try {
-                   dao.loadClusterSets(request, "clusterSetName", order);
+                    ClusterSetDao clusterSetDao = ClusterSetImpl.getInstance();
+                    clusterSetDao.loadClusterSets(request, "clusterSetName", order);
                 } catch (WTFException e) {
                     logger.error("WTF! Error while using loadClusterSets");
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -134,7 +140,8 @@ public class ClusterSetController extends HttpServlet {
                 Integer index = Integer.parseInt(clusterSet);
 
                 try {
-                   dao.loadIndexedClusterSet(request, index);
+                    ClusterSetDao clusterSetDao = ClusterSetImpl.getInstance();
+                    clusterSetDao.loadIndexedClusterSet(request, index);
                 } catch (RoutineException e) {
                     request.setAttribute("theMessage",
                             "Could not edit that clusterSet at this time. Please try again. " + e.getMessage());

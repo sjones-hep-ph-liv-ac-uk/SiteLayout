@@ -1,8 +1,9 @@
 package com.basingwerk.sldb.mvc.controllers;
 
+import com.basingwerk.sldb.mvc.dao.ServiceNodeDao;
+import com.basingwerk.sldb.mvc.dao.ServiceNodeImpl;
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
-import com.basingwerk.sldb.mvc.model.DataAccessObject;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,10 +26,12 @@ public class NewServiceNodeController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
-        DataAccessObject dao = DataAccessObject.getInstance();
+        //DataAccessObject dao = DataAccessObject.getInstance();
 
         try {
-            dao.addServiceNode(request);
+            ServiceNodeDao serviceNodeDao = ServiceNodeImpl.getInstance(); 
+
+            serviceNodeDao.addServiceNode(request);
         } catch (RoutineException e) {
             request.setAttribute("theMessage",
                     "Could not add that data at this time. Please try again. " + e.getMessage());
@@ -44,7 +47,8 @@ public class NewServiceNodeController extends HttpServlet {
         }
 
         try {
-            dao.loadServiceNodes(request, "hostname", "ASC");
+            ServiceNodeDao serviceNodeDao = ServiceNodeImpl.getInstance(); 
+            serviceNodeDao.loadServiceNodes(request, "hostname", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error using loadNodes, ", e);
             rd = request.getRequestDispatcher("/error.jsp");
