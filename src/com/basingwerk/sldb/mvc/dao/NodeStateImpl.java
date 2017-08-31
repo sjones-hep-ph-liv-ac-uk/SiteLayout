@@ -30,15 +30,6 @@ public class NodeStateImpl implements NodeStateDao  {
     final static Logger logger = Logger.getLogger(NodeStateImpl.class);
     
     
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeStateDao#readNodeStateList(org.hibernate.Session, java.lang.String, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeStateDao#readNodeStateList(org.hibernate.Session, java.lang.String, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeStateDao#readNodeStateList(org.hibernate.Session, java.lang.String, java.lang.String)
-     */
     @Override
     public   List<NodeState> readNodeStateList(Session hibSession, String col, String order) {
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();
@@ -54,32 +45,14 @@ public class NodeStateImpl implements NodeStateDao  {
         List<NodeState> theList = q.getResultList();
         return theList;
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeStateDao#readOneNodeState(org.hibernate.Session, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeStateDao#readOneNodeState(org.hibernate.Session, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeStateDao#readOneNodeState(org.hibernate.Session, java.lang.String)
-     */
     @Override
     public   NodeState readOneNodeState(Session hibSession, String nodeStateName) {
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();
         CriteriaQuery<NodeState> q = cb.createQuery(NodeState.class);
         Root<NodeState> root = q.from(NodeState.class);
-        q.select(root).where(cb.equal(root.get("nodeStateName"), nodeStateName));
+        q.select(root).where(cb.equal(root.get("state"), nodeStateName));
         return hibSession.createQuery(q).getSingleResult();
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeStateDao#loadNodeStates(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeStateDao#loadNodeStates(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeStateDao#loadNodeStates(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
-     */
     @Override
     public   void loadNodeStates(HttpServletRequest request, String col, String order)
             throws RoutineException, WTFException {

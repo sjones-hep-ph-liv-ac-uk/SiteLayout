@@ -30,9 +30,6 @@ import com.basingwerk.sldb.mvc.dao.ClusterSetImpl;
 public class NodeSetImpl implements NodeSetDao  {
     final static Logger logger = Logger.getLogger(NodeSetImpl.class);
 
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#updateNodeSet(javax.servlet.http.HttpServletRequest)
-     */
     @Override
     public   void updateNodeSet(HttpServletRequest request) throws WTFException, RoutineException {
 
@@ -120,15 +117,6 @@ public class NodeSetImpl implements NodeSetDao  {
             hibSession.close();
         }
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#readNodeSetList(org.hibernate.Session, java.lang.String, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#readNodeSetList(org.hibernate.Session, java.lang.String, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#readNodeSetList(org.hibernate.Session, java.lang.String, java.lang.String)
-     */
     @Override
     public   List<NodeSet> readNodeSetList(Session hibSession, String col, String order) {
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();
@@ -144,15 +132,6 @@ public class NodeSetImpl implements NodeSetDao  {
         List<NodeSet> theList = q.getResultList();
         return theList;
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#readOneNodeSet(org.hibernate.Session, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#readOneNodeSet(org.hibernate.Session, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#readOneNodeSet(org.hibernate.Session, java.lang.String)
-     */
     @Override
     public   NodeSet readOneNodeSet(Session hibSession, String nodeSetName) {
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();
@@ -161,15 +140,6 @@ public class NodeSetImpl implements NodeSetDao  {
         q.select(root).where(cb.equal(root.get("nodeSetName"), nodeSetName));
         return hibSession.createQuery(q).getSingleResult();
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#addNodeSet(javax.servlet.http.HttpServletRequest)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#addNodeSet(javax.servlet.http.HttpServletRequest)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#addNodeSet(javax.servlet.http.HttpServletRequest)
-     */
     @Override
     public   void addNodeSet(HttpServletRequest request) throws WTFException, RoutineException {
 
@@ -230,15 +200,6 @@ public class NodeSetImpl implements NodeSetDao  {
             hibSession.close();
         }
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#deleteNodeSet(javax.servlet.http.HttpServletRequest, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#deleteNodeSet(javax.servlet.http.HttpServletRequest, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#deleteNodeSet(javax.servlet.http.HttpServletRequest, java.lang.String)
-     */
     @Override
     public   void deleteNodeSet(HttpServletRequest request, String nodeSetName) throws WTFException, RoutineException {
 
@@ -271,15 +232,6 @@ public class NodeSetImpl implements NodeSetDao  {
             hibSession.close();
         }
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#loadIndexedNodeSet(javax.servlet.http.HttpServletRequest, java.lang.Integer)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#loadIndexedNodeSet(javax.servlet.http.HttpServletRequest, java.lang.Integer)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#loadIndexedNodeSet(javax.servlet.http.HttpServletRequest, java.lang.Integer)
-     */
     @Override
     public   void    loadIndexedNodeSet(HttpServletRequest request, Integer nodeSetIndex)
             throws WTFException, RoutineException {

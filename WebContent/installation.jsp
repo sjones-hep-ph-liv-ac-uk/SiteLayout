@@ -13,17 +13,17 @@
       <tr>
         <td>
           <input type="image" src="Down-48.png" alt="Submit" width="15px"
-          height="15px" value="SORTDOWN.service.serviceName" name="SORTDOWN.service.serviceName">
+          height="15px" value="SORTDOWN.serviceName" name="SORTDOWN.serviceName">
         Service name: 
           <input type="image" src="Up-48.png" alt="Submit" width="15px"
-          height="15px" value="SORTUP.service.serviceName" name="SORTUP.service.serviceName">
+          height="15px" value="SORTUP.serviceName" name="SORTUP.serviceName">
         </td>
         <td>
           <input type="image" src="Down-48.png" alt="Submit" width="15px"
-          height="15px" value="SORTDOWN.serviceNode.hostname" name="SORTDOWN.serviceNode.hostname">
+          height="15px" value="SORTDOWN.hostname" name="SORTDOWN.hostname">
         Service node hostname :
           <input type="image" src="Up-48.png" alt="Submit" width="15px"
-          height="15px" value="SORTUP.serviceNode.hostname" name="SORTUP.serviceNode.hostname">
+          height="15px" value="SORTUP.hostname" name="SORTUP.hostname">
         </td>
         <td>
           <input type="image" src="Down-48.png" alt="Submit" width="15px"

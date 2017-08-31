@@ -30,9 +30,6 @@ import com.basingwerk.sldb.mvc.dao.ClusterSetImpl;
 public class ServiceNodeImpl implements ServiceNodeDao  {
     final static Logger logger = Logger.getLogger(ServiceNodeImpl.class);
     
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#updateServiceNode(javax.servlet.http.HttpServletRequest)
-     */
     public  void updateServiceNode(HttpServletRequest request) throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
@@ -130,15 +127,6 @@ public class ServiceNodeImpl implements ServiceNodeDao  {
         }
     }
     
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#readOneServiceNode(org.hibernate.Session, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#readOneServiceNode(org.hibernate.Session, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#readOneServiceNode(org.hibernate.Session, java.lang.String)
-     */
     @Override
     public  ServiceNode readOneServiceNode(Session hibSession, String hostname) {
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();
@@ -148,15 +136,6 @@ public class ServiceNodeImpl implements ServiceNodeDao  {
         return hibSession.createQuery(q).getSingleResult();
     }
     
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#readServiceNodeList(org.hibernate.Session, java.lang.String, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#readServiceNodeList(org.hibernate.Session, java.lang.String, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#readServiceNodeList(org.hibernate.Session, java.lang.String, java.lang.String)
-     */
     @Override
     public  List<ServiceNode> readServiceNodeList(Session hibSession, String col, String order) {
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();
@@ -173,15 +152,6 @@ public class ServiceNodeImpl implements ServiceNodeDao  {
         return theList;
     }
     
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#addServiceNode(javax.servlet.http.HttpServletRequest)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#addServiceNode(javax.servlet.http.HttpServletRequest)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#addServiceNode(javax.servlet.http.HttpServletRequest)
-     */
     @Override
     public  void addServiceNode(HttpServletRequest request) throws WTFException, RoutineException {
 
@@ -255,15 +225,6 @@ public class ServiceNodeImpl implements ServiceNodeDao  {
         }
     }
     
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#deleteServiceNode(javax.servlet.http.HttpServletRequest, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#deleteServiceNode(javax.servlet.http.HttpServletRequest, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#deleteServiceNode(javax.servlet.http.HttpServletRequest, java.lang.String)
-     */
     @Override
     public  void deleteServiceNode(HttpServletRequest request, String hostname) throws WTFException, RoutineException {
 
@@ -298,9 +259,6 @@ public class ServiceNodeImpl implements ServiceNodeDao  {
         }
     }
     
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#loadIndexedServiceNode(javax.servlet.http.HttpServletRequest, java.lang.Integer)
-     */
     @Override
     public  void        loadIndexedServiceNode(HttpServletRequest request, Integer serviceNodeIndex)
             throws WTFException, RoutineException {
@@ -360,9 +318,6 @@ public class ServiceNodeImpl implements ServiceNodeDao  {
         httpSession.setAttribute("serviceNode", storedServiceNode);
     }
     
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#loadServiceNodes(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
-     */
     @Override
     public  void loadServiceNodes(HttpServletRequest request, String col, String order)
             throws RoutineException, WTFException {

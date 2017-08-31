@@ -29,15 +29,6 @@ import com.basingwerk.sldb.mvc.dao.ClusterSetImpl;
 public class ServiceImpl implements ServiceDao  {
     final static Logger logger = Logger.getLogger(ServiceImpl.class);
     
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.ServiceDao#readOneService(org.hibernate.Session, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.ServiceDao#readOneService(org.hibernate.Session, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.ServiceDao#readOneService(org.hibernate.Session, java.lang.String)
-     */
     @Override
     public   Service readOneService(Session hibSession, String serviceName) {
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();
@@ -46,15 +37,6 @@ public class ServiceImpl implements ServiceDao  {
         q.select(root).where(cb.equal(root.get("serviceName"), serviceName));
         return hibSession.createQuery(q).getSingleResult();
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.ServiceDao#readServiceList(org.hibernate.Session, java.lang.String, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.ServiceDao#readServiceList(org.hibernate.Session, java.lang.String, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.ServiceDao#readServiceList(org.hibernate.Session, java.lang.String, java.lang.String)
-     */
     @Override
     public   List<Service> readServiceList(Session hibSession, String col, String order) {
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();
@@ -70,9 +52,6 @@ public class ServiceImpl implements ServiceDao  {
         List<Service> theList = q.getResultList();
         return theList;
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.ServiceDao#loadServices(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
-     */
     public   void loadServices(HttpServletRequest request, String col, String order)
             throws RoutineException, WTFException {
 

@@ -114,15 +114,6 @@ public class NodeTypeImpl implements NodeTypeDao {
         List<NodeType> theList = q.getResultList();
         return theList;
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeTypeDao#readOneNodeType(org.hibernate.Session, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeTypeDao#readOneNodeType(org.hibernate.Session, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeTypeDao#readOneNodeType(org.hibernate.Session, java.lang.String)
-     */
     @Override
     public  NodeType readOneNodeType(Session hibSession, String nodeTypeName) {
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();

@@ -45,15 +45,6 @@ public class HostSystemImpl implements HostSystemDao {
         List<HostSystem> clusterList = q.getResultList();
         return clusterList;
     }
-     /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.HostSystemDao#readOneHostSystem(org.hibernate.Session, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.HostSystemDao#readOneHostSystem(org.hibernate.Session, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.HostSystemDao#readOneHostSystem(org.hibernate.Session, java.lang.String)
-     */
     @Override
     public  HostSystem readOneHostSystem(Session hibSession, String hostname) {
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();
@@ -62,15 +53,6 @@ public class HostSystemImpl implements HostSystemDao {
         q.select(root).where(cb.equal(root.get("hostname"), hostname));
         return hibSession.createQuery(q).getSingleResult();
     }
-     /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.HostSystemDao#loadHostSystems(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.HostSystemDao#loadHostSystems(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
-     */
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.HostSystemDao#loadHostSystems(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
-     */
     @Override
     public  void loadHostSystems(HttpServletRequest request, String col, String order)
             throws RoutineException, WTFException {

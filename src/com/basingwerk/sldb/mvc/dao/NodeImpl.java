@@ -31,9 +31,6 @@ import com.basingwerk.sldb.mvc.dao.ClusterSetImpl;
 public class NodeImpl implements NodeDao  {
     final static Logger logger = Logger.getLogger(NodeImpl.class);
     
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeDao#updateNode(javax.servlet.http.HttpServletRequest)
-     */
     @Override
     public   void updateNode(HttpServletRequest request) throws WTFException, RoutineException {
 
@@ -117,9 +114,6 @@ public class NodeImpl implements NodeDao  {
             hibSession.close();
         }
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeDao#readNodeList(org.hibernate.Session, java.lang.String, java.lang.String)
-     */
     @Override
     public   List<Node> readNodeList(Session hibSession, String col, String order) {
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();
@@ -135,9 +129,6 @@ public class NodeImpl implements NodeDao  {
         List<Node> theList = q.getResultList();
         return theList;
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeDao#readOneNode(org.hibernate.Session, java.lang.String)
-     */
     @Override
     public   Node readOneNode(Session hibSession, String nodeName) {
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();
@@ -147,9 +138,6 @@ public class NodeImpl implements NodeDao  {
         return hibSession.createQuery(q).getSingleResult();
 
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeDao#addNode(javax.servlet.http.HttpServletRequest)
-     */
     @Override
     public   void addNode(HttpServletRequest request) throws WTFException, RoutineException {
 
@@ -211,9 +199,6 @@ public class NodeImpl implements NodeDao  {
             hibSession.close();
         }
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeDao#deleteNode(javax.servlet.http.HttpServletRequest, java.lang.String)
-     */
     @Override
     public   void deleteNode(HttpServletRequest request, String nodeName) throws WTFException, RoutineException {
 
@@ -247,9 +232,6 @@ public class NodeImpl implements NodeDao  {
             hibSession.close();
         }
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeDao#loadIndexedNode(javax.servlet.http.HttpServletRequest, java.lang.Integer)
-     */
     @Override
     public   void loadIndexedNode(HttpServletRequest request, Integer nodeIndex) throws WTFException, RoutineException {
 
@@ -306,9 +288,6 @@ public class NodeImpl implements NodeDao  {
         }
         httpSession.setAttribute("node", storedNode);
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeDao#loadNodes(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
-     */
     @Override
     public   void loadNodes(HttpServletRequest request, String col, String order) throws RoutineException, WTFException {
         List<Node> nodeList = new ArrayList<Node>();
@@ -342,9 +321,6 @@ public class NodeImpl implements NodeDao  {
         }
         httpSession.setAttribute("nodeList", nodeList);
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeDao#toggleCheckedNodes(javax.servlet.http.HttpServletRequest)
-     */
     @Override
     public   void toggleCheckedNodes(HttpServletRequest request) throws RoutineException, WTFException {
 
@@ -385,9 +361,6 @@ public class NodeImpl implements NodeDao  {
             hibSession.close();
         }
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeDao#toggleIndexedNode(javax.servlet.http.HttpServletRequest, java.lang.Integer)
-     */
     @Override
     public   void toggleIndexedNode(HttpServletRequest request, Integer nodeIndex) throws RoutineException, WTFException {
 

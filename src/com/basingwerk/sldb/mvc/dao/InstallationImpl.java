@@ -1,4 +1,5 @@
 package com.basingwerk.sldb.mvc.dao;
+
 import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +7,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -14,8 +14,6 @@ import org.hibernate.exception.ConstraintViolationException;
 
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
-import com.basingwerk.sldb.mvc.model.Cluster;
-import com.basingwerk.sldb.mvc.model.ClusterSet;
 import com.basingwerk.sldb.mvc.model.Installation;
 import com.basingwerk.sldb.mvc.model.Service;
 import com.basingwerk.sldb.mvc.model.ServiceNode;
@@ -24,15 +22,16 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import com.basingwerk.sldb.mvc.dao.ClusterSetImpl;
 
-public class InstallationImpl implements InstallationDao  {
+public class InstallationImpl implements InstallationDao {
     final static Logger logger = Logger.getLogger(InstallationImpl.class);
 
     @Override
-    public   void updateInstallation(HttpServletRequest request) throws WTFException, RoutineException {
+    public void updateInstallation(HttpServletRequest request) throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -49,11 +48,10 @@ public class InstallationImpl implements InstallationDao  {
             hibSession.beginTransaction();
 
             // We assume it is updated, whether it is or is not
-            String updatedService = request.getParameter("service");
-            String updatedServiceNode = request.getParameter("serviceNode");
+            // String updatedService = request.getParameter("service");
+            // String updatedServiceNode = request.getParameter("serviceNode");
             String updatedSoftwareVersion = request.getParameter("softwareVersion");
 
-            Installation storedInstallation = null;
             Installation cachedInstallation = (Installation) httpSession.getAttribute("installation");
 
             if (cachedInstallation == null) {
@@ -65,7 +63,7 @@ public class InstallationImpl implements InstallationDao  {
             String serviceName = cachedInstallation.getService().getServiceName();
             String hostname = cachedInstallation.getServiceNode().getHostname();
 
-            storedInstallation = readOneInstallation(hibSession, serviceName, hostname);
+            Installation storedInstallation = readOneInstallation(hibSession, serviceName, hostname);
 
             // Possibly deleted during long conversation
             if (storedInstallation == null) {
@@ -74,7 +72,6 @@ public class InstallationImpl implements InstallationDao  {
                 throw new RoutineException("While using updateInstallation, desired Installation  not found");
             }
             // Possibly altered during long conversation
-
             Long storedInstallationVersion = storedInstallation.getVersion();
 
             if (!storedInstallationVersion.equals(cachedInstallationVersion)) {
@@ -85,7 +82,6 @@ public class InstallationImpl implements InstallationDao  {
             }
 
             // Both the same. Safe to update
-
             storedInstallation.setSoftwareVersion(updatedSoftwareVersion);
 
             hibSession.update(storedInstallation);
@@ -99,23 +95,36 @@ public class InstallationImpl implements InstallationDao  {
             hibSession.close();
         }
     }
+
     @Override
-    public   List<Installation> readInstallationList(Session hibSession, String col, String order) {
+    public List<Installation> readInstallationList(Session hibSession, String col, String order) {
+
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();
-        CriteriaQuery<Installation> cq = cb.createQuery(Installation.class);
-        cq.distinct(true);
-        Root<Installation> c = cq.from(Installation.class);
-        if (order.equalsIgnoreCase("ASC"))
-            cq.orderBy(cb.asc(c.get(col)));
+        CriteriaQuery<Installation> query = cb.createQuery(Installation.class);
+
+        Root<Installation> inst = query.from(Installation.class);
+        Join<Installation, ServiceNode> serviceNodeJoin = inst.join("serviceNode");
+        Join<Installation, Service> serviceJoin = inst.join("service");
+
+        Order o = null;
+        Path<?> p = null;
+        if (col.equalsIgnoreCase("softwareVersion"))
+            p = inst.get("softwareVersion");
+        else if (col.equalsIgnoreCase("hostname"))
+            p = serviceNodeJoin.get("hostname");
         else
-            cq.orderBy(cb.desc(c.get(col)));
-        cq.select(c);
-        TypedQuery<Installation> q = hibSession.createQuery(cq);
-        List<Installation> theList = q.getResultList();
-        return theList;
+            p = serviceJoin.get("serviceName");
+
+        o = cb.desc(p);
+        if (order.equalsIgnoreCase("ASC"))
+            o = cb.asc(p);
+
+        TypedQuery<Installation> typedQuery = hibSession.createQuery(query.select(inst).orderBy(o));
+        return typedQuery.getResultList();
     }
+
     @Override
-    public   Installation readOneInstallation(Session hibSession, String serviceName, String hostname) {
+    public Installation readOneInstallation(Session hibSession, String serviceName, String hostname) {
 
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();
         CriteriaQuery<Installation> query = cb.createQuery(Installation.class);
@@ -134,8 +143,9 @@ public class InstallationImpl implements InstallationDao  {
         Installation i = typedQuery.getSingleResult();
         return i;
     }
+
     @Override
-    public   void addInstallation(HttpServletRequest request) throws WTFException, RoutineException {
+    public void addInstallation(HttpServletRequest request) throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -191,8 +201,9 @@ public class InstallationImpl implements InstallationDao  {
             hibSession.close();
         }
     }
+
     @Override
-    public   void deleteIndexedInstallation(HttpServletRequest request, Integer installationIndex)
+    public void deleteIndexedInstallation(HttpServletRequest request, Integer installationIndex)
             throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
@@ -253,8 +264,9 @@ public class InstallationImpl implements InstallationDao  {
         }
         return;
     }
+
     @Override
-    public   void         loadIndexedInstallation(HttpServletRequest request, Integer installationIndex)
+    public void loadIndexedInstallation(HttpServletRequest request, Integer installationIndex)
             throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
@@ -311,8 +323,9 @@ public class InstallationImpl implements InstallationDao  {
         }
         httpSession.setAttribute("installation", storedInstallation);
     }
+
     @Override
-    public   void loadInstallations(HttpServletRequest request, String col, String order)
+    public void loadInstallations(HttpServletRequest request, String col, String order)
             throws RoutineException, WTFException {
 
         HttpSession httpSession = null;
