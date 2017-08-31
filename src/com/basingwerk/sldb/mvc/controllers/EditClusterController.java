@@ -28,7 +28,7 @@ public class EditClusterController extends HttpServlet {
         //DataAccessObject dao = DataAccessObject.getInstance();
 
         try {
-            ClusterDao clusterDao = ClusterImpl.getInstance();
+            ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
             
             clusterDao.updateCluster(request);
         } catch (WTFException e) {
@@ -46,7 +46,7 @@ public class EditClusterController extends HttpServlet {
             return;
         }
         try {
-            ClusterDao clusterDao = ClusterImpl.getInstance();
+            ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
             clusterDao.loadClusters(request, "clusterName", "ASC");
             String next = "/cluster.jsp";
             rd = request.getRequestDispatcher(next);

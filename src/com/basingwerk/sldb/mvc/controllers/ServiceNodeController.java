@@ -47,7 +47,7 @@ public class ServiceNodeController extends HttpServlet {
         if (act != null) {
 
             try {
-                ServiceNodeDao serviceNodeDao = ServiceNodeImpl.getInstance(); 
+                ServiceNodeDao serviceNodeDao = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao"); 
                 
                 serviceNodeDao.loadServiceNodes(request, "hostname", "ASC");
             } catch (WTFException e) {
@@ -69,9 +69,9 @@ public class ServiceNodeController extends HttpServlet {
         if (act != null) {
 
             try {
-                ClusterDao clusterDao = ClusterImpl.getInstance();
+                ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
                 clusterDao.loadClusters(request, "clusterName", "ASC");
-                HostSystemDao hostSystemDao = HostSystemImpl.getInstance();
+                HostSystemDao hostSystemDao = (HostSystemDao) request.getSession().getAttribute("hostSystemDao");
                 hostSystemDao.loadHostSystems(request, "hostname", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error preparing data, ", e);
@@ -106,7 +106,7 @@ public class ServiceNodeController extends HttpServlet {
                 }
 
                 try {
-                    ServiceNodeDao serviceNodeDao = ServiceNodeImpl.getInstance(); 
+                    ServiceNodeDao serviceNodeDao = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao"); 
                     serviceNodeDao.loadServiceNodes(request, c, order);
                 } catch (WTFException e) {
                     logger.error("WTF! Error using loadServiceNodes, ", e);
@@ -129,7 +129,7 @@ public class ServiceNodeController extends HttpServlet {
                 //logger.error("SJDEBUG: ");
                 
                 try {
-                    ServiceNodeDao serviceNodeDao = ServiceNodeImpl.getInstance(); 
+                    ServiceNodeDao serviceNodeDao = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao"); 
                     serviceNodeDao.deleteServiceNode(request, serviceNode);
                 } catch (RoutineException e) {
                     logger.error("WTF! Error deleting a serviceNode, ", e);
@@ -143,7 +143,7 @@ public class ServiceNodeController extends HttpServlet {
                     return;
                 }
                 try {
-                    ServiceNodeDao serviceNodeDao = ServiceNodeImpl.getInstance(); 
+                    ServiceNodeDao serviceNodeDao = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao"); 
                     serviceNodeDao.loadServiceNodes(request, "hostname", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error using loadServiceNodes.");
@@ -164,7 +164,7 @@ public class ServiceNodeController extends HttpServlet {
                 String serviceNode = key.substring(3, key.length());
                 Integer index = Integer.parseInt(serviceNode);
                 try {
-                    ServiceNodeDao serviceNodeDao = ServiceNodeImpl.getInstance(); 
+                    ServiceNodeDao serviceNodeDao = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao"); 
                     serviceNodeDao.loadIndexedServiceNode(request, index);
                 } catch (RoutineException e) {
                     request.setAttribute("theMessage",
@@ -181,9 +181,9 @@ public class ServiceNodeController extends HttpServlet {
                 }
 
                 try {
-                    ClusterDao clusterDao = ClusterImpl.getInstance();
+                    ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
                     clusterDao.loadClusters(request, "clusterName", "ASC");
-                    HostSystemDao hostSystemDao = HostSystemImpl.getInstance();
+                    HostSystemDao hostSystemDao = (HostSystemDao) request.getSession().getAttribute("hostSystemDao");
                     hostSystemDao.loadHostSystems(request, "hostname", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error preparing data, ", e);

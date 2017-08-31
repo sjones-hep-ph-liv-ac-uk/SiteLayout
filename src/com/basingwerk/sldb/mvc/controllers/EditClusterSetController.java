@@ -26,7 +26,7 @@ public class EditClusterSetController extends HttpServlet {
             throws ServletException, IOException {
         RequestDispatcher rd = null;
         try {
-            ClusterSetDao clusterSetDao = ClusterSetImpl.getInstance();
+            ClusterSetDao clusterSetDao = (ClusterSetDao) request.getSession().getAttribute("clusterSetDao");
             
             clusterSetDao.updateClusterSet(request);
             
@@ -43,7 +43,7 @@ public class EditClusterSetController extends HttpServlet {
             return;
         }
         try {
-            ClusterSetDao clusterSetDao = ClusterSetImpl.getInstance();
+            ClusterSetDao clusterSetDao = (ClusterSetDao) request.getSession().getAttribute("clusterSetDao");
             clusterSetDao.loadClusterSets(request, "clusterSetName", "ASC");
             String next = "/cluster_set.jsp";
             rd = request.getRequestDispatcher(next);

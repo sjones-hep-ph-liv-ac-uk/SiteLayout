@@ -41,7 +41,7 @@ public class ClusterSetController extends HttpServlet {
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
-                ClusterSetDao clusterSetDao = ClusterSetImpl.getInstance();
+                ClusterSetDao clusterSetDao = (ClusterSetDao) request.getSession().getAttribute("clusterSetDao");
                 clusterSetDao.loadClusterSets(request, "clusterSetName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using loadClusterSets");
@@ -82,7 +82,7 @@ public class ClusterSetController extends HttpServlet {
 
                 try {
 
-                    ClusterSetDao clusterSetDao = ClusterSetImpl.getInstance();
+                    ClusterSetDao clusterSetDao = (ClusterSetDao) request.getSession().getAttribute("clusterSetDao");
                     clusterSetDao.loadClusterSets(request, c, order);
                 } catch (WTFException e) {
                     logger.error("WTF! Error while using loadClusterSets");
@@ -102,7 +102,7 @@ public class ClusterSetController extends HttpServlet {
             if (key.startsWith("DEL.")) {
                 String clusterSet = key.substring(4, key.length());
                 try {
-                    ClusterSetDao clusterSetDao = ClusterSetImpl.getInstance();
+                    ClusterSetDao clusterSetDao = (ClusterSetDao) request.getSession().getAttribute("clusterSetDao");
                     clusterSetDao.deleteClusterSet(request, clusterSet);
                 } catch (RoutineException e) {
                     request.setAttribute("theMessage",
@@ -118,7 +118,7 @@ public class ClusterSetController extends HttpServlet {
                     return;
                 }
                 try {
-                    ClusterSetDao clusterSetDao = ClusterSetImpl.getInstance();
+                    ClusterSetDao clusterSetDao = (ClusterSetDao) request.getSession().getAttribute("clusterSetDao");
                     clusterSetDao.loadClusterSets(request, "clusterSetName", order);
                 } catch (WTFException e) {
                     logger.error("WTF! Error while using loadClusterSets");
@@ -140,7 +140,7 @@ public class ClusterSetController extends HttpServlet {
                 Integer index = Integer.parseInt(clusterSet);
 
                 try {
-                    ClusterSetDao clusterSetDao = ClusterSetImpl.getInstance();
+                    ClusterSetDao clusterSetDao = (ClusterSetDao) request.getSession().getAttribute("clusterSetDao");
                     clusterSetDao.loadIndexedClusterSet(request, index);
                 } catch (RoutineException e) {
                     request.setAttribute("theMessage",

@@ -27,7 +27,7 @@ public class EditServiceNodeController extends HttpServlet {
         RequestDispatcher rd = null;
 
         try {
-            ServiceNodeDao serviceNodeDao = ServiceNodeImpl.getInstance(); 
+            ServiceNodeDao serviceNodeDao = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao"); 
             serviceNodeDao.updateServiceNode(request);
             
         } catch (WTFException e) {
@@ -43,7 +43,7 @@ public class EditServiceNodeController extends HttpServlet {
             return;
         }            
         try {
-            ServiceNodeDao serviceNodeDao = ServiceNodeImpl.getInstance(); 
+            ServiceNodeDao serviceNodeDao = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao"); 
             serviceNodeDao.loadServiceNodes(request, "hostname", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error using loadServiceNodes");

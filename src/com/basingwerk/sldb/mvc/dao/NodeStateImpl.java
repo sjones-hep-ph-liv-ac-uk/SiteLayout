@@ -26,18 +26,16 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import com.basingwerk.sldb.mvc.dao.ClusterSetImpl;
 
-public class NodeStateImpl implements NodeStateDao {
+public class NodeStateImpl implements NodeStateDao  {
     final static Logger logger = Logger.getLogger(NodeStateImpl.class);
     
-    private static NodeStateDao instance = null;
-    public static NodeStateDao getInstance() {
-        if (instance == null) {
-            instance = new NodeStateImpl();
-        }
-        return instance;
-    }
     
-    
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.NodeStateDao#readNodeStateList(org.hibernate.Session, java.lang.String, java.lang.String)
+     */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.NodeStateDao#readNodeStateList(org.hibernate.Session, java.lang.String, java.lang.String)
+     */
     /* (non-Javadoc)
      * @see com.basingwerk.sldb.mvc.dao.NodeStateDao#readNodeStateList(org.hibernate.Session, java.lang.String, java.lang.String)
      */
@@ -59,6 +57,12 @@ public class NodeStateImpl implements NodeStateDao {
     /* (non-Javadoc)
      * @see com.basingwerk.sldb.mvc.dao.NodeStateDao#readOneNodeState(org.hibernate.Session, java.lang.String)
      */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.NodeStateDao#readOneNodeState(org.hibernate.Session, java.lang.String)
+     */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.NodeStateDao#readOneNodeState(org.hibernate.Session, java.lang.String)
+     */
     @Override
     public   NodeState readOneNodeState(Session hibSession, String nodeStateName) {
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();
@@ -67,6 +71,12 @@ public class NodeStateImpl implements NodeStateDao {
         q.select(root).where(cb.equal(root.get("nodeStateName"), nodeStateName));
         return hibSession.createQuery(q).getSingleResult();
     }
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.NodeStateDao#loadNodeStates(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
+     */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.NodeStateDao#loadNodeStates(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
+     */
     /* (non-Javadoc)
      * @see com.basingwerk.sldb.mvc.dao.NodeStateDao#loadNodeStates(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
      */
@@ -91,7 +101,7 @@ public class NodeStateImpl implements NodeStateDao {
         try {
 
             hibSession.beginTransaction();
-            NodeStateDao nodeStateDao = NodeStateImpl.getInstance();
+            NodeStateDao nodeStateDao = (NodeStateDao) request.getSession().getAttribute("nodeStateDao");
             nodeStateList = nodeStateDao.readNodeStateList(hibSession, col, order);
 
         } catch (HibernateException ex) {

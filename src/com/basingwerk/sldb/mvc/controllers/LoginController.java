@@ -1,6 +1,7 @@
 package com.basingwerk.sldb.mvc.controllers;
 
 import com.basingwerk.sldb.mvc.model.User;
+import com.basingwerk.sldb.mvc.dao.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -73,8 +74,30 @@ public class LoginController extends HttpServlet {
             }
             hibSession.close();
             User user = new User(username, password);
-            // UNTESTED
             session.setAttribute("user", user);
+            
+            HostSystemDao hostSystemDao = new HostSystemImpl();
+            ClusterDao clusterDao = new ClusterImpl();
+            ClusterSetDao clusterSetDao = new ClusterSetImpl();
+            ServiceDao serviceDao = new ServiceImpl();
+            NodeDao nodeDao = new NodeImpl();
+            NodeTypeDao nodeTypeDao = new NodeTypeImpl();
+            NodeSetDao nodeSetDao = new NodeSetImpl();
+            ServiceNodeDao serviceNodeDao = new ServiceNodeImpl();
+            InstallationDao installationDao = new InstallationImpl();
+            NodeStateDao nodeStateDao = new NodeStateImpl();
+            
+            session.setAttribute("hostSystemDao", hostSystemDao);
+            session.setAttribute("clusterDao", clusterDao);
+            session.setAttribute("clusterSetDao", clusterSetDao);
+            session.setAttribute("serviceDao", serviceDao);
+            session.setAttribute("nodeDao", nodeDao);
+            session.setAttribute("nodeTypeDao", nodeTypeDao);
+            session.setAttribute("nodeSetDao", nodeSetDao);
+            session.setAttribute("serviceNodeDao", serviceNodeDao);
+            session.setAttribute("installationDao", installationDao);
+            session.setAttribute("nodeStateDao", nodeStateDao);
+            
 
             rd = request.getRequestDispatcher("/main_screen.jsp");
             rd.forward(request, response);

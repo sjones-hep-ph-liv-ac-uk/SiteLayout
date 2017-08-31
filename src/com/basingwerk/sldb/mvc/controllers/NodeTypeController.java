@@ -40,7 +40,7 @@ public class NodeTypeController extends HttpServlet {
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
-                NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+                NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");            
                 nodeTypeDao.loadNodeTypes(request, "nodeTypeName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using loadNodeTypes");
@@ -79,7 +79,7 @@ public class NodeTypeController extends HttpServlet {
                     c = sortCmd.substring(5, sortCmd.length()).trim();
                 }
                 try {
-                    NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+                    NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");            
                     nodeTypeDao.loadNodeTypes(request, c, order);
                 } catch (WTFException e) {
                     logger.error("WTF! Error refreshing node types, ", e);
@@ -106,7 +106,7 @@ public class NodeTypeController extends HttpServlet {
                     return;
                 }
                 try {
-                    NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+                    NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");            
                     nodeTypeDao.deleteNodeType(request, nodeType);
                 } catch (RoutineException e) {
                     request.setAttribute("theMessage", "The node type could not be deleted. Please try again.");
@@ -122,7 +122,7 @@ public class NodeTypeController extends HttpServlet {
                     return;
                 }
                 try {
-                    NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+                    NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");            
                     nodeTypeDao.loadNodeTypes(request, "nodeTypeName", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error when using refreshNodeTypes, ", e);
@@ -144,7 +144,7 @@ public class NodeTypeController extends HttpServlet {
                 String nodeType = key.substring(3, key.length());
                 Integer index = Integer.parseInt(nodeType);
                 try {
-                    NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+                    NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");            
                     nodeTypeDao.loadIndexedNodeType(request, index);
                 } catch (RoutineException e) {
                     request.setAttribute("theMessage",

@@ -27,7 +27,7 @@ public class EditNodeTypeController extends HttpServlet {
         RequestDispatcher rd = null;
 
         try {
-            NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+            NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");            
             nodeTypeDao.updateNodeType(request);
             
         } catch (RoutineException e) {
@@ -43,7 +43,7 @@ public class EditNodeTypeController extends HttpServlet {
             return;
         }
         try {
-            NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+            NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");            
             nodeTypeDao.loadNodeTypes(request, "nodeTypeName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error when using updateNodeType, ", e);

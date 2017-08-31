@@ -28,18 +28,9 @@ import com.basingwerk.sldb.mvc.dao.ClusterSetImpl;
 
 
 public class NodeTypeImpl implements NodeTypeDao {
-    final static Logger logger = Logger.getLogger(NodeTypeImpl.class);
-    private static NodeTypeDao instance = null;
-    public static NodeTypeDao getInstance() {
-        if (instance == null) {
-            instance = new NodeTypeImpl();
-        }
-        return instance;
-    }
 
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeTypeDao#updateNodeType(javax.servlet.http.HttpServletRequest)
-     */
+    final static Logger logger = Logger.getLogger(NodeTypeImpl.class);
+
     @Override
     public  void updateNodeType(HttpServletRequest request) throws WTFException, RoutineException {
 
@@ -108,9 +99,6 @@ public class NodeTypeImpl implements NodeTypeDao {
             hibSession.close();
         }
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeTypeDao#readNodeTypeList(org.hibernate.Session, java.lang.String, java.lang.String)
-     */
     @Override
     public  List<NodeType> readNodeTypeList(Session hibSession, String col, String order) {
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();
@@ -129,6 +117,12 @@ public class NodeTypeImpl implements NodeTypeDao {
     /* (non-Javadoc)
      * @see com.basingwerk.sldb.mvc.dao.NodeTypeDao#readOneNodeType(org.hibernate.Session, java.lang.String)
      */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.NodeTypeDao#readOneNodeType(org.hibernate.Session, java.lang.String)
+     */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.NodeTypeDao#readOneNodeType(org.hibernate.Session, java.lang.String)
+     */
     @Override
     public  NodeType readOneNodeType(Session hibSession, String nodeTypeName) {
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();
@@ -137,9 +131,6 @@ public class NodeTypeImpl implements NodeTypeDao {
         q.select(root).where(cb.equal(root.get("nodeTypeName"), nodeTypeName));
         return hibSession.createQuery(q).getSingleResult();
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeTypeDao#addNodeType(javax.servlet.http.HttpServletRequest)
-     */
     @Override
     public  void addNodeType(HttpServletRequest request) throws WTFException, RoutineException {
 
@@ -186,9 +177,6 @@ public class NodeTypeImpl implements NodeTypeDao {
             hibSession.close();
         }
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeTypeDao#deleteNodeType(javax.servlet.http.HttpServletRequest, java.lang.String)
-     */
     @Override
     public  void deleteNodeType(HttpServletRequest request, String nodeTypeName) throws WTFException, RoutineException {
 
@@ -221,11 +209,8 @@ public class NodeTypeImpl implements NodeTypeDao {
             hibSession.close();
         }
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeTypeDao#loadIndexedNodeType(javax.servlet.http.HttpServletRequest, java.lang.Integer)
-     */
     @Override
-    public  void loadIndexedNodeType(HttpServletRequest request, Integer nodeTypeIndex)
+    public  void     loadIndexedNodeType(HttpServletRequest request, Integer nodeTypeIndex)
             throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
@@ -251,7 +236,7 @@ public class NodeTypeImpl implements NodeTypeDao {
 
             Long cachedVersion = cachedNodeType.getVersion();
 
-            NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();
+            NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");
             storedNodeType = nodeTypeDao.readOneNodeType(hibSession, cachedNodeType.getNodeTypeName());
 
             // Possibly deleted during long conversation
@@ -279,9 +264,6 @@ public class NodeTypeImpl implements NodeTypeDao {
         }
         httpSession.setAttribute("nodeType", storedNodeType);
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeTypeDao#loadNodeTypes(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
-     */
     @Override
     public  void loadNodeTypes(HttpServletRequest request, String col, String order)
             throws RoutineException, WTFException {
@@ -314,9 +296,6 @@ public class NodeTypeImpl implements NodeTypeDao {
         }
         httpSession.setAttribute("nodeTypeList", nodeTypeList);
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeTypeDao#setBaselineNodeType(javax.servlet.http.HttpServletRequest)
-     */
     @Override
     public  void setBaselineNodeType(HttpServletRequest request) throws RoutineException, WTFException {
 
@@ -335,7 +314,7 @@ public class NodeTypeImpl implements NodeTypeDao {
         try {
             hibSession.beginTransaction();
 
-            NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance(); 
+            NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao"); 
             nodeTypes = nodeTypeDao.readNodeTypeList(hibSession, "nodeTypeName", "ASC");
             hibSession.getTransaction().commit();
 
@@ -346,11 +325,12 @@ public class NodeTypeImpl implements NodeTypeDao {
         } finally {
             hibSession.close();
         }
+        httpSession = request.getSession();
 
-        request.setAttribute("baseline", null);
+        httpSession.setAttribute("baseline", null);
         for (NodeType n : nodeTypes) {
             if (n.getNodeTypeName().toUpperCase().startsWith("BASELINE")) {
-                request.setAttribute("baseline", n);
+                httpSession.setAttribute("baseline", n);
             }
         }
     }

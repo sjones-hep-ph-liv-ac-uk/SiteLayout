@@ -29,7 +29,7 @@ public class NewServiceNodeController extends HttpServlet {
         //DataAccessObject dao = DataAccessObject.getInstance();
 
         try {
-            ServiceNodeDao serviceNodeDao = ServiceNodeImpl.getInstance(); 
+            ServiceNodeDao serviceNodeDao = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao"); 
 
             serviceNodeDao.addServiceNode(request);
         } catch (RoutineException e) {
@@ -47,7 +47,7 @@ public class NewServiceNodeController extends HttpServlet {
         }
 
         try {
-            ServiceNodeDao serviceNodeDao = ServiceNodeImpl.getInstance(); 
+            ServiceNodeDao serviceNodeDao = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao"); 
             serviceNodeDao.loadServiceNodes(request, "hostname", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error using loadNodes, ", e);

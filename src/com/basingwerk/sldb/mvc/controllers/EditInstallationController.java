@@ -28,7 +28,7 @@ public class EditInstallationController extends HttpServlet {
         //DataAccessObject dao = DataAccessObject.getInstance();
 
         try {
-            InstallationDao installationDao = InstallationImpl.getInstance();
+            InstallationDao installationDao = (InstallationDao) request.getSession().getAttribute("installationDao");
             installationDao.updateInstallation(request);
             
         } catch (WTFException e) {
@@ -44,7 +44,7 @@ public class EditInstallationController extends HttpServlet {
             return;
         }            
         try {
-            InstallationDao installationDao = InstallationImpl.getInstance();
+            InstallationDao installationDao = (InstallationDao) request.getSession().getAttribute("installationDao");
             installationDao.loadInstallations(request, "serviceNode", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error using refreshInstallations");

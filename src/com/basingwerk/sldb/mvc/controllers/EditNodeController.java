@@ -28,7 +28,7 @@ public class EditNodeController extends HttpServlet {
         //DataAccessObject dao = DataAccessObject.getInstance();
 
         try {
-            NodeDao nodeDao = NodeImpl.getInstance(); 
+            NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao"); 
             nodeDao.updateNode(request);
             
         } catch (WTFException e) {
@@ -44,7 +44,7 @@ public class EditNodeController extends HttpServlet {
             return;
         }            
         try {
-            NodeDao nodeDao = NodeImpl.getInstance(); 
+            NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao"); 
             nodeDao.loadNodes(request, "nodeName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error using loadNodes");

@@ -45,7 +45,7 @@ public class NodeController extends HttpServlet {
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
-                NodeDao nodeDao = NodeImpl.getInstance(); 
+                NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao"); 
                 nodeDao.loadNodes(request, "nodeName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using refreshNodes");
@@ -66,7 +66,7 @@ public class NodeController extends HttpServlet {
         if (act != null) {
 
             try {
-                NodeDao nodeDao = NodeImpl.getInstance(); 
+                NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao"); 
                 nodeDao.toggleCheckedNodes(request);
                 nodeDao.loadNodes(request, "nodeName", "ASC");
             } catch (WTFException e) {
@@ -88,9 +88,9 @@ public class NodeController extends HttpServlet {
         if (act != null) {
 
             try {
-                NodeSetDao nodeSetDao = NodeSetImpl.getInstance(); 
+                NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao"); 
                 nodeSetDao.loadNodeSets(request, "nodeSetName", "ASC");
-                NodeStateDao nodeStateDao = NodeStateImpl.getInstance(); 
+                NodeStateDao nodeStateDao = (NodeStateDao) request.getSession().getAttribute("nodeStateDao"); 
                 nodeStateDao.loadNodeStates(request, "state", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error preparing data, ", e);
@@ -126,7 +126,7 @@ public class NodeController extends HttpServlet {
                 }
 
                 try {
-                    NodeDao nodeDao = NodeImpl.getInstance(); 
+                    NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao"); 
                     nodeDao.loadNodes(request, c, order);
                 } catch (WTFException e) {
                     logger.error("WTF! Error using loadNodes, ", e);
@@ -147,7 +147,7 @@ public class NodeController extends HttpServlet {
             if (key.startsWith("DEL.")) {
                 String node = key.substring(4, key.length());
                 try {
-                    NodeDao nodeDao = NodeImpl.getInstance(); 
+                    NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao"); 
                     nodeDao.deleteNode(request, node);
                 } catch (RoutineException e) {
                     logger.error("WTF! Error deleting a node, ", e);
@@ -161,7 +161,7 @@ public class NodeController extends HttpServlet {
                     return;
                 }
                 try {
-                    NodeDao nodeDao = NodeImpl.getInstance(); 
+                    NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao"); 
                     nodeDao.loadNodes(request, "nodeName", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error using loadNodes.");
@@ -182,7 +182,7 @@ public class NodeController extends HttpServlet {
                 String node = key.substring(3, key.length());
                 Integer index = Integer.parseInt(node);
                 try {
-                    NodeDao nodeDao = NodeImpl.getInstance(); 
+                    NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao"); 
                     nodeDao.loadIndexedNode(request, index);
                 } catch (RoutineException e) {
                     request.setAttribute("theMessage",
@@ -199,9 +199,9 @@ public class NodeController extends HttpServlet {
                 }
 
                 try {
-                    NodeSetDao nodeSetDao = NodeSetImpl.getInstance(); 
+                    NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao"); 
                     nodeSetDao.loadNodeSets(request, "nodeSetName", "ASC");
-                    NodeStateDao nodeStateDao = NodeStateImpl.getInstance(); 
+                    NodeStateDao nodeStateDao = (NodeStateDao) request.getSession().getAttribute("nodeStateDao"); 
                     nodeStateDao.loadNodeStates(request, "state", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error preparing data, ", e);
@@ -224,7 +224,7 @@ public class NodeController extends HttpServlet {
                 String node = key.substring(4, key.length());
                 Integer index = Integer.parseInt(node);
                 try {
-                    NodeDao nodeDao = NodeImpl.getInstance(); 
+                    NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao"); 
                     nodeDao.loadIndexedNode(request, index);
                     nodeDao.toggleIndexedNode(request, index);
                 } catch (WTFException e) {

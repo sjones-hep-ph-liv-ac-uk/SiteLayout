@@ -26,16 +26,15 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 
-public class ClusterSetImpl implements ClusterSetDao {
+public class ClusterSetImpl implements  ClusterSetDao {
     final static Logger logger = Logger.getLogger(ClusterSetImpl.class);
-    private static ClusterSetDao instance = null;
-    public static ClusterSetDao getInstance() {
-        if (instance == null) {
-            instance = new ClusterSetImpl();
-        }
-        return instance;
-    }
 
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.ClusterSetDao#updateClusterSet(javax.servlet.http.HttpServletRequest)
+     */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.ClusterSetDao#updateClusterSet(javax.servlet.http.HttpServletRequest)
+     */
     /* (non-Javadoc)
      * @see com.basingwerk.sldb.mvc.dao.ClusterSetDao#updateClusterSet(javax.servlet.http.HttpServletRequest)
      */
@@ -114,6 +113,12 @@ public class ClusterSetImpl implements ClusterSetDao {
     /* (non-Javadoc)
      * @see com.basingwerk.sldb.mvc.dao.ClusterSetDao#readClusterSetList(org.hibernate.Session, java.lang.String, java.lang.String)
      */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.ClusterSetDao#readClusterSetList(org.hibernate.Session, java.lang.String, java.lang.String)
+     */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.ClusterSetDao#readClusterSetList(org.hibernate.Session, java.lang.String, java.lang.String)
+     */
     @Override
     public  List<ClusterSet> readClusterSetList(Session hibSession, String col, String order) {
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();
@@ -132,6 +137,12 @@ public class ClusterSetImpl implements ClusterSetDao {
     /* (non-Javadoc)
      * @see com.basingwerk.sldb.mvc.dao.ClusterSetDao#readOneClusterSet(org.hibernate.Session, java.lang.String)
      */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.ClusterSetDao#readOneClusterSet(org.hibernate.Session, java.lang.String)
+     */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.ClusterSetDao#readOneClusterSet(org.hibernate.Session, java.lang.String)
+     */
     @Override
     public  ClusterSet readOneClusterSet(Session hibSession, String clusterSetName) {
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();
@@ -140,6 +151,12 @@ public class ClusterSetImpl implements ClusterSetDao {
         q.select(root).where(cb.equal(root.get("clusterSetName"), clusterSetName));
         return hibSession.createQuery(q).getSingleResult();
     }
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.ClusterSetDao#addClusterSet(javax.servlet.http.HttpServletRequest)
+     */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.ClusterSetDao#addClusterSet(javax.servlet.http.HttpServletRequest)
+     */
     /* (non-Javadoc)
      * @see com.basingwerk.sldb.mvc.dao.ClusterSetDao#addClusterSet(javax.servlet.http.HttpServletRequest)
      */
@@ -194,6 +211,12 @@ public class ClusterSetImpl implements ClusterSetDao {
     /* (non-Javadoc)
      * @see com.basingwerk.sldb.mvc.dao.ClusterSetDao#deleteClusterSet(javax.servlet.http.HttpServletRequest, java.lang.String)
      */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.ClusterSetDao#deleteClusterSet(javax.servlet.http.HttpServletRequest, java.lang.String)
+     */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.ClusterSetDao#deleteClusterSet(javax.servlet.http.HttpServletRequest, java.lang.String)
+     */
     @Override
     public  void deleteClusterSet(HttpServletRequest request, String clusterSetName)
             throws WTFException, RoutineException {
@@ -227,6 +250,12 @@ public class ClusterSetImpl implements ClusterSetDao {
             hibSession.close();
         }
     }
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.ClusterSetDao#loadClusterSets(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
+     */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.ClusterSetDao#loadClusterSets(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
+     */
     /* (non-Javadoc)
      * @see com.basingwerk.sldb.mvc.dao.ClusterSetDao#loadClusterSets(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
      */
@@ -268,7 +297,7 @@ public class ClusterSetImpl implements ClusterSetDao {
      * @see com.basingwerk.sldb.mvc.dao.ClusterSetDao#loadIndexedClusterSet(javax.servlet.http.HttpServletRequest, java.lang.Integer)
      */
     @Override
-    public  void loadIndexedClusterSet(HttpServletRequest request, Integer clusterSetIndex)
+    public  void       loadIndexedClusterSet(HttpServletRequest request, Integer clusterSetIndex)
             throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
@@ -324,5 +353,4 @@ public class ClusterSetImpl implements ClusterSetDao {
         }
         httpSession.setAttribute("clusterSet", storedClusterSet);
     }
-
 }

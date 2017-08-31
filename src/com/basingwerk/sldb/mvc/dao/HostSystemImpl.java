@@ -29,17 +29,7 @@ import com.basingwerk.sldb.mvc.dao.ClusterSetImpl;
 public class HostSystemImpl implements HostSystemDao {
     final static Logger logger = Logger.getLogger(HostSystemImpl.class);
 
-    private static HostSystemDao instance = null;
-    public static HostSystemDao getInstance() {
-        if (instance == null) {
-            instance = new HostSystemImpl();
-        }
-        return instance;
-    }
     
-     /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.HostSystemDao#readHostSystemList(org.hibernate.Session, java.lang.String, java.lang.String)
-     */
     @Override
     public  List<HostSystem> readHostSystemList(Session hibSession, String col, String order) {
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();
@@ -58,6 +48,12 @@ public class HostSystemImpl implements HostSystemDao {
      /* (non-Javadoc)
      * @see com.basingwerk.sldb.mvc.dao.HostSystemDao#readOneHostSystem(org.hibernate.Session, java.lang.String)
      */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.HostSystemDao#readOneHostSystem(org.hibernate.Session, java.lang.String)
+     */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.HostSystemDao#readOneHostSystem(org.hibernate.Session, java.lang.String)
+     */
     @Override
     public  HostSystem readOneHostSystem(Session hibSession, String hostname) {
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();
@@ -67,6 +63,12 @@ public class HostSystemImpl implements HostSystemDao {
         return hibSession.createQuery(q).getSingleResult();
     }
      /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.HostSystemDao#loadHostSystems(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
+     */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.HostSystemDao#loadHostSystems(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
+     */
+    /* (non-Javadoc)
      * @see com.basingwerk.sldb.mvc.dao.HostSystemDao#loadHostSystems(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
      */
     @Override
@@ -100,5 +102,4 @@ public class HostSystemImpl implements HostSystemDao {
         }
         httpSession.setAttribute("hostSystemList", hostSystemList);
     }
-
 }

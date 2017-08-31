@@ -27,20 +27,12 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import com.basingwerk.sldb.mvc.dao.ClusterSetImpl;
 
-public class ServiceNodeImpl implements ServiceNodeDao {
+public class ServiceNodeImpl implements ServiceNodeDao  {
     final static Logger logger = Logger.getLogger(ServiceNodeImpl.class);
-    private static ServiceNodeDao instance = null;
-    public static ServiceNodeDao getInstance() {
-        if (instance == null) {
-            instance = new ServiceNodeImpl();
-        }
-        return instance;
-    }
     
     /* (non-Javadoc)
      * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#updateServiceNode(javax.servlet.http.HttpServletRequest)
      */
-    @Override
     public  void updateServiceNode(HttpServletRequest request) throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
@@ -106,7 +98,7 @@ public class ServiceNodeImpl implements ServiceNodeDao {
             storedServiceNode.setService(updatedService);
             storedServiceNode.setComment(updatedComment);
 
-            ClusterDao clusterDao = ClusterImpl.getInstance();
+            ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
             Cluster cluster = clusterDao.readOneCluster(hibSession, updatedCluster);
             if (cluster == null) {
                 // Possibly deleted during long conversation
@@ -116,7 +108,7 @@ public class ServiceNodeImpl implements ServiceNodeDao {
             }
             storedServiceNode.setCluster(cluster);
 
-            HostSystemDao hostSystemDao = HostSystemImpl.getInstance();
+            HostSystemDao hostSystemDao = (HostSystemDao) request.getSession().getAttribute("hostSystemDao");
             HostSystem hostSystem = hostSystemDao.readOneHostSystem(hibSession, updatedHostSystem);
             if (hostSystem == null) {
                 // Possibly deleted during long conversation
@@ -141,6 +133,12 @@ public class ServiceNodeImpl implements ServiceNodeDao {
     /* (non-Javadoc)
      * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#readOneServiceNode(org.hibernate.Session, java.lang.String)
      */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#readOneServiceNode(org.hibernate.Session, java.lang.String)
+     */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#readOneServiceNode(org.hibernate.Session, java.lang.String)
+     */
     @Override
     public  ServiceNode readOneServiceNode(Session hibSession, String hostname) {
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();
@@ -150,6 +148,12 @@ public class ServiceNodeImpl implements ServiceNodeDao {
         return hibSession.createQuery(q).getSingleResult();
     }
     
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#readServiceNodeList(org.hibernate.Session, java.lang.String, java.lang.String)
+     */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#readServiceNodeList(org.hibernate.Session, java.lang.String, java.lang.String)
+     */
     /* (non-Javadoc)
      * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#readServiceNodeList(org.hibernate.Session, java.lang.String, java.lang.String)
      */
@@ -169,6 +173,12 @@ public class ServiceNodeImpl implements ServiceNodeDao {
         return theList;
     }
     
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#addServiceNode(javax.servlet.http.HttpServletRequest)
+     */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#addServiceNode(javax.servlet.http.HttpServletRequest)
+     */
     /* (non-Javadoc)
      * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#addServiceNode(javax.servlet.http.HttpServletRequest)
      */
@@ -201,7 +211,7 @@ public class ServiceNodeImpl implements ServiceNodeDao {
         try {
             hibSession.beginTransaction();
 
-            ClusterDao clusterDao = ClusterImpl.getInstance();
+            ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
             Cluster cl = clusterDao.readOneCluster(hibSession, cluster);
             if (cl == null) {
                 // Possibly deleted during long conversation
@@ -209,7 +219,7 @@ public class ServiceNodeImpl implements ServiceNodeDao {
                 logger.error("While using addServiceNode, desired Cluster not found");
                 throw new RoutineException("While using addServiceNode, desired Cluster not found");
             }
-            HostSystemDao hostSystemDao = HostSystemImpl.getInstance();
+            HostSystemDao hostSystemDao = (HostSystemDao) request.getSession().getAttribute("hostSystemDao");
             HostSystem hs = hostSystemDao.readOneHostSystem(hibSession, hostSystem);
 
             if (hs == null) {
@@ -245,6 +255,12 @@ public class ServiceNodeImpl implements ServiceNodeDao {
         }
     }
     
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#deleteServiceNode(javax.servlet.http.HttpServletRequest, java.lang.String)
+     */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#deleteServiceNode(javax.servlet.http.HttpServletRequest, java.lang.String)
+     */
     /* (non-Javadoc)
      * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#deleteServiceNode(javax.servlet.http.HttpServletRequest, java.lang.String)
      */
@@ -286,7 +302,7 @@ public class ServiceNodeImpl implements ServiceNodeDao {
      * @see com.basingwerk.sldb.mvc.dao.ServiceNodeDao#loadIndexedServiceNode(javax.servlet.http.HttpServletRequest, java.lang.Integer)
      */
     @Override
-    public  void loadIndexedServiceNode(HttpServletRequest request, Integer serviceNodeIndex)
+    public  void        loadIndexedServiceNode(HttpServletRequest request, Integer serviceNodeIndex)
             throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
@@ -314,7 +330,7 @@ public class ServiceNodeImpl implements ServiceNodeDao {
             }
 
             Long cachedVersion = cachedServiceNode.getVersion();
-            ServiceNodeDao serviceNodeDao  = ServiceNodeImpl.getInstance();
+            ServiceNodeDao serviceNodeDao  = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao");
             storedServiceNode = serviceNodeDao.readOneServiceNode(hibSession, cachedServiceNode.getHostname());
 
             // Possibly deleted during long conversation
@@ -367,7 +383,7 @@ public class ServiceNodeImpl implements ServiceNodeDao {
 
             hibSession.beginTransaction();
 
-            ServiceNodeDao serviceNodeDao  = ServiceNodeImpl.getInstance();
+            ServiceNodeDao serviceNodeDao  = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao");
 
             serviceNodeList = serviceNodeDao.readServiceNodeList(hibSession, col, order);
 
@@ -381,6 +397,4 @@ public class ServiceNodeImpl implements ServiceNodeDao {
         }
         httpSession.setAttribute("serviceNodeList", serviceNodeList);
     }
-
-
 }

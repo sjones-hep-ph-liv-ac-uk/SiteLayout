@@ -27,15 +27,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import com.basingwerk.sldb.mvc.dao.ClusterSetImpl;
 
-public class NodeSetImpl implements NodeSetDao {
+public class NodeSetImpl implements NodeSetDao  {
     final static Logger logger = Logger.getLogger(NodeSetImpl.class);
-    private static NodeSetDao instance = null;
-    public static NodeSetDao getInstance() {
-        if (instance == null) {
-            instance = new NodeSetImpl();
-        }
-        return instance;
-    }
 
     /* (non-Javadoc)
      * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#updateNodeSet(javax.servlet.http.HttpServletRequest)
@@ -95,7 +88,7 @@ public class NodeSetImpl implements NodeSetDao {
 
             storedNodeSet.setNodeSetName(updatedNodeSetName);
             storedNodeSet.setNodeCount(Integer.parseInt(updatedNodeCount));
-            ClusterDao clusterDao = ClusterImpl.getInstance();
+            ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
             Cluster cluster = clusterDao.readOneCluster(hibSession, updatedClusterName);
             if (cluster == null) {
                 // Possibly deleted during long conversation
@@ -105,7 +98,7 @@ public class NodeSetImpl implements NodeSetDao {
             }
             storedNodeSet.setCluster(cluster);
 
-            NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();
+            NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");
             NodeType nodeType = nodeTypeDao.readOneNodeType(hibSession, updatedNodeTypeName);
 
             if (nodeType == null) {
@@ -130,6 +123,12 @@ public class NodeSetImpl implements NodeSetDao {
     /* (non-Javadoc)
      * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#readNodeSetList(org.hibernate.Session, java.lang.String, java.lang.String)
      */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#readNodeSetList(org.hibernate.Session, java.lang.String, java.lang.String)
+     */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#readNodeSetList(org.hibernate.Session, java.lang.String, java.lang.String)
+     */
     @Override
     public   List<NodeSet> readNodeSetList(Session hibSession, String col, String order) {
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();
@@ -148,6 +147,12 @@ public class NodeSetImpl implements NodeSetDao {
     /* (non-Javadoc)
      * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#readOneNodeSet(org.hibernate.Session, java.lang.String)
      */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#readOneNodeSet(org.hibernate.Session, java.lang.String)
+     */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#readOneNodeSet(org.hibernate.Session, java.lang.String)
+     */
     @Override
     public   NodeSet readOneNodeSet(Session hibSession, String nodeSetName) {
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();
@@ -156,6 +161,12 @@ public class NodeSetImpl implements NodeSetDao {
         q.select(root).where(cb.equal(root.get("nodeSetName"), nodeSetName));
         return hibSession.createQuery(q).getSingleResult();
     }
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#addNodeSet(javax.servlet.http.HttpServletRequest)
+     */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#addNodeSet(javax.servlet.http.HttpServletRequest)
+     */
     /* (non-Javadoc)
      * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#addNodeSet(javax.servlet.http.HttpServletRequest)
      */
@@ -182,7 +193,7 @@ public class NodeSetImpl implements NodeSetDao {
 
         try {
             hibSession.beginTransaction();
-            ClusterDao clusterDao = ClusterImpl.getInstance();
+            ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
             Cluster c = clusterDao.readOneCluster(hibSession, clusterName);
 
             if (c == null) {
@@ -192,7 +203,7 @@ public class NodeSetImpl implements NodeSetDao {
                 throw new RoutineException("While using addNodeSet, desired Cluster not found");
             }
 
-            NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();
+            NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");
             NodeType nodeType = nodeTypeDao.readOneNodeType(hibSession, nodeTypeName);
 
             if (nodeType == null) {
@@ -219,6 +230,12 @@ public class NodeSetImpl implements NodeSetDao {
             hibSession.close();
         }
     }
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#deleteNodeSet(javax.servlet.http.HttpServletRequest, java.lang.String)
+     */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#deleteNodeSet(javax.servlet.http.HttpServletRequest, java.lang.String)
+     */
     /* (non-Javadoc)
      * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#deleteNodeSet(javax.servlet.http.HttpServletRequest, java.lang.String)
      */
@@ -257,8 +274,14 @@ public class NodeSetImpl implements NodeSetDao {
     /* (non-Javadoc)
      * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#loadIndexedNodeSet(javax.servlet.http.HttpServletRequest, java.lang.Integer)
      */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#loadIndexedNodeSet(javax.servlet.http.HttpServletRequest, java.lang.Integer)
+     */
+    /* (non-Javadoc)
+     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#loadIndexedNodeSet(javax.servlet.http.HttpServletRequest, java.lang.Integer)
+     */
     @Override
-    public   void loadIndexedNodeSet(HttpServletRequest request, Integer nodeSetIndex)
+    public   void    loadIndexedNodeSet(HttpServletRequest request, Integer nodeSetIndex)
             throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
@@ -286,7 +309,7 @@ public class NodeSetImpl implements NodeSetDao {
 
             Long cachedVersion = cachedNodeSet.getVersion();
 
-            NodeSetDao nodeSetDao = NodeSetImpl.getInstance();
+            NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao");
             storedNodeSet = nodeSetDao.readOneNodeSet(hibSession, cachedNodeSet.getNodeSetName());
 
             // Possibly deleted during long conversation
@@ -315,11 +338,8 @@ public class NodeSetImpl implements NodeSetDao {
         }
         httpSession.setAttribute("nodeSet", storedNodeSet);
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.NodeSetDao#loadNodeSets(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
-     */
     @Override
-    public   void loadNodeSets(HttpServletRequest request, String col, String order)
+    public   void  loadNodeSets(HttpServletRequest request, String col, String order)
             throws RoutineException, WTFException {
 
         HttpSession httpSession = null;
@@ -337,7 +357,7 @@ public class NodeSetImpl implements NodeSetDao {
         try {
 
             hibSession.beginTransaction();
-            NodeSetDao nodeSetDao = NodeSetImpl.getInstance();
+            NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao");
             nodeSetList = nodeSetDao.readNodeSetList(hibSession, col, order);
 
             hibSession.getTransaction().commit();

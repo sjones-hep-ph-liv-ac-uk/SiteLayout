@@ -51,7 +51,7 @@ public class MainScreenController extends HttpServlet {
             }
             String next = "";
             if (act.equals("Edit cluster sets")) {
-                ClusterSetDao clusterSetDao = ClusterSetImpl.getInstance();
+                ClusterSetDao clusterSetDao = (ClusterSetDao) request.getSession().getAttribute("clusterSetDao");
                 clusterSetDao.loadClusterSets(request, "clusterSetName", "ASC");
                 next = "/cluster_set.jsp";
                 rd = request.getRequestDispatcher(next);
@@ -60,7 +60,7 @@ public class MainScreenController extends HttpServlet {
             }
 
             if (act.equals("Edit node types")) {
-                NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+                NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");            
                 nodeTypeDao.loadNodeTypes(request, "nodeTypeName", "ASC");
                 next = "/nodetype.jsp";
                 rd = request.getRequestDispatcher(next);
@@ -69,7 +69,7 @@ public class MainScreenController extends HttpServlet {
             }
 
             if (act.equals("Edit clusters")) {
-                ClusterDao clusterDao = ClusterImpl.getInstance();
+                ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
                 clusterDao.loadClusters(request, "clusterName", "ASC");
                 next = "/cluster.jsp";
                 rd = request.getRequestDispatcher(next);
@@ -77,7 +77,7 @@ public class MainScreenController extends HttpServlet {
                 return;
             }
             if (act.equals("Edit node sets")) {
-                NodeSetDao nodeSetDao = NodeSetImpl.getInstance();            
+                NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao");            
                 nodeSetDao.loadNodeSets(request, "nodeSetName", "ASC");
                 next = "/nodeset.jsp";
                 rd = request.getRequestDispatcher(next);
@@ -85,7 +85,7 @@ public class MainScreenController extends HttpServlet {
                 return;
             }
             if (act.equals("Edit nodes")) {
-                NodeDao nodeDao = NodeImpl.getInstance();            
+                NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao");            
                 nodeDao.loadNodes(request, "nodeName", "ASC");
                 next = "/node.jsp";
                 rd = request.getRequestDispatcher(next);
@@ -93,7 +93,7 @@ public class MainScreenController extends HttpServlet {
                 return;
             }
             if (act.equals("Edit service nodes")) {
-                ServiceNodeDao serviceNodeDao = ServiceNodeImpl.getInstance();            
+                ServiceNodeDao serviceNodeDao = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao");            
                 serviceNodeDao.loadServiceNodes(request, "hostname", "ASC");
                 next = "/service_node.jsp";
                 rd = request.getRequestDispatcher(next);
@@ -101,7 +101,7 @@ public class MainScreenController extends HttpServlet {
                 return;
             }
             if (act.equals("Edit service installations")) {
-                InstallationDao installationDao = InstallationImpl.getInstance(); 
+                InstallationDao installationDao = (InstallationDao) request.getSession().getAttribute("installationDao"); 
                 installationDao.loadInstallations(request, "serviceNode", "ASC");
                 next = "/installation.jsp";
                 rd = request.getRequestDispatcher(next);

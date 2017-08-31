@@ -6,7 +6,6 @@ import com.basingwerk.sldb.mvc.dao.NodeTypeDao;
 import com.basingwerk.sldb.mvc.dao.NodeTypeImpl;
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
-import com.basingwerk.sldb.mvc.model.NodeSetNodeTypeJoin;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -37,9 +36,9 @@ public class SelectClusterSetController extends HttpServlet {
 
         ArrayList<String> clusters = null;
         try {
-            NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+            NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");            
             nodeTypeDao.loadNodeTypes(request, "nodeTypeName", "ASC");
-            ClusterDao clusterDao = ClusterImpl.getInstance();
+            ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
             clusterDao.loadClustersOfClusterSet(request, clusterSetName, "clusterName", "ASC");
             nodeTypeDao.setBaselineNodeType(request);
 

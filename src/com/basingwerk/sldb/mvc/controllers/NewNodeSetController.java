@@ -30,7 +30,7 @@ public class NewNodeSetController extends HttpServlet {
         RequestDispatcher rd = null;
 
         try {
-            NodeSetDao nodeSetDao = NodeSetImpl.getInstance();
+            NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao");
             nodeSetDao.addNodeSet(request);
         } catch (RoutineException e) {
             request.setAttribute("theMessage",
@@ -48,7 +48,7 @@ public class NewNodeSetController extends HttpServlet {
 
         try {
             
-            NodeSetDao nodeSetDao = NodeSetImpl.getInstance();
+            NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao");
             nodeSetDao.loadNodeSets(request, "nodeSetName", "ASC");
             
         } catch (WTFException e) {

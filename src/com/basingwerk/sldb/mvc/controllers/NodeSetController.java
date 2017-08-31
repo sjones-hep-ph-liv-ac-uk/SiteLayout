@@ -44,7 +44,7 @@ public class NodeSetController extends HttpServlet {
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
-                NodeSetDao nodeSetDao = NodeSetImpl.getInstance();
+                NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao");
                 nodeSetDao.loadNodeSets(request, "nodeSetName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using refreshNodeSets");
@@ -65,9 +65,9 @@ public class NodeSetController extends HttpServlet {
         if (act != null) {
 
             try {
-                ClusterDao clusterDao = ClusterImpl.getInstance();
+                ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
                 clusterDao.loadClusters(request, "clusterName", "ASC");
-                NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+                NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");            
                 nodeTypeDao.loadNodeTypes(request, "nodeTypeName", "ASC");
 
             } catch (WTFException e) {
@@ -103,7 +103,7 @@ public class NodeSetController extends HttpServlet {
                 }
 
                 try {
-                    NodeSetDao nodeSetDao = NodeSetImpl.getInstance();
+                    NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao");
                     nodeSetDao.loadNodeSets(request, c, order);
                 } catch (WTFException e) {
                     logger.error("WTF! Error using refreshNodeSets, ", e);
@@ -124,7 +124,7 @@ public class NodeSetController extends HttpServlet {
             if (key.startsWith("DEL.")) {
                 String nodeSetName = key.substring(4, key.length());
                 try {
-                    NodeSetDao nodeSetDao = NodeSetImpl.getInstance();
+                    NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao");
                     nodeSetDao.deleteNodeSet(request, nodeSetName);
                 } catch (RoutineException e) {
                     logger.error("WTF! Error deleting a node set, ", e);
@@ -138,7 +138,7 @@ public class NodeSetController extends HttpServlet {
                     return;
                 }
                 try {
-                    NodeSetDao nodeSetDao = NodeSetImpl.getInstance();
+                    NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao");
                     nodeSetDao.loadNodeSets(request, "nodeSetName", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error using refreshNodeSets.");
@@ -159,7 +159,7 @@ public class NodeSetController extends HttpServlet {
                 String nodeSet = key.substring(3, key.length());
                 Integer index = Integer.parseInt(nodeSet);
                 try {
-                    NodeSetDao nodeSetDao = NodeSetImpl.getInstance();
+                    NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao");
                     nodeSetDao.loadIndexedNodeSet(request, index);
                 } catch (RoutineException e) {
                     request.setAttribute("theMessage",
@@ -176,9 +176,9 @@ public class NodeSetController extends HttpServlet {
                 }
 
                 try {
-                    ClusterDao clusterDao = ClusterImpl.getInstance();
+                    ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
                     clusterDao.loadClusters(request, "clusterName", "ASC");
-                    NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+                    NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");            
                     nodeTypeDao.loadNodeTypes(request, "nodeTypeName", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error preparing data, ", e);

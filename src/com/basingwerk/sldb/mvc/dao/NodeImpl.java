@@ -28,17 +28,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import com.basingwerk.sldb.mvc.dao.ClusterSetImpl;
 
-public class NodeImpl implements NodeDao {
+public class NodeImpl implements NodeDao  {
     final static Logger logger = Logger.getLogger(NodeImpl.class);
-    
-    private static NodeDao instance = null;
-    public static NodeDao getInstance() {
-        if (instance == null) {
-            instance = new NodeImpl();
-        }
-        return instance;
-    }
-    
     
     /* (non-Javadoc)
      * @see com.basingwerk.sldb.mvc.dao.NodeDao#updateNode(javax.servlet.http.HttpServletRequest)
@@ -96,7 +87,7 @@ public class NodeImpl implements NodeDao {
             // Both the same. Safe to update
             storedNode.setNodeName(updatedNodeName);
             storedNode.setDescription(updateDescription);
-            NodeSetDao nodeSetDao = NodeSetImpl.getInstance();
+            NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao");
             NodeSet nodeSet = nodeSetDao .readOneNodeSet(hibSession, updatedNodeSet);
             if (nodeSet == null) {
                 // Possibly deleted during long conversation
@@ -105,7 +96,7 @@ public class NodeImpl implements NodeDao {
                 throw new RoutineException("While using updateNode, desired nodeSet not found");
             }
             storedNode.setNodeSet(nodeSet);
-            NodeStateDao nodeStateDao = NodeStateImpl.getInstance();
+            NodeStateDao nodeStateDao = (NodeStateDao) request.getSession().getAttribute("nodeStateDao");
             NodeState nodeState = nodeStateDao.readOneNodeState(hibSession, updatedNodeState);
             if (nodeState == null) {
                 // Possibly deleted during long conversation
@@ -182,7 +173,7 @@ public class NodeImpl implements NodeDao {
 
         try {
             hibSession.beginTransaction();
-            NodeSetDao nodeSetDao  = NodeSetImpl.getInstance(); 
+            NodeSetDao nodeSetDao  = (NodeSetDao) request.getSession().getAttribute("nodeSetDao"); 
             NodeSet nodeSet = nodeSetDao.readOneNodeSet(hibSession, nodeSetName);
             
 
@@ -192,7 +183,7 @@ public class NodeImpl implements NodeDao {
                 logger.error("While using addNode, desired NodeSet not found");
                 throw new RoutineException("While using addNode, desired NodeSet not found");
             }
-            NodeStateDao nodeStateDao  = NodeStateImpl.getInstance(); 
+            NodeStateDao nodeStateDao  = (NodeStateDao) request.getSession().getAttribute("nodeStateDao"); 
             NodeState nodeState = nodeStateDao.readOneNodeState(hibSession, nodeStateName);
             if (nodeState == null) {
                 // Possibly deleted during long conversation
@@ -287,7 +278,7 @@ public class NodeImpl implements NodeDao {
 
             Long cachedVersion = cachedNode.getVersion();
 
-            NodeDao nodeDao = NodeImpl.getInstance();
+            NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao");
             storedNode = nodeDao.readOneNode(hibSession, cachedNode.getNodeName());
 
             // Possibly deleted during long conversation
@@ -338,7 +329,7 @@ public class NodeImpl implements NodeDao {
 
             hibSession.beginTransaction();
 
-            NodeDao nodeDao = NodeImpl.getInstance();
+            NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao");
             nodeList = nodeDao.readNodeList(hibSession, col, order);
 
             hibSession.getTransaction().commit();
@@ -377,9 +368,9 @@ public class NodeImpl implements NodeDao {
             hibSession.beginTransaction();
             for (String c : choices) {
                 String nodeName = c.substring(4, c.length());
-                NodeDao nodeDao = NodeImpl.getInstance();
+                NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao");
                 Node node = nodeDao.readOneNode(hibSession, nodeName);
-                NodeStateDao nodeStateDao = NodeStateImpl.getInstance();
+                NodeStateDao nodeStateDao = (NodeStateDao) request.getSession().getAttribute("nodeStateDao");
                 if (node.getNodeState().getState().equalsIgnoreCase("ONLINE"))
                     node.setNodeState(nodeStateDao.readOneNodeState(hibSession, "OFFLINE"));
                 else
@@ -415,7 +406,7 @@ public class NodeImpl implements NodeDao {
             hibSession.beginTransaction();
             Node node = ((ArrayList<Node>) httpSession.getAttribute("node")).get(nodeIndex);
 
-            NodeStateDao nodeStateDao = NodeStateImpl.getInstance();
+            NodeStateDao nodeStateDao = (NodeStateDao) request.getSession().getAttribute("nodeStateDao");
             if (node.getNodeState().getState().equalsIgnoreCase("ONLINE"))
                 node.setNodeState(nodeStateDao.readOneNodeState(hibSession, "OFFLINE"));
             else

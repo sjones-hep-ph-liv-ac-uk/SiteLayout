@@ -28,21 +28,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import com.basingwerk.sldb.mvc.dao.ClusterSetImpl;
 
-public class InstallationImpl implements InstallationDao {
+public class InstallationImpl implements InstallationDao  {
     final static Logger logger = Logger.getLogger(InstallationImpl.class);
 
-    private static InstallationDao instance = null;
-    public static InstallationDao getInstance() {
-        if (instance == null) {
-            instance = new InstallationImpl();
-        }
-        return instance;
-    }
-    
-    
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.InstallationDao#updateInstallation(javax.servlet.http.HttpServletRequest)
-     */
     @Override
     public   void updateInstallation(HttpServletRequest request) throws WTFException, RoutineException {
 
@@ -111,9 +99,6 @@ public class InstallationImpl implements InstallationDao {
             hibSession.close();
         }
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.InstallationDao#readInstallationList(org.hibernate.Session, java.lang.String, java.lang.String)
-     */
     @Override
     public   List<Installation> readInstallationList(Session hibSession, String col, String order) {
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();
@@ -129,9 +114,6 @@ public class InstallationImpl implements InstallationDao {
         List<Installation> theList = q.getResultList();
         return theList;
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.InstallationDao#readOneInstallation(org.hibernate.Session, java.lang.String, java.lang.String)
-     */
     @Override
     public   Installation readOneInstallation(Session hibSession, String serviceName, String hostname) {
 
@@ -152,9 +134,6 @@ public class InstallationImpl implements InstallationDao {
         Installation i = typedQuery.getSingleResult();
         return i;
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.InstallationDao#addInstallation(javax.servlet.http.HttpServletRequest)
-     */
     @Override
     public   void addInstallation(HttpServletRequest request) throws WTFException, RoutineException {
 
@@ -177,7 +156,7 @@ public class InstallationImpl implements InstallationDao {
 
         try {
             hibSession.beginTransaction();
-            ServiceNodeDao serviceNodeDao = ServiceNodeImpl.getInstance();
+            ServiceNodeDao serviceNodeDao = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao");
             ServiceNode sn = serviceNodeDao.readOneServiceNode(hibSession, hostname);
             if (sn == null) {
                 // Possibly deleted during long conversation
@@ -185,7 +164,7 @@ public class InstallationImpl implements InstallationDao {
                 logger.error("While using addInstallation, desired ServiceNode not found");
                 throw new RoutineException("While using addInstallation, desired ServiceNode not found");
             }
-            ServiceDao serviceDao = ServiceImpl.getInstance();
+            ServiceDao serviceDao = (ServiceDao) request.getSession().getAttribute("serviceDao");
             Service s = serviceDao.readOneService(hibSession, serviceName);
             if (s == null) {
                 // Possibly deleted during long conversation
@@ -212,9 +191,6 @@ public class InstallationImpl implements InstallationDao {
             hibSession.close();
         }
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.InstallationDao#deleteIndexedInstallation(javax.servlet.http.HttpServletRequest, java.lang.Integer)
-     */
     @Override
     public   void deleteIndexedInstallation(HttpServletRequest request, Integer installationIndex)
             throws WTFException, RoutineException {
@@ -277,11 +253,8 @@ public class InstallationImpl implements InstallationDao {
         }
         return;
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.InstallationDao#loadIndexedInstallation(javax.servlet.http.HttpServletRequest, java.lang.Integer)
-     */
     @Override
-    public   void loadIndexedInstallation(HttpServletRequest request, Integer installationIndex)
+    public   void         loadIndexedInstallation(HttpServletRequest request, Integer installationIndex)
             throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
@@ -338,9 +311,6 @@ public class InstallationImpl implements InstallationDao {
         }
         httpSession.setAttribute("installation", storedInstallation);
     }
-    /* (non-Javadoc)
-     * @see com.basingwerk.sldb.mvc.dao.InstallationDao#loadInstallations(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
-     */
     @Override
     public   void loadInstallations(HttpServletRequest request, String col, String order)
             throws RoutineException, WTFException {
@@ -360,7 +330,7 @@ public class InstallationImpl implements InstallationDao {
         try {
 
             hibSession.beginTransaction();
-            InstallationDao installationDao = InstallationImpl.getInstance();
+            InstallationDao installationDao = (InstallationDao) request.getSession().getAttribute("installationDao");
             installationList = installationDao.readInstallationList(hibSession, col, order);
 
             hibSession.getTransaction().commit();
@@ -374,5 +344,4 @@ public class InstallationImpl implements InstallationDao {
 
         httpSession.setAttribute("installationList", installationList);
     }
-
 }

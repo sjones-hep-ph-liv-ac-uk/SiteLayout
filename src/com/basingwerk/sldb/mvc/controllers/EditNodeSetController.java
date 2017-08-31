@@ -28,7 +28,7 @@ public class EditNodeSetController extends HttpServlet {
         //DataAccessObject dao = DataAccessObject.getInstance();
 
         try {
-            NodeSetDao nodeSetDao = NodeSetImpl.getInstance(); 
+            NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao"); 
 
             nodeSetDao.updateNodeSet(request);
             
@@ -45,7 +45,7 @@ public class EditNodeSetController extends HttpServlet {
             return;
         }            
         try {
-            NodeSetDao nodeSetDao = NodeSetImpl.getInstance(); 
+            NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao"); 
             nodeSetDao.loadNodeSets(request, "nodeSetName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error using refreshNodeSets");

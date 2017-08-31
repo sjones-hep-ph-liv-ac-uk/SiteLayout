@@ -29,7 +29,7 @@ public class NewNodeTypeController extends HttpServlet {
         //DataAccessObject dao = DataAccessObject.getInstance();
 
         try {
-            NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+            NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");            
             nodeTypeDao.addNodeType(request);
         } catch (RoutineException e) {
             request.setAttribute("theMessage", "The node type could not be added. Please try again." + e.getMessage());
@@ -46,7 +46,7 @@ public class NewNodeTypeController extends HttpServlet {
 
         try {
            
-            NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+            NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");            
             nodeTypeDao.loadNodeTypes(request, "nodeTypeName", "ASC");
            
         } catch (WTFException e) {

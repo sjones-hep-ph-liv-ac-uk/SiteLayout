@@ -48,7 +48,7 @@ public class InstallationController extends HttpServlet {
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
-                InstallationDao installationDao = InstallationImpl.getInstance(); 
+                InstallationDao installationDao = (InstallationDao) request.getSession().getAttribute("installationDao"); 
                 installationDao.loadInstallations(request, "serviceNode", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using refreshInstallations");
@@ -69,9 +69,9 @@ public class InstallationController extends HttpServlet {
         if (act != null) {
 
             try {
-                ServiceDao serviceDao = ServiceImpl.getInstance();
+                ServiceDao serviceDao = (ServiceDao) request.getSession().getAttribute("serviceDao");
                 serviceDao .loadServices(request, "serviceName", "ASC");
-                ServiceNodeDao serviceNodeDao = ServiceNodeImpl.getInstance();
+                ServiceNodeDao serviceNodeDao = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao");
                 serviceNodeDao.loadServiceNodes(request, "hostname", "ASC");
 
             } catch (WTFException e) {
@@ -107,7 +107,7 @@ public class InstallationController extends HttpServlet {
                 }
 
                 try {
-                    InstallationDao installationDao = InstallationImpl.getInstance(); 
+                    InstallationDao installationDao = (InstallationDao) request.getSession().getAttribute("installationDao"); 
                     installationDao.loadInstallations(request, c, order);
                 } catch (WTFException e) {
                     logger.error("WTF! Error using refreshInstallations, ", e);
@@ -130,7 +130,7 @@ public class InstallationController extends HttpServlet {
                 String installation = key.substring(4, key.length());
                 Integer index = Integer.parseInt(installation);
                 try {
-                    InstallationDao installationDao = InstallationImpl.getInstance(); 
+                    InstallationDao installationDao = (InstallationDao) request.getSession().getAttribute("installationDao"); 
                     installationDao.deleteIndexedInstallation(request, index);
                 } catch (RoutineException e) {
                     request.setAttribute("theMessage",
@@ -147,7 +147,7 @@ public class InstallationController extends HttpServlet {
                 }
 
                 try {
-                    InstallationDao installationDao = InstallationImpl.getInstance(); 
+                    InstallationDao installationDao = (InstallationDao) request.getSession().getAttribute("installationDao"); 
                     installationDao.loadInstallations(request, "serviceNode", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error using loadInstallations.");
@@ -169,7 +169,7 @@ public class InstallationController extends HttpServlet {
                 String installation = key.substring(3, key.length());
                 Integer index = Integer.parseInt(installation);
                 try {
-                    InstallationDao installationDao = InstallationImpl.getInstance(); 
+                    InstallationDao installationDao = (InstallationDao) request.getSession().getAttribute("installationDao"); 
                     installationDao.loadIndexedInstallation(request, index);
                 } catch (RoutineException e) {
                     request.setAttribute("theMessage",
@@ -186,9 +186,9 @@ public class InstallationController extends HttpServlet {
                 }
 
                 try {
-                    ClusterDao clusterDao = ClusterImpl.getInstance();
+                    ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
                     clusterDao.loadClusters(request, "clusterName", "ASC");
-                    NodeTypeDao nodeTypeDao = NodeTypeImpl.getInstance();            
+                    NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");            
                     nodeTypeDao.loadNodeTypes(request, "nodeTypeName", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error preparing data, ", e);

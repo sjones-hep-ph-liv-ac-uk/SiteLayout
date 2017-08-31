@@ -42,7 +42,7 @@ public class SelectReportController extends HttpServlet {
             String next = "";
             
             if (act.equals("Worker node, cluster and node type report")) {
-                ClusterSetDao clusterSetDao = ClusterSetImpl.getInstance();
+                ClusterSetDao clusterSetDao = (ClusterSetDao) request.getSession().getAttribute("clusterSetDao");
                 clusterSetDao.loadClusterSets(request, "clusterSetName", "ASC");
                 next = "/select_cluster_set.jsp";
                 rd = request.getRequestDispatcher(next);
@@ -52,7 +52,7 @@ public class SelectReportController extends HttpServlet {
             }
             
             if (act.equals("Service node and services report")) {
-                InstallationDao installationDao = InstallationImpl.getInstance(); 
+                InstallationDao installationDao = (InstallationDao) request.getSession().getAttribute("installationDao"); 
                 installationDao.loadInstallations(request, "serviceNode", "ASC");
                 next = "/services_report.jsp";
                 rd = request.getRequestDispatcher(next);

@@ -25,16 +25,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import com.basingwerk.sldb.mvc.dao.ClusterSetImpl;
 
-public class ClusterImpl implements ClusterDao {
+public class ClusterImpl implements ClusterDao  {
     final static Logger logger = Logger.getLogger(ClusterImpl.class);
 
-    private static ClusterDao instance = null;
-    public static ClusterDao getInstance() {
-        if (instance == null) {
-            instance = new ClusterImpl();
-        }
-        return instance;
-    }
 
     /* (non-Javadoc)
      * @see com.basingwerk.sldb.mvc.dao.ClusterDao#updateCluster(javax.servlet.http.HttpServletRequest)
@@ -92,7 +85,7 @@ public class ClusterImpl implements ClusterDao {
 
             storedCluster.setClusterName(updatedClusterName);
             storedCluster.setDescr(updatedDescr);
-            ClusterSetDao clusterSetDao = ClusterSetImpl.getInstance();
+            ClusterSetDao clusterSetDao = (ClusterSetDao) request.getSession().getAttribute("clusterSetDao");
             ClusterSet newClusterSet = clusterSetDao.readOneClusterSet(hibSession, updatedClusterSetName);
 
             if (newClusterSet == null) {
@@ -191,7 +184,7 @@ public class ClusterImpl implements ClusterDao {
 
         try {
             hibSession.beginTransaction();
-            ClusterSetDao clusterSetDao = ClusterSetImpl.getInstance();
+            ClusterSetDao clusterSetDao = (ClusterSetDao) request.getSession().getAttribute("clusterSetDao");
             ClusterSet cs = clusterSetDao.readOneClusterSet(hibSession, clusterSetName);
 
             if (cs == null) {
@@ -327,7 +320,7 @@ public class ClusterImpl implements ClusterDao {
      * @see com.basingwerk.sldb.mvc.dao.ClusterDao#loadIndexedCluster(javax.servlet.http.HttpServletRequest, java.lang.Integer)
      */
     @Override
-    public void loadIndexedCluster(HttpServletRequest request, Integer clusterIndex)
+    public void  loadIndexedCluster(HttpServletRequest request, Integer clusterIndex)
             throws WTFException, RoutineException {
 
         HttpSession httpSession = null;

@@ -11,8 +11,6 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import org.apache.log4j.Logger;
 
-import com.basingwerk.sldb.mvc.dao.ClusterImpl;
-import com.basingwerk.sldb.mvc.dao.ClusterSetImpl;
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
 import com.basingwerk.sldb.mvc.dao.*;
@@ -30,7 +28,6 @@ public class ClusterController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
-        //DataAccessObject dao = DataAccessObject.getInstance();
 
         String act = null;
 
@@ -43,7 +40,7 @@ public class ClusterController extends HttpServlet {
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
-                ClusterDao clusterDao = ClusterImpl.getInstance();  
+                ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");  
                 clusterDao.loadClusters(request, "clusterName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using loadClusters");
@@ -64,7 +61,7 @@ public class ClusterController extends HttpServlet {
         if (act != null) {
 
             try {
-                ClusterSetDao clusterSetDao = ClusterSetImpl.getInstance();  
+                ClusterSetDao clusterSetDao = (ClusterSetDao) request.getSession().getAttribute("clusterSetDao");  
                 clusterSetDao.loadClusterSets(request, "clusterSetName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using loadClusterSets, ", e);
@@ -99,7 +96,7 @@ public class ClusterController extends HttpServlet {
                 }
 
                 try {
-                    ClusterDao clusterDao = ClusterImpl.getInstance();
+                    ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
                     clusterDao.loadClusters(request, c, order);
                 } catch (WTFException e) {
                     logger.error("WTF! Error while using loadClusters");
@@ -120,7 +117,7 @@ public class ClusterController extends HttpServlet {
             if (key.startsWith("DEL.")) {
                 String cluster = key.substring(4, key.length());
                 try {
-                    ClusterDao clusterDao = ClusterImpl.getInstance();
+                    ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
                     clusterDao.deleteCluster(request, cluster);
                 } catch (RoutineException e) {
                     request.setAttribute("theMessage",
@@ -137,7 +134,7 @@ public class ClusterController extends HttpServlet {
                 }
 
                 try {
-                    ClusterDao clusterDao = ClusterImpl.getInstance();
+                    ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
                     clusterDao.loadClusters(request, "clusterName", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error while using loadClusters");
@@ -158,9 +155,9 @@ public class ClusterController extends HttpServlet {
                 String cluster = key.substring(3, key.length());
                 Integer index = Integer.parseInt(cluster);
                 try {
-                    ClusterDao clusterDao = ClusterImpl.getInstance();
+                    ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
                     clusterDao.loadIndexedCluster(request, index);
-                    ClusterSetDao clusterSetDao = ClusterSetImpl.getInstance();
+                    ClusterSetDao clusterSetDao = (ClusterSetDao) request.getSession().getAttribute("clusterSetDao");
                     clusterSetDao.loadClusterSets(request, "clusterSetName", "ASC");
                 } catch (RoutineException e) {
 

@@ -27,10 +27,9 @@ public class NewClusterSetController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
-        //DataAccessObject dao = DataAccessObject.getInstance();
 
         try {
-            ClusterSetDao clusterSetDao = ClusterSetImpl.getInstance();
+            ClusterSetDao clusterSetDao = (ClusterSetDao) request.getSession().getAttribute("clusterSetDao");
             clusterSetDao.addClusterSet(request);
         } catch (RoutineException e) {
             request.setAttribute("theMessage",
@@ -47,7 +46,7 @@ public class NewClusterSetController extends HttpServlet {
         }
 
         try {
-            ClusterSetDao clusterSetDao = ClusterSetImpl.getInstance();
+            ClusterSetDao clusterSetDao = (ClusterSetDao) request.getSession().getAttribute("clusterSetDao");
             clusterSetDao.loadClusterSets(request, "clusterSetName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error when using queryClusterSetList");
