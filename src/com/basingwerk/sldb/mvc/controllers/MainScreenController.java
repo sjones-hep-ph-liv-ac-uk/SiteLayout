@@ -38,7 +38,6 @@ public class MainScreenController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
-        //DataAccessObject dao = DataAccessObject.getInstance();
 
         try {
             
@@ -84,14 +83,14 @@ public class MainScreenController extends HttpServlet {
                 rd.forward(request, response);
                 return;
             }
-            if (act.equals("Edit nodes")) {
-                NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao");            
-                nodeDao.loadNodes(request, "nodeName", "ASC");
-                next = "/node.jsp";
-                rd = request.getRequestDispatcher(next);
-                rd.forward(request, response);
-                return;
-            }
+//            if (act.equals("Edit nodes")) {
+//                NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao");            
+//                nodeDao.loadNodes(request, "nodeName", "ASC");
+//                next = "/node.jsp";
+//                rd = request.getRequestDispatcher(next);
+//                rd.forward(request, response);
+//                return;
+//            }
             if (act.equals("Edit service nodes")) {
                 ServiceNodeDao serviceNodeDao = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao");            
                 serviceNodeDao.loadServiceNodes(request, "hostname", "ASC");

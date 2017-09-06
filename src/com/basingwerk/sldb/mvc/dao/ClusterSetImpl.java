@@ -12,17 +12,19 @@ import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.exception.ConstraintViolationException;
+
 
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
 import com.basingwerk.sldb.mvc.model.Cluster;
 import com.basingwerk.sldb.mvc.model.ClusterSet;
+
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Predicate;
+
 import javax.persistence.criteria.Root;
 
 
@@ -159,16 +161,18 @@ public class ClusterSetImpl implements  ClusterSetDao {
             hibSession.save(clusterSet);
             hibSession.getTransaction().commit();
 
-        } catch (ConstraintViolationException e) {
-            hibSession.getTransaction().rollback();
-            logger.error("While using addClusterSet, the clusterSetName conflicted with an existing clusterSet");
-            throw new RoutineException(
-                    "While using addClusterSet, the clusterSetName conflicted with an existing clusterSet");
-        } catch (HibernateException e) {
-            hibSession.getTransaction().rollback();
-            logger.error("WTF while using addClusterSet, ", e);
-            throw new WTFException("WTF while using addClusterSet");
-        } finally {
+        } catch (PersistenceException e) {
+            if (Util.isIdClash(e)) {
+                hibSession.getTransaction().rollback();
+                throw new RoutineException(
+                        "While using addClusterSet, the clusterSetName conflicted with an existing clusterSet");
+            } else {
+                logger.error("WTF error using addClusterSet, ", e);
+                throw new WTFException("WTF while using addClusterSet");
+            }
+        }
+
+        finally {
             hibSession.close();
         }
     }

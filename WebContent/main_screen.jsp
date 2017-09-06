@@ -27,10 +27,12 @@
         <td class="tg-yw4l"><input type="submit" value="Edit node sets"
           name="SomeButton" /></td>
       </tr>
-      <tr>
+      
+<%--      <tr>
         <td class="tg-yw4l"><input type="submit" value="Edit nodes"
           name="SomeButton" /></td>
-      </tr>
+      </tr>  --%>
+      
       <tr>
         <td class="tg-yw4l"><input type="submit" value="Edit service nodes"
           name="SomeButton" /></td>

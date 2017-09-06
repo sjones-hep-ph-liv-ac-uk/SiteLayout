@@ -126,7 +126,6 @@ public class ServiceNodeController extends HttpServlet {
 
             if (key.startsWith("DEL.")) {
                 String serviceNode = key.substring(4, key.length());
-                //logger.error("SJDEBUG: ");
                 
                 try {
                     ServiceNodeDao serviceNodeDao = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao"); 

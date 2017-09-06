@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.exception.ConstraintViolationException;
+
 
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
@@ -18,6 +18,7 @@ import com.basingwerk.sldb.mvc.model.Installation;
 import com.basingwerk.sldb.mvc.model.Service;
 import com.basingwerk.sldb.mvc.model.ServiceNode;
 
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -188,18 +189,20 @@ public class InstallationImpl implements InstallationDao {
             installation.setSoftwareVersion(softwareVersion);
             hibSession.save(installation);
             hibSession.getTransaction().commit();
-        } catch (ConstraintViolationException e) {
-            hibSession.getTransaction().rollback();
-            logger.error("While using addInstallation, the new object conflicted with an existing installation");
-            throw new RoutineException(
-                    "While using addInstallation, the new object conflicted with an existing installation");
-        } catch (HibernateException e) {
-            hibSession.getTransaction().rollback();
-            logger.error("WTF error using addInstallation, ", e);
-            throw new WTFException("WTF error using addInstallation");
-        } finally {
+        } catch (PersistenceException e) {
+            if (Util.isIdClash(e)) {
+                hibSession.getTransaction().rollback();
+                throw new RoutineException(
+                        "While using addInstallation, the installationName conflicted with an existing installation");
+            } else {
+                logger.error("WTF error using addInstallation, ", e);
+                throw new WTFException("WTF while using addInstallation");
+            }
+        }
+        finally {
             hibSession.close();
         }
+
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.basingwerk.sldb.mvc.controllers;
 
 import com.basingwerk.sldb.mvc.dao.ClusterDao;
 import com.basingwerk.sldb.mvc.dao.ClusterImpl;
+import com.basingwerk.sldb.mvc.dao.NodeDao;
 import com.basingwerk.sldb.mvc.dao.NodeSetDao;
 import com.basingwerk.sldb.mvc.dao.NodeSetImpl;
 import com.basingwerk.sldb.mvc.dao.NodeTypeDao;
@@ -15,6 +16,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import org.apache.log4j.Logger;
@@ -32,7 +34,7 @@ public class NodeSetController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
-        //DataAccessObject dao = DataAccessObject.getInstance();
+
         String act = null;
 
         act = request.getParameter("Back");
@@ -155,6 +157,35 @@ public class NodeSetController extends HttpServlet {
                 rd.forward(request, response);
                 return;
             }
+            // NODES.${nodeSet.nodeSetName}
+            if (key.startsWith("NODES.")) {
+                String nodeSetName = key.substring(6, key.length());
+                try {
+                    // NodeSetDao nodeSetDao = (NodeSetDao)
+                    // request.getSession().getAttribute("nodeSetDao");
+                    // nodeSetDao.deleteNodeSet(request, nodeSetName);
+                    NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao");
+                    nodeDao.loadNodesOfNodeSet(request, nodeSetName, "nodeName", "ASC");
+                    HttpSession httpSession = request.getSession();
+                    httpSession.setAttribute("nodeSetName", nodeSetName);                    
+                    rd = request.getRequestDispatcher("/node.jsp");
+                    rd.forward(request, response);
+                    return;
+                } catch (RoutineException e) {
+                    request.setAttribute("theMessage",
+                            "Could not view that data at this time. Please try again. " + e.getMessage());
+                    request.setAttribute("theJsp", "main_screen.jsp");
+                    rd = request.getRequestDispatcher("/recoverable_message.jsp");
+                    rd.forward(request, response);
+                    return;
+                } catch (WTFException e) {
+                    logger.error("WTF! Error deleting a node set, ", e);
+                    rd = request.getRequestDispatcher("/error.jsp");
+                    rd.forward(request, response);
+                    return;
+                }                
+            }
+            
             if (key.startsWith("ED.")) {
                 String nodeSet = key.substring(3, key.length());
                 Integer index = Integer.parseInt(nodeSet);

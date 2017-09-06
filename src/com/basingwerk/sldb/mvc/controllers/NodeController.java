@@ -15,6 +15,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import org.apache.log4j.Logger;
@@ -37,7 +38,8 @@ public class NodeController extends HttpServlet {
 
         act = request.getParameter("Back");
         if (act != null) {
-            rd = request.getRequestDispatcher("/main_screen.jsp");
+            //rd = request.getRequestDispatcher("/main_screen.jsp");
+            rd = request.getRequestDispatcher("/nodeset.jsp");
             rd.forward(request, response);
             return;
         }
@@ -45,8 +47,10 @@ public class NodeController extends HttpServlet {
         act = request.getParameter("Refresh");
         if (act != null) {
             try {
-                NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao"); 
-                nodeDao.loadNodes(request, "nodeName", "ASC");
+                NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao");
+                HttpSession httpSession = request.getSession();
+                String nodeSetName = (String) httpSession.getAttribute("nodeSetName");
+                nodeDao.loadNodesOfNodeSet(request, nodeSetName , "nodeName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using refreshNodes");
                 rd = request.getRequestDispatcher("/error.jsp");
@@ -68,7 +72,9 @@ public class NodeController extends HttpServlet {
             try {
                 NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao"); 
                 nodeDao.toggleCheckedNodes(request);
-                nodeDao.loadNodes(request, "nodeName", "ASC");
+                HttpSession httpSession = request.getSession();
+                String nodeSetName = (String) httpSession.getAttribute("nodeSetName");
+                nodeDao.loadNodesOfNodeSet(request, nodeSetName , "nodeName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using refreshNodes");
                 rd = request.getRequestDispatcher("/error.jsp");
@@ -127,7 +133,10 @@ public class NodeController extends HttpServlet {
 
                 try {
                     NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao"); 
-                    nodeDao.loadNodes(request, c, order);
+                    HttpSession httpSession = request.getSession();
+                    String nodeSetName = (String) httpSession.getAttribute("nodeSetName");
+                    nodeDao.loadNodesOfNodeSet(request, nodeSetName , c, order);
+
                 } catch (WTFException e) {
                     logger.error("WTF! Error using loadNodes, ", e);
                     rd = request.getRequestDispatcher("/error.jsp");
@@ -161,8 +170,10 @@ public class NodeController extends HttpServlet {
                     return;
                 }
                 try {
-                    NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao"); 
-                    nodeDao.loadNodes(request, "nodeName", "ASC");
+                    NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao");
+                    HttpSession httpSession = request.getSession();
+                    String nodeSetName = (String) httpSession.getAttribute("nodeSetName");
+                    nodeDao.loadNodesOfNodeSet(request, nodeSetName , "nodeName", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error using loadNodes.");
                     rd = request.getRequestDispatcher("/error.jsp");

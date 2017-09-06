@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.exception.ConstraintViolationException;
+
 
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
@@ -18,11 +18,12 @@ import com.basingwerk.sldb.mvc.model.Cluster;
 import com.basingwerk.sldb.mvc.model.ClusterSet;
 import com.basingwerk.sldb.mvc.model.NodeType;
 
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Predicate;
+
 import javax.persistence.criteria.Root;
 import com.basingwerk.sldb.mvc.dao.ClusterSetImpl;
 
@@ -155,16 +156,17 @@ public class NodeTypeImpl implements NodeTypeDao {
             hibSession.save(nt);
             hibSession.getTransaction().commit();
 
-        } catch (ConstraintViolationException e) {
-            hibSession.getTransaction().rollback();
-            logger.error("While using addNodeType, the nodeTypeName conflicted with an existing nodeType");
-            throw new RoutineException(
-                    "While using addNodeType, the nodeTypeName conflicted with an existing nodeType");
-        } catch (HibernateException e) {
-            hibSession.getTransaction().rollback();
-            logger.error("WTF error using addNodeType, ", e);
-            throw new WTFException("WTF error using addNodeType");
-        } finally {
+        } catch (PersistenceException e) {
+            if (Util.isIdClash(e)) {
+                hibSession.getTransaction().rollback();
+                throw new RoutineException(
+                        "While using addNodeType, the nodeTypeName conflicted with an existing nodeType");
+            } else {
+                logger.error("WTF error using addNodeType, ", e);
+                throw new WTFException("WTF while using addNodeType");
+            }
+        }
+        finally {
             hibSession.close();
         }
     }

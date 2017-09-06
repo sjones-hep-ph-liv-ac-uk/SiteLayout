@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import org.apache.log4j.Logger;
@@ -25,7 +26,6 @@ public class EditNodeController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = null;
-        //DataAccessObject dao = DataAccessObject.getInstance();
 
         try {
             NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao"); 
@@ -44,8 +44,10 @@ public class EditNodeController extends HttpServlet {
             return;
         }            
         try {
-            NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao"); 
-            nodeDao.loadNodes(request, "nodeName", "ASC");
+            NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao");
+            HttpSession httpSession = request.getSession();
+            String nodeSetName = (String) httpSession.getAttribute("nodeSetName");
+            nodeDao.loadNodesOfNodeSet(request, nodeSetName , "nodeName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error using loadNodes");
             rd = request.getRequestDispatcher("/error.jsp");

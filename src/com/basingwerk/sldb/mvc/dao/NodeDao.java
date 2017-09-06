@@ -1,5 +1,6 @@
 package com.basingwerk.sldb.mvc.dao;
 
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +12,10 @@ import com.basingwerk.sldb.mvc.exceptions.WTFException;
 import com.basingwerk.sldb.mvc.model.Node;
 
 public interface NodeDao {
+    
+    List<Node> readNodesOfNodeSet(Session hibSession, String nodeSetName, String col, String order);
+    
+    void loadNodesOfNodeSet(HttpServletRequest r, String nodeSetName, String col, String order) throws RoutineException, WTFException ;
 
     void updateNode(HttpServletRequest request) throws WTFException, RoutineException;
 
@@ -24,7 +29,7 @@ public interface NodeDao {
 
     void loadIndexedNode(HttpServletRequest request, Integer nodeIndex) throws WTFException, RoutineException;
 
-    void loadNodes(HttpServletRequest request, String col, String order) throws RoutineException, WTFException;
+    // void loadNodes(HttpServletRequest request, String col, String order) throws RoutineException, WTFException;
 
     void toggleCheckedNodes(HttpServletRequest request) throws RoutineException, WTFException;
 

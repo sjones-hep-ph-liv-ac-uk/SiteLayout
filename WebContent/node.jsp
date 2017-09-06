@@ -42,7 +42,7 @@
         <td></td>
         <td></td>
         <td></td>
-        <%-- <td></td>--%>
+        
       </tr>
       <c:set var="index" value="-1" scope="page" />
       <c:forEach items="${nodeList}" var="node">
@@ -66,7 +66,7 @@
         <td><input type="submit" value="Toggle" name="Toggle" /></td>
         <td></td>
         <td></td>
-        <%-- <td></td> --%>
+        
       </tr>
     </table>
   </form>

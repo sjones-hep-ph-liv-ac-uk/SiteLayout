@@ -10,24 +10,24 @@ import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.exception.ConstraintViolationException;
+
 
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
 import com.basingwerk.sldb.mvc.model.Cluster;
 import com.basingwerk.sldb.mvc.model.ClusterSet;
 
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Predicate;
+
 import javax.persistence.criteria.Root;
 import com.basingwerk.sldb.mvc.dao.ClusterSetImpl;
 
-public class ClusterImpl implements ClusterDao  {
+public class ClusterImpl implements ClusterDao {
     final static Logger logger = Logger.getLogger(ClusterImpl.class);
-
 
     @Override
     public void updateCluster(HttpServletRequest request) throws WTFException, RoutineException {
@@ -185,15 +185,17 @@ public class ClusterImpl implements ClusterDao  {
             hibSession.save(cluster);
             hibSession.getTransaction().commit();
 
-        } catch (ConstraintViolationException e) {
-            hibSession.getTransaction().rollback();
-            logger.error("While using addCluster, the clusterName conflicted with an existing cluster");
-            throw new RoutineException("While using addCluster, the clusterName conflicted with an existing cluster");
-        } catch (HibernateException e) {
-            hibSession.getTransaction().rollback();
-            logger.error("WTF while using addCluster", e);
-            throw new WTFException("WTF while using addCluster");
-        } finally {
+        } catch (PersistenceException e) {
+            if (Util.isIdClash(e)) {
+                hibSession.getTransaction().rollback();
+                throw new RoutineException(
+                        "While using addCluster, the clusterName conflicted with an existing cluster");
+            } else {
+                logger.error("WTF error using addCluster, ", e);
+                throw new WTFException("WTF while using addCluster");
+            }
+        }
+        finally {
             hibSession.close();
         }
     }
@@ -293,7 +295,7 @@ public class ClusterImpl implements ClusterDao  {
     }
 
     @Override
-    public void  loadIndexedCluster(HttpServletRequest request, Integer clusterIndex)
+    public void loadIndexedCluster(HttpServletRequest request, Integer clusterIndex)
             throws WTFException, RoutineException {
 
         HttpSession httpSession = null;

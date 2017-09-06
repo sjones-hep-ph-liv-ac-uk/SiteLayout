@@ -41,6 +41,7 @@
         </td>
         <td></td>
         <td></td>
+        <td></td>
       </tr>
       <c:set var="index" value="-1" scope="page" />
       <c:forEach items="${nodeSetList}" var="nodeSet">
@@ -50,16 +51,16 @@
           <td><c:out value="${nodeSet.nodeType.nodeTypeName}" /></td>
           <td><c:out value="${nodeSet.nodeCount}" /></td>
           <td><c:out value="${nodeSet.cluster.clusterName}" /></td>
-          <td class="tg-yw4l"><input type="submit" value="Del"
-            name=DEL.${nodeSet.nodeSetName}></td>
-          <td class="tg-yw4l"><input type="submit" value="Edit"
-            name=ED.${index}></td> <!-- ${nodeSet.nodeSetName} -->
+          <td class="tg-yw4l"><input type="submit" value="Del" name=DEL.${nodeSet.nodeSetName}></td>
+          <td class="tg-yw4l"><input type="submit" value="Edit" name=ED.${index}></td> 
+          <td class="tg-yw4l"><input type="submit" value="View nodes" name=NODES.${nodeSet.nodeSetName}></td> 
         </tr>
       </c:forEach>
       <tr>
         <td><input type="submit" value="Back" name="Back" /></td>
         <td><input type="submit" value="New" name="New" /></td>
         <td><input type="submit" value="Refresh" name="Refresh" /></td>
+        <td></td>
         <td></td>
         <td></td>
         <td></td>

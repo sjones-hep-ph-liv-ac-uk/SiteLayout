@@ -1,4 +1,5 @@
 package com.basingwerk.sldb.mvc.dao;
+
 import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.exception.ConstraintViolationException;
 
 import com.basingwerk.sldb.mvc.exceptions.RoutineException;
 import com.basingwerk.sldb.mvc.exceptions.WTFException;
@@ -20,19 +20,22 @@ import com.basingwerk.sldb.mvc.model.Node;
 import com.basingwerk.sldb.mvc.model.NodeSet;
 import com.basingwerk.sldb.mvc.model.NodeState;
 
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.ListJoin;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.SetJoin;
+
 import com.basingwerk.sldb.mvc.dao.ClusterSetImpl;
 
-public class NodeImpl implements NodeDao  {
+public class NodeImpl implements NodeDao {
     final static Logger logger = Logger.getLogger(NodeImpl.class);
-    
+
     @Override
-    public   void updateNode(HttpServletRequest request) throws WTFException, RoutineException {
+    public void updateNode(HttpServletRequest request) throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -85,7 +88,7 @@ public class NodeImpl implements NodeDao  {
             storedNode.setNodeName(updatedNodeName);
             storedNode.setDescription(updateDescription);
             NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao");
-            NodeSet nodeSet = nodeSetDao .readOneNodeSet(hibSession, updatedNodeSet);
+            NodeSet nodeSet = nodeSetDao.readOneNodeSet(hibSession, updatedNodeSet);
             if (nodeSet == null) {
                 // Possibly deleted during long conversation
                 hibSession.getTransaction().rollback();
@@ -114,8 +117,9 @@ public class NodeImpl implements NodeDao  {
             hibSession.close();
         }
     }
+
     @Override
-    public   List<Node> readNodeList(Session hibSession, String col, String order) {
+    public List<Node> readNodeList(Session hibSession, String col, String order) {
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();
         CriteriaQuery<Node> cq = cb.createQuery(Node.class);
         cq.distinct(true);
@@ -129,8 +133,9 @@ public class NodeImpl implements NodeDao  {
         List<Node> theList = q.getResultList();
         return theList;
     }
+
     @Override
-    public   Node readOneNode(Session hibSession, String nodeName) {
+    public Node readOneNode(Session hibSession, String nodeName) {
         CriteriaBuilder cb = hibSession.getCriteriaBuilder();
         CriteriaQuery<Node> q = cb.createQuery(Node.class);
         Root<Node> root = q.from(Node.class);
@@ -138,8 +143,9 @@ public class NodeImpl implements NodeDao  {
         return hibSession.createQuery(q).getSingleResult();
 
     }
+
     @Override
-    public   void addNode(HttpServletRequest request) throws WTFException, RoutineException {
+    public void addNode(HttpServletRequest request) throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -161,9 +167,8 @@ public class NodeImpl implements NodeDao  {
 
         try {
             hibSession.beginTransaction();
-            NodeSetDao nodeSetDao  = (NodeSetDao) request.getSession().getAttribute("nodeSetDao"); 
+            NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao");
             NodeSet nodeSet = nodeSetDao.readOneNodeSet(hibSession, nodeSetName);
-            
 
             if (nodeSet == null) {
                 // Possibly deleted during long conversation
@@ -171,8 +176,9 @@ public class NodeImpl implements NodeDao  {
                 logger.error("While using addNode, desired NodeSet not found");
                 throw new RoutineException("While using addNode, desired NodeSet not found");
             }
-            NodeStateDao nodeStateDao  = (NodeStateDao) request.getSession().getAttribute("nodeStateDao"); 
+            NodeStateDao nodeStateDao = (NodeStateDao) request.getSession().getAttribute("nodeStateDao");
             NodeState nodeState = nodeStateDao.readOneNodeState(hibSession, nodeStateName);
+
             if (nodeState == null) {
                 // Possibly deleted during long conversation
                 hibSession.getTransaction().rollback();
@@ -187,20 +193,21 @@ public class NodeImpl implements NodeDao  {
 
             hibSession.save(n);
             hibSession.getTransaction().commit();
-        } catch (ConstraintViolationException e) {
-            hibSession.getTransaction().rollback();
-            logger.error("While using addNode, the nodeName conflicted with an existing node");
-            throw new RoutineException("While using addNode, the nodeName conflicted with an existing node");
-        } catch (HibernateException e) {
-            hibSession.getTransaction().rollback();
-            logger.error("WTF error using addNode, ", e);
-            throw new WTFException("WTF error using addNode");
+        } catch (PersistenceException e) {
+            if (Util.isIdClash(e)) {
+                hibSession.getTransaction().rollback();
+                throw new RoutineException("While using addNode, the nodeName conflicted with an existing node");
+            } else {
+                logger.error("WTF error using addNode, ", e);
+                throw new WTFException("WTF error using addNode");
+            }
         } finally {
             hibSession.close();
         }
     }
+
     @Override
-    public   void deleteNode(HttpServletRequest request, String nodeName) throws WTFException, RoutineException {
+    public void deleteNode(HttpServletRequest request, String nodeName) throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -232,8 +239,9 @@ public class NodeImpl implements NodeDao  {
             hibSession.close();
         }
     }
+
     @Override
-    public   void loadIndexedNode(HttpServletRequest request, Integer nodeIndex) throws WTFException, RoutineException {
+    public void loadIndexedNode(HttpServletRequest request, Integer nodeIndex) throws WTFException, RoutineException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -288,41 +296,9 @@ public class NodeImpl implements NodeDao  {
         }
         httpSession.setAttribute("node", storedNode);
     }
+
     @Override
-    public   void loadNodes(HttpServletRequest request, String col, String order) throws RoutineException, WTFException {
-        List<Node> nodeList = new ArrayList<Node>();
-
-        HttpSession httpSession = null;
-        SessionFactory fac = null;
-        Session hibSession = null;
-
-        httpSession = request.getSession();
-        fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
-        if (fac != null)
-            hibSession = fac.openSession();
-        if (hibSession == null)
-            throw new RoutineException("Hibernate session unavailable");
-
-        nodeList = null;
-        try {
-
-            hibSession.beginTransaction();
-
-            NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao");
-            nodeList = nodeDao.readNodeList(hibSession, col, order);
-
-            hibSession.getTransaction().commit();
-        } catch (HibernateException ex) {
-            hibSession.getTransaction().rollback();
-            logger.error("Had an error using loadNodes, ", ex);
-            throw new WTFException("Had an error using loadNodes");
-        } finally {
-            hibSession.close();
-        }
-        httpSession.setAttribute("nodeList", nodeList);
-    }
-    @Override
-    public   void toggleCheckedNodes(HttpServletRequest request) throws RoutineException, WTFException {
+    public void toggleCheckedNodes(HttpServletRequest request) throws RoutineException, WTFException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -361,8 +337,9 @@ public class NodeImpl implements NodeDao  {
             hibSession.close();
         }
     }
+
     @Override
-    public   void toggleIndexedNode(HttpServletRequest request, Integer nodeIndex) throws RoutineException, WTFException {
+    public void toggleIndexedNode(HttpServletRequest request, Integer nodeIndex) throws RoutineException, WTFException {
 
         HttpSession httpSession = null;
         SessionFactory fac = null;
@@ -394,6 +371,59 @@ public class NodeImpl implements NodeDao  {
         } finally {
             hibSession.close();
         }
+    }
+
+    @Override
+    public void loadNodesOfNodeSet(HttpServletRequest request, String nodeSetName, String col, String order)
+            throws RoutineException, WTFException {
+
+        HttpSession httpSession = null;
+        SessionFactory fac = null;
+        Session hibSession = null;
+
+        httpSession = request.getSession();
+        fac = (SessionFactory) httpSession.getAttribute("sessionFactory");
+        if (fac != null)
+            hibSession = fac.openSession();
+        if (hibSession == null)
+            throw new RoutineException("Hibernate session unavailable");
+
+        List<Node> nodeList = null;
+
+        try {
+            hibSession.beginTransaction();
+
+            nodeList = readNodesOfNodeSet(hibSession, nodeSetName, col, order);
+
+            hibSession.getTransaction().commit();
+        } catch (HibernateException ex) {
+            hibSession.getTransaction().rollback();
+            logger.error("WTF error using loadNodesOfNodeSet, ", ex);
+            throw new WTFException("WTF error using loadNodesOfNodeSet");
+        } finally {
+            hibSession.close();
+        }
+        httpSession.setAttribute("nodeList", nodeList);
+    }
+
+    @Override
+    public List<Node> readNodesOfNodeSet(Session hibSession, String nodeSetName, String col, String order) {
+        CriteriaBuilder builder = hibSession.getCriteriaBuilder();
+        CriteriaQuery<Node> cQuery = builder.createQuery(Node.class);
+        Root<Node> nodeRoot = cQuery.from(Node.class);
+        Root<NodeSet> nodeSetRoot = cQuery.from(NodeSet.class);
+        Join<NodeSet, Node> theJoin = nodeSetRoot.join("nodes");
+        cQuery.distinct(true);
+        cQuery.select(theJoin).where(builder.equal(nodeSetRoot.get("nodeSetName"), nodeSetName));
+
+        if (order.equalsIgnoreCase("ASC")) {
+            cQuery.orderBy(builder.asc(theJoin.get(col)));
+        } else {
+            cQuery.orderBy(builder.desc(theJoin.get(col)));
+        }
+
+        List<Node> nodeList = hibSession.createQuery(cQuery).getResultList();
+        return nodeList;
     }
 
 }

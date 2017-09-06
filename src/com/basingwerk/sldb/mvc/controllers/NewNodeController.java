@@ -11,6 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import org.apache.log4j.Logger;
@@ -49,7 +50,9 @@ public class NewNodeController extends HttpServlet {
 
         try {
             NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao");
-            nodeDao.loadNodes(request, "nodeName", "ASC");
+            HttpSession httpSession = request.getSession();
+            String nodeSetName = (String) httpSession.getAttribute("nodeSetName");
+            nodeDao.loadNodesOfNodeSet(request, nodeSetName , "nodeName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error using loadNodes, ", e);
             rd = request.getRequestDispatcher("/error.jsp");
