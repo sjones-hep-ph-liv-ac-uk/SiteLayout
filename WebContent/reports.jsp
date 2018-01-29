@@ -2,7 +2,6 @@
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.HashMap"%>
 <%@ page import="com.basingwerk.sldb.mvc.model.NodeType"%>
-<%@ page import="com.basingwerk.sldb.mvc.model.NodeSetNodeTypeJoin"%>
 
 <% List nodeTypeList = (List) request.getAttribute("nodeTypeList"); %>
 <% NodeType baseline = (NodeType) request.getAttribute("baseline"); %>
