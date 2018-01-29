@@ -1,3 +1,6 @@
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.HashMap" %>
+
 <html>
   <link rel="stylesheet" href="${pageContext.request.contextPath}/SiteLayout.css">
 <head>
