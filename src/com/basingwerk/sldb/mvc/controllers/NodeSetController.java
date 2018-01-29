@@ -157,13 +157,9 @@ public class NodeSetController extends HttpServlet {
                 rd.forward(request, response);
                 return;
             }
-            // NODES.${nodeSet.nodeSetName}
             if (key.startsWith("NODES.")) {
                 String nodeSetName = key.substring(6, key.length());
                 try {
-                    // NodeSetDao nodeSetDao = (NodeSetDao)
-                    // request.getSession().getAttribute("nodeSetDao");
-                    // nodeSetDao.deleteNodeSet(request, nodeSetName);
                     NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao");
                     nodeDao.loadNodesOfNodeSet(request, nodeSetName, "nodeName", "ASC");
                     HttpSession httpSession = request.getSession();
