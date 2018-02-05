@@ -149,7 +149,7 @@ public class NodeTypeImpl implements NodeTypeDao {
             hibSession.beginTransaction();
             nt.setNodeTypeName(nodeTypeName);
             nt.setCpu(Integer.parseInt(cpu));
-            nt.setHs06PerSlot(Integer.parseInt(hs06PerSlot));
+            nt.setHs06PerSlot(Double.parseDouble(hs06PerSlot));
             nt.setSlot(Integer.parseInt(slot));
             nt.setMemPerNode(Integer.parseInt(memPerNode));
 
@@ -165,6 +165,10 @@ public class NodeTypeImpl implements NodeTypeDao {
                 logger.error("WTF error using addNodeType, ", e);
                 throw new WTFException("WTF while using addNodeType");
             }
+        } catch (java.lang.NumberFormatException e) {
+            hibSession.getTransaction().rollback();
+            throw new RoutineException(
+                    "While using addNodeType, a number was poorly formatted");
         }
         finally {
             hibSession.close();
