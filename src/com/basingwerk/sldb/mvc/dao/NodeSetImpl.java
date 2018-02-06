@@ -1,7 +1,9 @@
 package com.basingwerk.sldb.mvc.dao;
 import org.apache.log4j.Logger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -224,6 +226,9 @@ public class NodeSetImpl implements NodeSetDao  {
         }
         try {
             hibSession.beginTransaction();
+            Cluster c = nodeSet.getCluster();
+            Map<String, NodeSet> m = c.getNodeSets();
+            m.remove(nodeSet.getNodeSetName());
             hibSession.delete(nodeSet);
             hibSession.getTransaction().commit();
         } catch (HibernateException ex) {
@@ -308,6 +313,7 @@ public class NodeSetImpl implements NodeSetDao  {
         if (hibSession == null)
             throw new RoutineException("Hibernate session unavailable");
 
+        
         List<NodeSet> nodeSetList = new ArrayList<NodeSet>();
         try {
 
