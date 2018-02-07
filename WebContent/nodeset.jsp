@@ -1,4 +1,6 @@
 <%@ page import="java.util.List"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <% List nodeSetList = (List) session.getAttribute("nodeSetList"); %>
 
 <html> 
@@ -27,13 +29,6 @@
         </td>
         <td>
           <input type="image" src="Down-48.png" alt="Submit" width="15px"
-          height="15px" value="SORTDOWN.nodeCount" name="SORTDOWN.nodeCount">
-        Count
-          <input type="image" src="Up-48.png" alt="Submit" width="15px"
-          height="15px" value="SORTUP.nodeCount" name="SORTUP.nodeCount">
-        </td>
-        <td>
-          <input type="image" src="Down-48.png" alt="Submit" width="15px"
           height="15px" value="SORTDOWN.cluster" name="SORTDOWN.cluster">
         Cluster
           <input type="image" src="Up-48.png" alt="Submit" width="15px"
@@ -49,7 +44,6 @@
         <tr>
           <td><c:out value="${nodeSet.nodeSetName}" /></td>
           <td><c:out value="${nodeSet.nodeType.nodeTypeName}" /></td>
-          <td><c:out value="${nodeSet.nodeCount}" /></td>
           <td><c:out value="${nodeSet.cluster.clusterName}" /></td>
           <td class="tg-yw4l"><input type="submit" value="Del" name=DEL.${nodeSet.nodeSetName}></td>
           <td class="tg-yw4l"><input type="submit" value="Edit" name=ED.${index}></td> 
@@ -60,7 +54,6 @@
         <td><input type="submit" value="Back" name="Back" /></td>
         <td><input type="submit" value="New" name="New" /></td>
         <td><input type="submit" value="Refresh" name="Refresh" /></td>
-        <td></td>
         <td></td>
         <td></td>
         <td></td>

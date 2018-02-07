@@ -1,4 +1,5 @@
 <%@ page import="java.util.List"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <% List nodeList = (List) session.getAttribute("nodeList"); %>
 
 <html> 
@@ -6,7 +7,7 @@
 <head> <title>Nodes</title> </head>
 
 <body>
-  Nodes
+  Displaying ${fn:length(nodeList)} nodes.
 
   <form action="NodeController" method="post">
     <table class="tg">

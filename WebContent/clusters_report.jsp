@@ -1,11 +1,12 @@
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.HashMap"%>
 <%@ page import="com.basingwerk.sldb.mvc.model.NodeType"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <% List nodeTypeList = (List) request.getAttribute("nodeTypeList"); %>
 <% NodeType baseline = (NodeType) request.getAttribute("baseline"); %>
 <% List clusterList = (List) request.getAttribute("clusterList"); %>
-
+ 
 <html>
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/SiteLayout.css">
@@ -87,17 +88,16 @@
 					<tr>
 						<td><c:out value="${nodeset.nodeSetName}" /></td>
 						<td><c:out value="${nodeset.nodeType.nodeTypeName}" /></td>
-						<td><c:out value="${nodeset.nodeCount}" /></td>
+						<td><c:out value=" ${fn:length(nodeset.nodes)}" /></td>
 						<td><c:out value="${nodeset.nodeType.cpu}" /></td>
 						<td><c:out value="${nodeset.nodeType.slot}" /></td>
 						<td><c:out value="${nodeset.nodeType.hs06PerSlot}" /></td>
 						<td><fmt:formatNumber type="number" groupingUsed="0"
 								maxFractionDigits="4"
-								value="${nodeset.nodeType.hs06PerSlot * nodeset.nodeType.slot * nodeset.nodeCount}" /></td>
-
-						<c:set var="clusterHs06" value="${clusterHs06 +  nodeset.nodeType.hs06PerSlot * nodeset.nodeType.slot * nodeset.nodeCount}" />
-						<c:set var="clusterPhysicalCpus" value="${clusterPhysicalCpus + nodeset.nodeType.cpu * nodeset.nodeCount}" />
-						<c:set var="clusterLogicalCpus" value="${ clusterLogicalCpus + nodeset.nodeType.slot * nodeset.nodeCount}" />
+								value="${nodeset.nodeType.hs06PerSlot * nodeset.nodeType.slot * fn:length(nodeset.nodes)}" /></td>
+						<c:set var="clusterHs06" value="${clusterHs06 +  nodeset.nodeType.hs06PerSlot * nodeset.nodeType.slot * fn:length(nodeset.nodes)}" />
+						<c:set var="clusterPhysicalCpus" value="${clusterPhysicalCpus + nodeset.nodeType.cpu * fn:length(nodeset.nodes)}" />
+						<c:set var="clusterLogicalCpus" value="${ clusterLogicalCpus + nodeset.nodeType.slot * fn:length(nodeset.nodes)}" />
 					</tr>
 				</c:forEach>
 			</table>

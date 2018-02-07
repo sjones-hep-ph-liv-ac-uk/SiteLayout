@@ -27,11 +27,6 @@ function validateForm() {
     alert("Node set name must be filled out");
     return false;
   }
-  var nodeCount = document.forms["NewNodeSetForm"]["nodeCount"].value;
-  if (! isInt(nodeCount)) {
-    alert("Node count must be an integer value");
-    return false;
-  }
 }
 </script>
 </head>
@@ -41,7 +36,6 @@ function validateForm() {
     method="post" onsubmit="return validateForm()">
 
     Node set name : <input type="text" name="nodeSetName"> <br>
-    Node count : <input type="text" name="nodeCount"> <br>
     Node type : <select name='nodeTypeList'>
       <c:forEach items="${nodeTypeList}" var="nt">
         <c:if test="${nt.nodeTypeName != 'BASELINE'}">

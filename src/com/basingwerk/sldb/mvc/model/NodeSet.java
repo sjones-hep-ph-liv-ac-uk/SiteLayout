@@ -19,7 +19,7 @@ import javax.persistence.Version;
 @Table(name = "NodeSet")
 public class NodeSet {
 
-    @OneToMany(mappedBy = "nodeSet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "nodeSet", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @MapKey(name="nodeName")
     private Map<String, Node> nodes = new HashMap<String,Node>();
     
@@ -45,6 +45,7 @@ public class NodeSet {
     @Id
     private String nodeSetName;
 
+    // This field is redundant, due to Nodes table.
     private Integer nodeCount;
 
     @ManyToOne
