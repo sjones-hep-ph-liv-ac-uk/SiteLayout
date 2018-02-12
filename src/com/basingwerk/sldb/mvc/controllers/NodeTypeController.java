@@ -41,6 +41,8 @@ public class NodeTypeController extends HttpServlet {
         if (act != null) {
             try {
                 NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");            
+                if (nodeTypeDao  == null)
+                    throw new WTFException("Session timed out. Log back in.");
                 nodeTypeDao.loadNodeTypes(request, "nodeTypeName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using loadNodeTypes");
@@ -80,6 +82,8 @@ public class NodeTypeController extends HttpServlet {
                 }
                 try {
                     NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");            
+                    if (nodeTypeDao  == null)
+                        throw new WTFException("Session timed out. Log back in.");
                     nodeTypeDao.loadNodeTypes(request, c, order);
                 } catch (WTFException e) {
                     logger.error("WTF! Error refreshing node types, ", e);
@@ -107,6 +111,8 @@ public class NodeTypeController extends HttpServlet {
                 }
                 try {
                     NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");            
+                    if (nodeTypeDao  == null)
+                        throw new WTFException("Session timed out. Log back in.");
                     nodeTypeDao.deleteNodeType(request, nodeType);
                 } catch (RoutineException e) {
                     request.setAttribute("theMessage", "The node type could not be deleted. Please try again.");
@@ -123,6 +129,8 @@ public class NodeTypeController extends HttpServlet {
                 }
                 try {
                     NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");            
+                    if (nodeTypeDao  == null)
+                        throw new WTFException("Session timed out. Log back in.");
                     nodeTypeDao.loadNodeTypes(request, "nodeTypeName", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error when using refreshNodeTypes, ", e);
@@ -145,6 +153,8 @@ public class NodeTypeController extends HttpServlet {
                 Integer index = Integer.parseInt(nodeType);
                 try {
                     NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");            
+                    if (nodeTypeDao  == null)
+                        throw new WTFException("Session timed out. Log back in.");
                     nodeTypeDao.loadIndexedNodeType(request, index);
                 } catch (RoutineException e) {
                     request.setAttribute("theMessage",

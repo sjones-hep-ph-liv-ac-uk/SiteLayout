@@ -49,6 +49,8 @@ public class InstallationController extends HttpServlet {
         if (act != null) {
             try {
                 InstallationDao installationDao = (InstallationDao) request.getSession().getAttribute("installationDao"); 
+                if (installationDao  == null)
+                    throw new WTFException("Session timed out. Log back in.");
                 installationDao.loadInstallations(request, "serviceNode", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using refreshInstallations");
@@ -70,8 +72,12 @@ public class InstallationController extends HttpServlet {
 
             try {
                 ServiceDao serviceDao = (ServiceDao) request.getSession().getAttribute("serviceDao");
+                if (serviceDao  == null)
+                    throw new WTFException("Session timed out. Log back in.");
                 serviceDao .loadServices(request, "serviceName", "ASC");
                 ServiceNodeDao serviceNodeDao = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao");
+                if (serviceNodeDao  == null)
+                    throw new WTFException("Session timed out. Log back in.");
                 serviceNodeDao.loadServiceNodes(request, "hostname", "ASC");
 
             } catch (WTFException e) {
@@ -108,6 +114,8 @@ public class InstallationController extends HttpServlet {
 
                 try {
                     InstallationDao installationDao = (InstallationDao) request.getSession().getAttribute("installationDao"); 
+                    if (installationDao  == null)
+                        throw new WTFException("Session timed out. Log back in.");
                     installationDao.loadInstallations(request, c, order);
                 } catch (WTFException e) {
                     logger.error("WTF! Error using refreshInstallations, ", e);
@@ -131,6 +139,8 @@ public class InstallationController extends HttpServlet {
                 Integer index = Integer.parseInt(installation);
                 try {
                     InstallationDao installationDao = (InstallationDao) request.getSession().getAttribute("installationDao"); 
+                    if (installationDao  == null)
+                        throw new WTFException("Session timed out. Log back in.");
                     installationDao.deleteIndexedInstallation(request, index);
                 } catch (RoutineException e) {
                     request.setAttribute("theMessage",
@@ -148,6 +158,8 @@ public class InstallationController extends HttpServlet {
 
                 try {
                     InstallationDao installationDao = (InstallationDao) request.getSession().getAttribute("installationDao"); 
+                    if (installationDao  == null)
+                        throw new WTFException("Session timed out. Log back in.");
                     installationDao.loadInstallations(request, "serviceNode", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error using loadInstallations.");
@@ -170,6 +182,8 @@ public class InstallationController extends HttpServlet {
                 Integer index = Integer.parseInt(installation);
                 try {
                     InstallationDao installationDao = (InstallationDao) request.getSession().getAttribute("installationDao"); 
+                    if (installationDao  == null)
+                        throw new WTFException("Session timed out. Log back in.");
                     installationDao.loadIndexedInstallation(request, index);
                 } catch (RoutineException e) {
                     request.setAttribute("theMessage",
@@ -187,8 +201,12 @@ public class InstallationController extends HttpServlet {
 
                 try {
                     ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
+                    if (clusterDao  == null)
+                        throw new WTFException("Session timed out. Log back in.");
                     clusterDao.loadClusters(request, "clusterName", "ASC");
                     NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");            
+                    if (nodeTypeDao  == null)
+                        throw new WTFException("Session timed out. Log back in.");
                     nodeTypeDao.loadNodeTypes(request, "nodeTypeName", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error preparing data, ", e);

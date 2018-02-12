@@ -29,6 +29,8 @@ public class EditInstallationController extends HttpServlet {
 
         try {
             InstallationDao installationDao = (InstallationDao) request.getSession().getAttribute("installationDao");
+            if (installationDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             installationDao.updateInstallation(request);
             
         } catch (WTFException e) {
@@ -45,6 +47,8 @@ public class EditInstallationController extends HttpServlet {
         }            
         try {
             InstallationDao installationDao = (InstallationDao) request.getSession().getAttribute("installationDao");
+            if (installationDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             installationDao.loadInstallations(request, "serviceNode", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error using refreshInstallations");

@@ -51,6 +51,8 @@ public class MainScreenController extends HttpServlet {
             String next = "";
             if (act.equals("Edit cluster sets")) {
                 ClusterSetDao clusterSetDao = (ClusterSetDao) request.getSession().getAttribute("clusterSetDao");
+                if (clusterSetDao  == null)
+                    throw new WTFException("Session timed out. Log back in.");
                 clusterSetDao.loadClusterSets(request, "clusterSetName", "ASC");
                 next = "/cluster_set.jsp";
                 rd = request.getRequestDispatcher(next);
@@ -60,6 +62,8 @@ public class MainScreenController extends HttpServlet {
 
             if (act.equals("Edit node types")) {
                 NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");            
+                if (nodeTypeDao  == null)
+                    throw new WTFException("Session timed out. Log back in.");
                 nodeTypeDao.loadNodeTypes(request, "nodeTypeName", "ASC");
                 next = "/nodetype.jsp";
                 rd = request.getRequestDispatcher(next);
@@ -69,6 +73,8 @@ public class MainScreenController extends HttpServlet {
 
             if (act.equals("Edit clusters")) {
                 ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
+                if (clusterDao  == null)
+                    throw new WTFException("Session timed out. Log back in.");
                 clusterDao.loadClusters(request, "clusterName", "ASC");
                 next = "/cluster.jsp";
                 rd = request.getRequestDispatcher(next);
@@ -77,6 +83,8 @@ public class MainScreenController extends HttpServlet {
             }
             if (act.equals("Edit node sets")) {
                 NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao");            
+                if (nodeSetDao  == null)
+                    throw new WTFException("Session timed out. Log back in.");
                 nodeSetDao.loadNodeSets(request, "nodeSetName", "ASC");
                 next = "/nodeset.jsp";
                 rd = request.getRequestDispatcher(next);
@@ -85,6 +93,8 @@ public class MainScreenController extends HttpServlet {
             }
             if (act.equals("Edit service nodes")) {
                 ServiceNodeDao serviceNodeDao = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao");            
+                if (serviceNodeDao  == null)
+                    throw new WTFException("Session timed out. Log back in.");
                 serviceNodeDao.loadServiceNodes(request, "hostname", "ASC");
                 next = "/service_node.jsp";
                 rd = request.getRequestDispatcher(next);
@@ -93,6 +103,8 @@ public class MainScreenController extends HttpServlet {
             }
             if (act.equals("Edit service installations")) {
                 InstallationDao installationDao = (InstallationDao) request.getSession().getAttribute("installationDao"); 
+                if (installationDao  == null)
+                    throw new WTFException("Session timed out. Log back in.");
                 installationDao.loadInstallations(request, "serviceNode", "ASC");
                 next = "/installation.jsp";
                 rd = request.getRequestDispatcher(next);

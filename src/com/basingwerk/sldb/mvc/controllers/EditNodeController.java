@@ -29,6 +29,8 @@ public class EditNodeController extends HttpServlet {
 
         try {
             NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao"); 
+            if (nodeDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             nodeDao.updateNode(request);
             
         } catch (WTFException e) {
@@ -45,6 +47,8 @@ public class EditNodeController extends HttpServlet {
         }            
         try {
             NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao");
+            if (nodeDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             HttpSession httpSession = request.getSession();
             String nodeSetName = (String) httpSession.getAttribute("nodeSetName");
             nodeDao.loadNodesOfNodeSet(request, nodeSetName , "nodeName", "ASC");

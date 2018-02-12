@@ -83,6 +83,8 @@ public class ClusterImpl implements ClusterDao {
             storedCluster.setClusterName(updatedClusterName);
             storedCluster.setDescr(updatedDescr);
             ClusterSetDao clusterSetDao = (ClusterSetDao) request.getSession().getAttribute("clusterSetDao");
+            if (clusterSetDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             ClusterSet newClusterSet = clusterSetDao.readOneClusterSet(hibSession, updatedClusterSetName);
 
             if (newClusterSet == null) {
@@ -170,6 +172,8 @@ public class ClusterImpl implements ClusterDao {
         try {
             hibSession.beginTransaction();
             ClusterSetDao clusterSetDao = (ClusterSetDao) request.getSession().getAttribute("clusterSetDao");
+            if (clusterSetDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             ClusterSet cs = clusterSetDao.readOneClusterSet(hibSession, clusterSetName);
 
             if (cs == null) {

@@ -28,6 +28,8 @@ public class EditServiceNodeController extends HttpServlet {
 
         try {
             ServiceNodeDao serviceNodeDao = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao"); 
+            if (serviceNodeDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             serviceNodeDao.updateServiceNode(request);
             
         } catch (WTFException e) {
@@ -44,6 +46,8 @@ public class EditServiceNodeController extends HttpServlet {
         }            
         try {
             ServiceNodeDao serviceNodeDao = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao"); 
+            if (serviceNodeDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             serviceNodeDao.loadServiceNodes(request, "hostname", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error using loadServiceNodes");

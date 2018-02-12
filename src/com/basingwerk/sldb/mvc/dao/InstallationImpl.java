@@ -168,6 +168,8 @@ public class InstallationImpl implements InstallationDao {
         try {
             hibSession.beginTransaction();
             ServiceNodeDao serviceNodeDao = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao");
+            if (serviceNodeDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             ServiceNode sn = serviceNodeDao.readOneServiceNode(hibSession, hostname);
             if (sn == null) {
                 // Possibly deleted during long conversation
@@ -176,6 +178,8 @@ public class InstallationImpl implements InstallationDao {
                 throw new RoutineException("While using addInstallation, desired ServiceNode not found");
             }
             ServiceDao serviceDao = (ServiceDao) request.getSession().getAttribute("serviceDao");
+            if (serviceDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             Service s = serviceDao.readOneService(hibSession, serviceName);
             if (s == null) {
                 // Possibly deleted during long conversation
@@ -347,6 +351,8 @@ public class InstallationImpl implements InstallationDao {
 
             hibSession.beginTransaction();
             InstallationDao installationDao = (InstallationDao) request.getSession().getAttribute("installationDao");
+            if (installationDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             installationList = installationDao.readInstallationList(hibSession, col, order);
 
             hibSession.getTransaction().commit();

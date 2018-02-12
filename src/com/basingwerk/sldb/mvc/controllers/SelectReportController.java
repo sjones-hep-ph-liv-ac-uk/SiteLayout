@@ -43,6 +43,8 @@ public class SelectReportController extends HttpServlet {
             
             if (act.equals("Worker node, cluster and node type report")) {
                 ClusterSetDao clusterSetDao = (ClusterSetDao) request.getSession().getAttribute("clusterSetDao");
+                if (clusterSetDao == null)
+                    throw new WTFException("Session timed out. Log back in.");
                 clusterSetDao.loadClusterSets(request, "clusterSetName", "ASC");
                 next = "/select_cluster_set.jsp";
                 rd = request.getRequestDispatcher(next);
@@ -53,6 +55,8 @@ public class SelectReportController extends HttpServlet {
             
             if (act.equals("Service node and services report")) {
                 InstallationDao installationDao = (InstallationDao) request.getSession().getAttribute("installationDao"); 
+                if (installationDao  == null)
+                    throw new WTFException("Session timed out. Log back in.");
                 installationDao.loadInstallations(request, "serviceNode", "ASC");
                 next = "/services_report.jsp";
                 rd = request.getRequestDispatcher(next);

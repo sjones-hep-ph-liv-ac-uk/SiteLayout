@@ -29,6 +29,8 @@ public class EditNodeSetController extends HttpServlet {
 
         try {
             NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao"); 
+            if (nodeSetDao == null)
+                throw new WTFException("Session timed out. Log back in.");
 
             nodeSetDao.updateNodeSet(request);
             
@@ -46,6 +48,8 @@ public class EditNodeSetController extends HttpServlet {
         }            
         try {
             NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao"); 
+            if (nodeSetDao == null)
+                throw new WTFException("Session timed out. Log back in.");
             nodeSetDao.loadNodeSets(request, "nodeSetName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error using refreshNodeSets");

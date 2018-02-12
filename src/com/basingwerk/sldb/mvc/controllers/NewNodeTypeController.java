@@ -30,6 +30,8 @@ public class NewNodeTypeController extends HttpServlet {
 
         try {
             NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");            
+            if (nodeTypeDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             nodeTypeDao.addNodeType(request);
         } catch (RoutineException e) {
             request.setAttribute("theMessage", "The node type could not be added. Please try again." + e.getMessage());
@@ -47,6 +49,8 @@ public class NewNodeTypeController extends HttpServlet {
         try {
            
             NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");            
+            if (nodeTypeDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             nodeTypeDao.loadNodeTypes(request, "nodeTypeName", "ASC");
            
         } catch (WTFException e) {

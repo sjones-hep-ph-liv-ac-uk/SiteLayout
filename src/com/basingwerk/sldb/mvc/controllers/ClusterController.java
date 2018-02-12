@@ -41,6 +41,8 @@ public class ClusterController extends HttpServlet {
         if (act != null) {
             try {
                 ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");  
+                if (clusterDao == null)
+                    throw new WTFException("Session timed out. Log back in.");
                 clusterDao.loadClusters(request, "clusterName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using loadClusters");
@@ -62,6 +64,8 @@ public class ClusterController extends HttpServlet {
 
             try {
                 ClusterSetDao clusterSetDao = (ClusterSetDao) request.getSession().getAttribute("clusterSetDao");  
+                if (clusterSetDao == null)
+                    throw new WTFException("Session timed out. Log back in.");
                 clusterSetDao.loadClusterSets(request, "clusterSetName", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error while using loadClusterSets, ", e);
@@ -97,6 +101,8 @@ public class ClusterController extends HttpServlet {
 
                 try {
                     ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
+                    if (clusterDao == null)
+                        throw new WTFException("Session timed out. Log back in.");
                     clusterDao.loadClusters(request, c, order);
                 } catch (WTFException e) {
                     logger.error("WTF! Error while using loadClusters");
@@ -118,6 +124,8 @@ public class ClusterController extends HttpServlet {
                 String cluster = key.substring(4, key.length());
                 try {
                     ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
+                    if (clusterDao == null)
+                        throw new WTFException("Session timed out. Log back in.");
                     clusterDao.deleteCluster(request, cluster);
                 } catch (RoutineException e) {
                     request.setAttribute("theMessage",
@@ -135,6 +143,8 @@ public class ClusterController extends HttpServlet {
 
                 try {
                     ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
+                    if (clusterDao == null)
+                        throw new WTFException("Session timed out. Log back in.");
                     clusterDao.loadClusters(request, "clusterName", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error while using loadClusters");
@@ -156,8 +166,12 @@ public class ClusterController extends HttpServlet {
                 Integer index = Integer.parseInt(cluster);
                 try {
                     ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
+                    if (clusterDao == null)
+                        throw new WTFException("Session timed out. Log back in.");
                     clusterDao.loadIndexedCluster(request, index);
                     ClusterSetDao clusterSetDao = (ClusterSetDao) request.getSession().getAttribute("clusterSetDao");
+                    if (clusterSetDao == null)
+                        throw new WTFException("Session timed out. Log back in.");
                     clusterSetDao.loadClusterSets(request, "clusterSetName", "ASC");
                 } catch (RoutineException e) {
 

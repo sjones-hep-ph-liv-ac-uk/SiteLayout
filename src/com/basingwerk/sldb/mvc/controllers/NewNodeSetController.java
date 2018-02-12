@@ -31,6 +31,8 @@ public class NewNodeSetController extends HttpServlet {
 
         try {
             NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao");
+            if (nodeSetDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             nodeSetDao.addNodeSet(request);
         } catch (RoutineException e) {
             request.setAttribute("theMessage",
@@ -49,6 +51,8 @@ public class NewNodeSetController extends HttpServlet {
         try {
             
             NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao");
+            if (nodeSetDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             nodeSetDao.loadNodeSets(request, "nodeSetName", "ASC");
             
         } catch (WTFException e) {

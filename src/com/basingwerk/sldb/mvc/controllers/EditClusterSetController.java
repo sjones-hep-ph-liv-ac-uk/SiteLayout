@@ -27,7 +27,8 @@ public class EditClusterSetController extends HttpServlet {
         RequestDispatcher rd = null;
         try {
             ClusterSetDao clusterSetDao = (ClusterSetDao) request.getSession().getAttribute("clusterSetDao");
-            
+            if (clusterSetDao == null)
+                throw new WTFException("Session timed out. Log back in.");
             clusterSetDao.updateClusterSet(request);
             
         } catch (WTFException e) {
@@ -44,6 +45,8 @@ public class EditClusterSetController extends HttpServlet {
         }
         try {
             ClusterSetDao clusterSetDao = (ClusterSetDao) request.getSession().getAttribute("clusterSetDao");
+            if (clusterSetDao == null)
+                throw new WTFException("Session timed out. Log back in.");
             clusterSetDao.loadClusterSets(request, "clusterSetName", "ASC");
             String next = "/cluster_set.jsp";
             rd = request.getRequestDispatcher(next);

@@ -48,6 +48,8 @@ public class NodeController extends HttpServlet {
         if (act != null) {
             try {
                 NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao");
+                if (nodeDao  == null)
+                    throw new WTFException("Session timed out. Log back in.");
                 HttpSession httpSession = request.getSession();
                 String nodeSetName = (String) httpSession.getAttribute("nodeSetName");
                 nodeDao.loadNodesOfNodeSet(request, nodeSetName , "nodeName", "ASC");
@@ -71,6 +73,8 @@ public class NodeController extends HttpServlet {
 
             try {
                 NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao"); 
+                if (nodeDao  == null)
+                    throw new WTFException("Session timed out. Log back in.");
                 nodeDao.toggleCheckedNodes(request);
                 HttpSession httpSession = request.getSession();
                 String nodeSetName = (String) httpSession.getAttribute("nodeSetName");
@@ -95,8 +99,12 @@ public class NodeController extends HttpServlet {
 
             try {
                 NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao"); 
+                if (nodeSetDao  == null)
+                    throw new WTFException("Session timed out. Log back in.");
                 nodeSetDao.loadNodeSets(request, "nodeSetName", "ASC");
                 NodeStateDao nodeStateDao = (NodeStateDao) request.getSession().getAttribute("nodeStateDao"); 
+                if (nodeStateDao  == null)
+                    throw new WTFException("Session timed out. Log back in.");
                 nodeStateDao.loadNodeStates(request, "state", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error preparing data, ", e);
@@ -133,6 +141,8 @@ public class NodeController extends HttpServlet {
 
                 try {
                     NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao"); 
+                    if (nodeDao  == null)
+                        throw new WTFException("Session timed out. Log back in.");
                     HttpSession httpSession = request.getSession();
                     String nodeSetName = (String) httpSession.getAttribute("nodeSetName");
                     nodeDao.loadNodesOfNodeSet(request, nodeSetName , c, order);
@@ -157,6 +167,8 @@ public class NodeController extends HttpServlet {
                 String node = key.substring(4, key.length());
                 try {
                     NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao"); 
+                    if (nodeDao  == null)
+                        throw new WTFException("Session timed out. Log back in.");
                     nodeDao.deleteNode(request, node);
                 } catch (RoutineException e) {
                     logger.error("WTF! Error deleting a node, ", e);
@@ -171,6 +183,8 @@ public class NodeController extends HttpServlet {
                 }
                 try {
                     NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao");
+                    if (nodeDao  == null)
+                        throw new WTFException("Session timed out. Log back in.");
                     HttpSession httpSession = request.getSession();
                     String nodeSetName = (String) httpSession.getAttribute("nodeSetName");
                     nodeDao.loadNodesOfNodeSet(request, nodeSetName , "nodeName", "ASC");
@@ -194,6 +208,8 @@ public class NodeController extends HttpServlet {
                 Integer index = Integer.parseInt(node);
                 try {
                     NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao"); 
+                    if (nodeDao  == null)
+                        throw new WTFException("Session timed out. Log back in.");
                     nodeDao.loadIndexedNode(request, index);
                 } catch (RoutineException e) {
                     request.setAttribute("theMessage",
@@ -210,9 +226,14 @@ public class NodeController extends HttpServlet {
                 }
 
                 try {
-                    NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao"); 
+                    NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao");
+                    if (nodeSetDao  == null)
+                        throw new WTFException("Session timed out. Log back in.");
+                    
                     nodeSetDao.loadNodeSets(request, "nodeSetName", "ASC");
                     NodeStateDao nodeStateDao = (NodeStateDao) request.getSession().getAttribute("nodeStateDao"); 
+                    if (nodeStateDao  == null)
+                        throw new WTFException("Session timed out. Log back in.");
                     nodeStateDao.loadNodeStates(request, "state", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error preparing data, ", e);
@@ -235,7 +256,10 @@ public class NodeController extends HttpServlet {
                 String node = key.substring(4, key.length());
                 Integer index = Integer.parseInt(node);
                 try {
-                    NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao"); 
+                    NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao");
+                    if (nodeDao  == null)
+                        throw new WTFException("Session timed out. Log back in.");
+                    
                     nodeDao.loadIndexedNode(request, index);
                     nodeDao.toggleIndexedNode(request, index);
                 } catch (WTFException e) {

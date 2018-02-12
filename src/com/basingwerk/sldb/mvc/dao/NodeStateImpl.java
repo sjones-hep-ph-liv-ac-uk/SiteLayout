@@ -75,6 +75,8 @@ public class NodeStateImpl implements NodeStateDao  {
 
             hibSession.beginTransaction();
             NodeStateDao nodeStateDao = (NodeStateDao) request.getSession().getAttribute("nodeStateDao");
+            if (nodeStateDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             nodeStateList = nodeStateDao.readNodeStateList(hibSession, col, order);
 
         } catch (HibernateException ex) {

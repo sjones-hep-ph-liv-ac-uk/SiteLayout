@@ -30,6 +30,8 @@ public class NewClusterSetController extends HttpServlet {
 
         try {
             ClusterSetDao clusterSetDao = (ClusterSetDao) request.getSession().getAttribute("clusterSetDao");
+            if (clusterSetDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             clusterSetDao.addClusterSet(request);
         } catch (RoutineException e) {
             request.setAttribute("theMessage",
@@ -47,6 +49,8 @@ public class NewClusterSetController extends HttpServlet {
 
         try {
             ClusterSetDao clusterSetDao = (ClusterSetDao) request.getSession().getAttribute("clusterSetDao");
+            if (clusterSetDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             clusterSetDao.loadClusterSets(request, "clusterSetName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error when using queryClusterSetList");

@@ -97,6 +97,8 @@ public class ServiceNodeImpl implements ServiceNodeDao  {
             storedServiceNode.setComment(updatedComment);
 
             ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
+            if (clusterDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             Cluster cluster = clusterDao.readOneCluster(hibSession, updatedCluster);
             if (cluster == null) {
                 // Possibly deleted during long conversation
@@ -107,6 +109,8 @@ public class ServiceNodeImpl implements ServiceNodeDao  {
             storedServiceNode.setCluster(cluster);
 
             HostSystemDao hostSystemDao = (HostSystemDao) request.getSession().getAttribute("hostSystemDao");
+            if (hostSystemDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             HostSystem hostSystem = hostSystemDao.readOneHostSystem(hibSession, updatedHostSystem);
             if (hostSystem == null) {
                 // Possibly deleted during long conversation
@@ -183,6 +187,8 @@ public class ServiceNodeImpl implements ServiceNodeDao  {
             hibSession.beginTransaction();
 
             ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
+            if (clusterDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             Cluster cl = clusterDao.readOneCluster(hibSession, cluster);
             if (cl == null) {
                 // Possibly deleted during long conversation
@@ -191,6 +197,8 @@ public class ServiceNodeImpl implements ServiceNodeDao  {
                 throw new RoutineException("While using addServiceNode, desired Cluster not found");
             }
             HostSystemDao hostSystemDao = (HostSystemDao) request.getSession().getAttribute("hostSystemDao");
+            if (hostSystemDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             HostSystem hs = hostSystemDao.readOneHostSystem(hibSession, hostSystem);
 
             if (hs == null) {
@@ -291,6 +299,8 @@ public class ServiceNodeImpl implements ServiceNodeDao  {
 
             Long cachedVersion = cachedServiceNode.getVersion();
             ServiceNodeDao serviceNodeDao  = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao");
+            if (serviceNodeDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             storedServiceNode = serviceNodeDao.readOneServiceNode(hibSession, cachedServiceNode.getHostname());
 
             // Possibly deleted during long conversation
@@ -341,6 +351,8 @@ public class ServiceNodeImpl implements ServiceNodeDao  {
             hibSession.beginTransaction();
 
             ServiceNodeDao serviceNodeDao  = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao");
+            if (serviceNodeDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
 
             serviceNodeList = serviceNodeDao.readServiceNodeList(hibSession, col, order);
 

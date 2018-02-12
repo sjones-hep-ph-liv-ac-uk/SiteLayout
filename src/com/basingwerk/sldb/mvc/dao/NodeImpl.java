@@ -88,6 +88,8 @@ public class NodeImpl implements NodeDao {
             storedNode.setNodeName(updatedNodeName);
             storedNode.setDescription(updateDescription);
             NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao");
+            if (nodeSetDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             NodeSet nodeSet = nodeSetDao.readOneNodeSet(hibSession, updatedNodeSet);
             if (nodeSet == null) {
                 // Possibly deleted during long conversation
@@ -97,6 +99,8 @@ public class NodeImpl implements NodeDao {
             }
             storedNode.setNodeSet(nodeSet);
             NodeStateDao nodeStateDao = (NodeStateDao) request.getSession().getAttribute("nodeStateDao");
+            if (nodeStateDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             NodeState nodeState = nodeStateDao.readOneNodeState(hibSession, updatedNodeState);
             if (nodeState == null) {
                 // Possibly deleted during long conversation
@@ -168,6 +172,8 @@ public class NodeImpl implements NodeDao {
         try {
             hibSession.beginTransaction();
             NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao");
+            if (nodeSetDao == null)
+                throw new WTFException("Session timed out. Log back in.");
             NodeSet nodeSet = nodeSetDao.readOneNodeSet(hibSession, nodeSetName);
 
             if (nodeSet == null) {
@@ -177,6 +183,8 @@ public class NodeImpl implements NodeDao {
                 throw new RoutineException("While using addNode, desired NodeSet not found");
             }
             NodeStateDao nodeStateDao = (NodeStateDao) request.getSession().getAttribute("nodeStateDao");
+            if (nodeStateDao == null)
+                throw new WTFException("Session timed out. Log back in.");
             NodeState nodeState = nodeStateDao.readOneNodeState(hibSession, nodeStateName);
 
             if (nodeState == null) {
@@ -269,6 +277,8 @@ public class NodeImpl implements NodeDao {
             Long cachedVersion = cachedNode.getVersion();
 
             NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao");
+            if (nodeDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             storedNode = nodeDao.readOneNode(hibSession, cachedNode.getNodeName());
 
             // Possibly deleted during long conversation
@@ -321,8 +331,13 @@ public class NodeImpl implements NodeDao {
             for (String c : choices) {
                 String nodeName = c.substring(4, c.length());
                 NodeDao nodeDao = (NodeDao) request.getSession().getAttribute("nodeDao");
+                if (nodeDao  == null)
+                    throw new WTFException("Session timed out. Log back in.");
                 Node node = nodeDao.readOneNode(hibSession, nodeName);
                 NodeStateDao nodeStateDao = (NodeStateDao) request.getSession().getAttribute("nodeStateDao");
+                if (nodeStateDao == null)
+                    throw new WTFException("Session timed out. Log back in.");
+
                 if (node.getNodeState().getState().equalsIgnoreCase("ONLINE"))
                     node.setNodeState(nodeStateDao.readOneNodeState(hibSession, "OFFLINE"));
                 else
@@ -357,6 +372,8 @@ public class NodeImpl implements NodeDao {
             Node node = ((ArrayList<Node>) httpSession.getAttribute("node")).get(nodeIndex);
 
             NodeStateDao nodeStateDao = (NodeStateDao) request.getSession().getAttribute("nodeStateDao");
+            if (nodeStateDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             if (node.getNodeState().getState().equalsIgnoreCase("ONLINE"))
                 node.setNodeState(nodeStateDao.readOneNodeState(hibSession, "OFFLINE"));
             else

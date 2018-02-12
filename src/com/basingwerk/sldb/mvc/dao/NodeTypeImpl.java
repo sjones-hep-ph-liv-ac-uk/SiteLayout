@@ -234,6 +234,8 @@ public class NodeTypeImpl implements NodeTypeDao {
             Long cachedVersion = cachedNodeType.getVersion();
 
             NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");
+            if (nodeTypeDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             storedNodeType = nodeTypeDao.readOneNodeType(hibSession, cachedNodeType.getNodeTypeName());
 
             // Possibly deleted during long conversation
@@ -312,6 +314,8 @@ public class NodeTypeImpl implements NodeTypeDao {
             hibSession.beginTransaction();
 
             NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao"); 
+            if (nodeTypeDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             nodeTypes = nodeTypeDao.readNodeTypeList(hibSession, "nodeTypeName", "ASC");
             hibSession.getTransaction().commit();
 

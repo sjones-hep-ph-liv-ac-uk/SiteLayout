@@ -30,6 +30,8 @@ public class NewClusterController extends HttpServlet {
 
         try {
             ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
+            if (clusterDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             clusterDao.addCluster(request);
             clusterDao.loadClusters(request, "clusterName", "ASC");
             String next = "/cluster.jsp";

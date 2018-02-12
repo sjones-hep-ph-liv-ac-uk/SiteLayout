@@ -28,6 +28,8 @@ public class EditNodeTypeController extends HttpServlet {
 
         try {
             NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");            
+            if (nodeTypeDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             nodeTypeDao.updateNodeType(request);
             
         } catch (RoutineException e) {
@@ -44,6 +46,8 @@ public class EditNodeTypeController extends HttpServlet {
         }
         try {
             NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");            
+            if (nodeTypeDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             nodeTypeDao.loadNodeTypes(request, "nodeTypeName", "ASC");
         } catch (WTFException e) {
             logger.error("WTF! Error when using updateNodeType, ", e);

@@ -37,8 +37,12 @@ public class SelectClusterSetController extends HttpServlet {
         ArrayList<String> clusters = null;
         try {
             NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");            
+            if (nodeTypeDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             nodeTypeDao.loadNodeTypes(request, "nodeTypeName", "ASC");
             ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
+            if (clusterDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             clusterDao.loadClustersOfClusterSet(request, clusterSetName, "clusterName", "ASC");
             nodeTypeDao.setBaselineNodeType(request);
 

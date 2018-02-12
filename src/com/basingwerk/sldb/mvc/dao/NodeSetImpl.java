@@ -87,8 +87,10 @@ public class NodeSetImpl implements NodeSetDao  {
             // Both the same. Safe to update
 
             storedNodeSet.setNodeSetName(updatedNodeSetName);
-            storedNodeSet.setNodeCount(Integer.parseInt(updatedNodeCount));
+            storedNodeSet.setNodeCount(0);
             ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
+            if (clusterDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             Cluster cluster = clusterDao.readOneCluster(hibSession, updatedClusterName);
             if (cluster == null) {
                 // Possibly deleted during long conversation
@@ -99,6 +101,8 @@ public class NodeSetImpl implements NodeSetDao  {
             storedNodeSet.setCluster(cluster);
 
             NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");
+            if (nodeTypeDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             NodeType nodeType = nodeTypeDao.readOneNodeType(hibSession, updatedNodeTypeName);
 
             if (nodeType == null) {
@@ -167,6 +171,8 @@ public class NodeSetImpl implements NodeSetDao  {
         try {
             hibSession.beginTransaction();
             ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
+            if (clusterDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             Cluster c = clusterDao.readOneCluster(hibSession, clusterName);
 
             if (c == null) {
@@ -177,6 +183,8 @@ public class NodeSetImpl implements NodeSetDao  {
             }
 
             NodeTypeDao nodeTypeDao = (NodeTypeDao) request.getSession().getAttribute("nodeTypeDao");
+            if (nodeTypeDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             NodeType nodeType = nodeTypeDao.readOneNodeType(hibSession, nodeTypeName);
 
             if (nodeType == null) {
@@ -187,7 +195,7 @@ public class NodeSetImpl implements NodeSetDao  {
             }
             nodeSet.setCluster(c);
             nodeSet.setNodeType(nodeType);
-            nodeSet.setNodeCount(Integer.parseInt(nodeCount));
+            nodeSet.setNodeCount(0);
             nodeSet.setNodeSetName(nodeSetName);
             hibSession.save(nodeSet);
             hibSession.getTransaction().commit();
@@ -270,6 +278,8 @@ public class NodeSetImpl implements NodeSetDao  {
             Long cachedVersion = cachedNodeSet.getVersion();
 
             NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao");
+            if (nodeSetDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             storedNodeSet = nodeSetDao.readOneNodeSet(hibSession, cachedNodeSet.getNodeSetName());
 
             // Possibly deleted during long conversation
@@ -319,6 +329,8 @@ public class NodeSetImpl implements NodeSetDao  {
 
             hibSession.beginTransaction();
             NodeSetDao nodeSetDao = (NodeSetDao) request.getSession().getAttribute("nodeSetDao");
+            if (nodeSetDao  == null)
+                throw new WTFException("Session timed out. Log back in.");
             nodeSetList = nodeSetDao.readNodeSetList(hibSession, col, order);
 
             hibSession.getTransaction().commit();

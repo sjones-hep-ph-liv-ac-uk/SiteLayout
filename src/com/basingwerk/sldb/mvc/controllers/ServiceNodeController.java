@@ -48,6 +48,8 @@ public class ServiceNodeController extends HttpServlet {
 
             try {
                 ServiceNodeDao serviceNodeDao = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao"); 
+                if (serviceNodeDao  == null)
+                    throw new WTFException("Session timed out. Log back in.");
                 
                 serviceNodeDao.loadServiceNodes(request, "hostname", "ASC");
             } catch (WTFException e) {
@@ -70,8 +72,13 @@ public class ServiceNodeController extends HttpServlet {
 
             try {
                 ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
+                if (clusterDao  == null)
+                    throw new WTFException("Session timed out. Log back in.");
                 clusterDao.loadClusters(request, "clusterName", "ASC");
                 HostSystemDao hostSystemDao = (HostSystemDao) request.getSession().getAttribute("hostSystemDao");
+                if (hostSystemDao == null)
+                    throw new WTFException("Session timed out. Log back in.");
+
                 hostSystemDao.loadHostSystems(request, "hostname", "ASC");
             } catch (WTFException e) {
                 logger.error("WTF! Error preparing data, ", e);
@@ -107,6 +114,8 @@ public class ServiceNodeController extends HttpServlet {
 
                 try {
                     ServiceNodeDao serviceNodeDao = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao"); 
+                    if (serviceNodeDao  == null)
+                        throw new WTFException("Session timed out. Log back in.");
                     serviceNodeDao.loadServiceNodes(request, c, order);
                 } catch (WTFException e) {
                     logger.error("WTF! Error using loadServiceNodes, ", e);
@@ -129,6 +138,8 @@ public class ServiceNodeController extends HttpServlet {
                 
                 try {
                     ServiceNodeDao serviceNodeDao = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao"); 
+                    if (serviceNodeDao  == null)
+                        throw new WTFException("Session timed out. Log back in.");
                     serviceNodeDao.deleteServiceNode(request, serviceNode);
                 } catch (RoutineException e) {
                     logger.error("WTF! Error deleting a serviceNode, ", e);
@@ -143,6 +154,8 @@ public class ServiceNodeController extends HttpServlet {
                 }
                 try {
                     ServiceNodeDao serviceNodeDao = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao"); 
+                    if (serviceNodeDao  == null)
+                        throw new WTFException("Session timed out. Log back in.");
                     serviceNodeDao.loadServiceNodes(request, "hostname", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error using loadServiceNodes.");
@@ -164,6 +177,8 @@ public class ServiceNodeController extends HttpServlet {
                 Integer index = Integer.parseInt(serviceNode);
                 try {
                     ServiceNodeDao serviceNodeDao = (ServiceNodeDao) request.getSession().getAttribute("serviceNodeDao"); 
+                    if (serviceNodeDao  == null)
+                        throw new WTFException("Session timed out. Log back in.");
                     serviceNodeDao.loadIndexedServiceNode(request, index);
                 } catch (RoutineException e) {
                     request.setAttribute("theMessage",
@@ -181,8 +196,12 @@ public class ServiceNodeController extends HttpServlet {
 
                 try {
                     ClusterDao clusterDao = (ClusterDao) request.getSession().getAttribute("clusterDao");
+                    if (clusterDao  == null)
+                        throw new WTFException("Session timed out. Log back in.");
                     clusterDao.loadClusters(request, "clusterName", "ASC");
                     HostSystemDao hostSystemDao = (HostSystemDao) request.getSession().getAttribute("hostSystemDao");
+                    if (hostSystemDao == null)
+                        throw new WTFException("Session timed out. Log back in.");
                     hostSystemDao.loadHostSystems(request, "hostname", "ASC");
                 } catch (WTFException e) {
                     logger.error("WTF! Error preparing data, ", e);
