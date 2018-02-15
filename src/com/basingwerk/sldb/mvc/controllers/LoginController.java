@@ -52,8 +52,8 @@ public class LoginController extends HttpServlet {
             cfg.addAnnotatedClass(com.basingwerk.sldb.mvc.model.NodeState.class);
 
             cfg.getProperties().setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/" + database);
-            cfg.getProperties().setProperty("hibernate.connection.password", username);
-            cfg.getProperties().setProperty("hibernate.connection.username", password);
+            cfg.getProperties().setProperty("hibernate.connection.password", password);
+            cfg.getProperties().setProperty("hibernate.connection.username", username);
 
             SessionFactory sessionFactory = cfg.configure().buildSessionFactory();
             HttpSession session = request.getSession();
