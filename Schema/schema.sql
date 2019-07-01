@@ -24,7 +24,7 @@ CREATE TABLE NodeType(
   memPerNode float,
   version   bigint(20),
   PRIMARY KEY( nodeTypeName)
-) TYPE = INNODB;
+) ENGINE = INNODB;
 
 #DROP TABLE ClusterSet;
 CREATE TABLE ClusterSet (
@@ -36,7 +36,7 @@ CREATE TABLE ClusterSet (
   admin varchar(50),
   version   bigint(20),
   PRIMARY KEY( clusterSetName )
-) TYPE = INNODB;
+) ENGINE = INNODB;
 
 #DROP TABLE Cluster;
 CREATE TABLE Cluster (
@@ -46,7 +46,7 @@ CREATE TABLE Cluster (
   version   bigint(20),
   PRIMARY KEY( clusterName ),
   FOREIGN KEY (clusterSetName) REFERENCES ClusterSet(clusterSetName) 
-) TYPE = INNODB;
+) ENGINE = INNODB;
 
 
 
@@ -60,14 +60,14 @@ CREATE TABLE NodeSet (
   PRIMARY KEY( nodeSetName ),
   FOREIGN KEY (cluster) REFERENCES Cluster(clusterName) ,
   FOREIGN KEY (nodeTypeName) REFERENCES NodeType(nodeTypeName)
-) TYPE = INNODB;
+) ENGINE = INNODB;
 
 DROP TABLE NodeState;
 CREATE TABLE NodeState (
   state    varchar(10),
   version   bigint(20),
   PRIMARY KEY( state    )
-) TYPE = INNODB;
+) ENGINE = INNODB;
 
 # Static data
 INSERT INTO `NodeState` (`state`,version) VALUES
@@ -85,7 +85,7 @@ CREATE TABLE Node (
   state    varchar(10),
   version   bigint(20),
   PRIMARY KEY( nodeName )
-) TYPE = INNODB;
+) ENGINE = INNODB;
 
 ALTER TABLE Node ADD FOREIGN KEY (nodeSetName) REFERENCES NodeSet(nodeSetName);
 ALTER TABLE Node ADD FOREIGN KEY (state) REFERENCES NodeState(state);
@@ -101,7 +101,7 @@ CREATE TABLE HostSystem (
   comment   varchar(50),
   version   bigint(20),
   PRIMARY KEY( hostname    )
-) TYPE = INNODB;
+) ENGINE = INNODB;
 
 # Static data
 INSERT INTO HostSystem (hostname,cpu,mem,os,kernel,comment,version) VALUES
@@ -124,7 +124,7 @@ CREATE TABLE ServiceNode (
   comment   varchar(50),
   version   bigint(20),
   PRIMARY KEY( hostname )
-) TYPE = INNODB;
+) ENGINE = INNODB;
 
 ALTER TABLE ServiceNode ADD FOREIGN KEY (clusterName) REFERENCES Cluster (clusterName);
 ALTER TABLE ServiceNode ADD FOREIGN KEY (hostSystemName) REFERENCES HostSystem(hostname);
@@ -136,7 +136,7 @@ CREATE TABLE Service (
   provider        varchar(50),
   version         bigint(20),
   PRIMARY KEY( serviceName )
-) TYPE = INNODB;
+) ENGINE = INNODB;
 
 CREATE TABLE Installation (
   serviceName       varchar(50),
@@ -144,7 +144,7 @@ CREATE TABLE Installation (
   softwareVersion   varchar(20),
   version           bigint(20),
   PRIMARY KEY( serviceName, hostname  )
-) TYPE = INNODB;
+) ENGINE = INNODB;
 
 ALTER TABLE Installation ADD FOREIGN KEY (serviceName) REFERENCES Service (serviceName);
 ALTER TABLE Installation ADD FOREIGN KEY (hostname) REFERENCES ServiceNode (hostname);

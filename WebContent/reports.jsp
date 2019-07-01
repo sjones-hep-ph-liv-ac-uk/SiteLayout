@@ -122,12 +122,12 @@
               value="${clusterLogicalCpus / clusterPhysicalCpus}" /></td>
         </tr>
         <tr>
-          <td>Benchmark</td>
+          <td>Benchmark (HS06 per logcpu)</td>
           <td><fmt:formatNumber type="number" groupingUsed="0"
               maxFractionDigits="3" value="${clusterHs06 / clusterLogicalCpus}" /></td>
         </tr>
         <tr>
-          <td>CE_SI00/cpu_scaling_reference_si00</td>
+          <td>Benchmark in si2k (HS06*250)</td>
           <td><fmt:formatNumber type="number" groupingUsed="0"
               maxFractionDigits="0"
               value="${clusterHs06 / clusterLogicalCpus * 250.0}" /></td>
